@@ -5,6 +5,7 @@ import cors from 'cors'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import { config } from './config/env.config.js'
+import { errorMiddleware } from './middlewares/error.middleware.js'
 
 
 const app=express()
@@ -21,6 +22,10 @@ app.use(morgan('tiny'))
 app.get("/",(req:Request,res:Response)=>{
     res.status(200).json({running:true})
 })
+
+
+// error middleware
+app.use(errorMiddleware)
 
 server.listen(8000,()=>{
     console.log('server [STARTED] ~ http://localhost:8000');

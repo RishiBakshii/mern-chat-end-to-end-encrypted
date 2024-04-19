@@ -35,13 +35,11 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
 
     const isExistingUser = await User.findOne({email}).select("+password")
 
-    if(!isExistingUser){
-        next(new CustomError("Invalid Credentials",404))
-    }
-
     if(isExistingUser && await bcrypt.compare(password,isExistingUser.password)){
         sendToken(res,isExistingUser._id,200,isExistingUser)
     }
+
+    return next(new CustomError("Invalid Credentials",404))
     
 })
 

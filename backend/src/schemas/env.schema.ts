@@ -4,10 +4,10 @@ config()
 
 const envSchema = z.object({
     NODE_ENV:z.enum(['DEVELOPMENT','PRODUCTION']).default("DEVELOPMENT"),
-    PORT:z.number({required_error:"PORT is required"}).max(4,'Port cannot be more than 4 digits').min(4,'Port number cannot be lesser than 4 digits'),
+    PORT:z.string({required_error:"PORT is required"}).max(4,'Port cannot be more than 4 digits').min(4,'Port number cannot be lesser than 4 digits'),
     JWT_SECRET:z.string({required_error:"JWT_SECRET is required"}).min(20,'JWT secret key cannot be lesser than 20 characters'),
     MONGO_URI:z.string({required_error:"MONGO_URI is required"}),
-    JWT_TOKEN_EXPIRATION_DAYS:z.number({required_error:"JWT_TOKEN_EXPIRATION_DAYS is required"}).min(1,'JWT_TOKEN_EXPIRATION_DAYS cannot be less than 1'),
+    JWT_TOKEN_EXPIRATION_DAYS:z.string({required_error:"JWT_TOKEN_EXPIRATION_DAYS is required"}).min(1,'JWT_TOKEN_EXPIRATION_DAYS cannot be less than 1'),
     EMAIL:z.string().email("Please provide a valid email"),
     PASSWORD:z.string({required_error:"Password for email is required"}),
 })

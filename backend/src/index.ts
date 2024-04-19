@@ -6,11 +6,16 @@ import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import { config } from './config/env.config.js'
 import { errorMiddleware } from './middlewares/error.middleware.js'
+import { connectDB } from './config/db.config.js'
+import { env } from './schemas/env.schema.js'
 
 
 const app=express()
 const server=createServer(app)
 const io=new Server(server,{cors:{credentials:true,origin:config.clientUrl}})
+
+// database connection
+connectDB()
 
 // middlewares
 app.use(cors({credentials:true,origin:config.clientUrl}))
@@ -27,6 +32,6 @@ app.get("/",(req:Request,res:Response)=>{
 // error middleware
 app.use(errorMiddleware)
 
-server.listen(8000,()=>{
-    console.log('server [STARTED] ~ http://localhost:8000');
+server.listen(env.PORT,()=>{
+    console.log(`server [STARTED] ~ http://localhost:${env.PORT}`);
 })

@@ -8,16 +8,18 @@ export const errorMiddleware = (err:CustomError | ZodError | Error,req:Request,r
     let statusCode=500;
 
     if(err instanceof ZodError){
-        message=err.flatten().fieldErrors
+        console.log('zod error');
+        message=(err.issues.map(issue=>issue.message)).join(", ")
+        console.log(message);
         statusCode=400
     }
 
-    if(err instanceof CustomError){
+    else if(err instanceof CustomError){
         message = err.message
         statusCode = err.statusCode
     }
 
-    if(err instanceof Error){
+    else if(err instanceof Error){
         message = err.message
         statusCode = 500
     }

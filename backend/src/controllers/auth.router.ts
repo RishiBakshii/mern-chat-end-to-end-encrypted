@@ -23,7 +23,7 @@ const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
         return next(new CustomError("Username is already taken",400))
     }
 
-    const hashedPassword = bcrypt.hash(password,10)
+    const hashedPassword = await bcrypt.hash(password,10)
 
     const newUser = await User.create({avatar,email,name,password:hashedPassword,username})
     

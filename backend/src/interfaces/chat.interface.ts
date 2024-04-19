@@ -5,4 +5,5 @@ export interface IChat {
     isGroupChat?:boolean
     members:Array<Types.ObjectId>
     avatar?:string
+    admin?:Types.ObjectId
 }

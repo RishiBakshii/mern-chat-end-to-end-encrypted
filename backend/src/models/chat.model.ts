@@ -22,6 +22,10 @@ const chatSchema = new Schema<IChat>({
     avatar:{
         type:String,
     },
+    admin:{
+        type:Schema.ObjectId,
+        ref:"User"
+    }
 },{versionKey:false,timestamps:true})
 
 export const Chat = model<IChat>("Chat",chatSchema)

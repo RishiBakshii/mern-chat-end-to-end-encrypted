@@ -10,6 +10,7 @@ import { connectDB } from './config/db.config.js'
 import { env } from './schemas/env.schema.js'
 
 import authRoutes from './routes/auth.router.js'
+import chatRoutes from './routes/chat.router.js'
 
 
 const app=express()
@@ -28,6 +29,7 @@ app.use(morgan('tiny'))
 
 // route middlewares
 app.use("/api/v1/auth",authRoutes)
+app.use("/api/v1/chat",chatRoutes)
 
 app.get("/",(req:Request,res:Response)=>{
     res.status(200).json({running:true})

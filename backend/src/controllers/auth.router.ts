@@ -37,6 +37,7 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
 
     if(isExistingUser && await bcrypt.compare(password,isExistingUser.password)){
         sendToken(res,isExistingUser._id,200,isExistingUser)
+        return 
     }
 
     return next(new CustomError("Invalid Credentials",404))

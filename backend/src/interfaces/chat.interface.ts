@@ -1,8 +1,8 @@
 import { Types } from "mongoose"
 
 export interface IChat {
-    name:string
-    isGroupChat:boolean
+    name?:string
+    isGroupChat?:boolean
     members:Array<Types.ObjectId>
-    avatar:string
+    avatar?:string
 }

@@ -5,11 +5,10 @@ import type { IChat } from "../interfaces/chat.interface.js";
 const chatSchema = new Schema<IChat>({
     name:{
         type:String,
-        required:true
     },
     isGroupChat:{
         type:Boolean,
-        required:true
+        default:false
     },
     members:{
         type:[
@@ -22,8 +21,6 @@ const chatSchema = new Schema<IChat>({
     },
     avatar:{
         type:String,
-        unique:true,
-        required:true
     },
 },{versionKey:false,timestamps:true})
 

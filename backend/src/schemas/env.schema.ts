@@ -3,7 +3,7 @@ import { config } from "dotenv";
 config()
 
 const envSchema = z.object({
-    NODE_ENV:z.string().default("DEVELOPMENT"),
+    NODE_ENV:z.enum(['DEVELOPMENT','PRODUCTION']).default("DEVELOPMENT"),
     PORT:z.number({required_error:"PORT is required"}).max(4,'Port cannot be more than 4 digits').min(4,'Port number cannot be lesser than 4 digits'),
     JWT_SECRET:z.string({required_error:"JWT_SECRET is required"}).min(20,'JWT secret key cannot be lesser than 20 characters'),
     MONGO_URI:z.string({required_error:"MONGO_URI is required"}),

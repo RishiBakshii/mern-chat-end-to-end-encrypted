@@ -1,0 +1,7 @@
+export enum Events {
+    NEW_MESSAGE,
+    NEW_GROUP_CHAT,
+    MESSAGE_SEEN,
+    USER_TYPING,
+    NEW_UNREAD_MESSAGE,
+}

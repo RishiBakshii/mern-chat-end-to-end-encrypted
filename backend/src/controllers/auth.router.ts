@@ -7,30 +7,28 @@ import type { loginSchemaType } from "../schemas/auth.schema.js";
 import bcrypt from 'bcryptjs'
 
 
-const signup = async(req:Request,res:Response,next:NextFunction)=>{
-    try {
-        const {username,password,avatar,email,name}:signupSchemaType=req.body
+const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
-        const isExistingUser = await User.findOne({email})
+    const {username,password,avatar,email,name}:signupSchemaType=req.body
 
-        if(isExistingUser){
-            return next(new CustomError("User already exists",400))
-        }
+    const isExistingUser = await User.findOne({email})
 
-        const existingUsername = await User.findOne({username})
-
-        if(existingUsername){
-            return next(new CustomError("Username is already taken",400))
-        }
-
-        const newUser = await User.create({avatar,email,name,password,username})
-        
-        sendToken(res,newUser._id,201,newUser)
-
-    } catch (error) {
-        console.log(error);
+    if(isExistingUser){
+        return next(new CustomError("User already exists",400))
     }
-} 
+
+    const existingUsername = await User.findOne({username})
+
+    if(existingUsername){
+        return next(new CustomError("Username is already taken",400))
+    }
+
+    const hashedPassword = bcrypt.hash(password,10)
+
+    const newUser = await User.create({avatar,email,name,password:hashedPassword,username})
+    
+    sendToken(res,newUser._id,201,newUser)
+}) 
 
 const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
     const {email,password}:loginSchemaType=req.body

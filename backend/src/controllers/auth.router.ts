@@ -43,5 +43,9 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
     
 })
 
+const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
+    res.clearCookie("token").status(200).json({message:"Logout successful"})
+})
 
-export {signup,login}
+
+export {signup,login,logout}

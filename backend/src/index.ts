@@ -9,20 +9,25 @@ import { errorMiddleware } from './middlewares/error.middleware.js'
 import { connectDB } from './config/db.config.js'
 import { env } from './schemas/env.schema.js'
 
+import authRoutes from './routes/auth.router.js'
+
 
 const app=express()
 const server=createServer(app)
-const io=new Server(server,{cors:{credentials:true,origin:config.clientUrl}})
+const io=new Server(server,{cors:{credentials:true,origin:'*'}})
 
 // database connection
 connectDB()
 
 // middlewares
-app.use(cors({credentials:true,origin:config.clientUrl}))
+app.use(cors({credentials:true,origin:"*"}))
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan('tiny'))
 
+
+// route middlewares
+app.use("/api/v1/auth",authRoutes)
 
 app.get("/",(req:Request,res:Response)=>{
     res.status(200).json({running:true})

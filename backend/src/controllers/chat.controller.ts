@@ -1,8 +1,10 @@
-import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import type { createChatSchemaType } from "../schemas/chat.schema.js";
-import type { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
 import { NextFunction, Response } from "express";
+import type { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
+import { IUser } from "../interfaces/user.interface.js";
 import { Chat } from "../models/chat.model.js";
+import { User } from "../models/user.model.js";
+import type { addMemberToChatType, createChatSchemaType } from "../schemas/chat.schema.js";
+import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 
 const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
@@ -66,4 +68,39 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
     res.status(200).json(chats)
 })
 
-export {createChat,getUserChats}
+const addMemberToChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const {id}=req.params
+    const {members}:addMemberToChatType = req.body
+
+    const isExistingChat = await Chat.findById(id)
+
+    if(!isExistingChat){
+        return next(new CustomError("Chat does not exists",404))
+    }
+
+    if(!isExistingChat.isGroupChat){
+        return next(new CustomError("This is not a group chat, you cannot add members",400))
+    }
+
+    if(isExistingChat.admin?._id.toString() !== req.user?._id.toString()){
+        return next(new CustomError("You are not allowed to add members as you are not the admin of this chat",400))
+    }
+
+    const isValidMemberIdsPromise = members.map(memberId=>User.findById(memberId,'_id'))
+    const validMembers = await Promise.all(isValidMemberIdsPromise) as Array<Pick<IUser, '_id'>>
+
+    const existingMemberIds = validMembers.filter(({_id})=>isExistingChat.members.includes(_id))
+
+    if(existingMemberIds.length>0){
+        return next(new CustomError(`[${existingMemberIds.map(id=>id._id)}], ${existingMemberIds.length==1?"this id":"these ids"} already exists in members of this chat`))
+    }
+    
+    isExistingChat.members.push(...validMembers.map(id=>id._id))
+    await isExistingChat.save()
+
+    res.status(200).json(isExistingChat)
+
+})
+
+export { addMemberToChat, createChat, getUserChats };

@@ -1,5 +1,7 @@
+import { Types } from "mongoose"
+
 export interface IUser {
-    _id:string
+    _id:Types.ObjectId
     name:string
     username:string
     avatar:string

@@ -9,4 +9,9 @@ export const createChatSchema = z.object({
 })
 
 
+export const addMemberToChatSchema = z.object({
+    members:z.string({required_error:"Atlest one member is required to add to chat"}).array()
+})
+
 export type createChatSchemaType = z.infer<typeof createChatSchema>
+export type addMemberToChatType = z.infer<typeof addMemberToChatSchema>

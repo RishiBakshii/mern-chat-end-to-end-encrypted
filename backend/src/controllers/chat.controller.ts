@@ -61,4 +61,9 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 
 })
 
-export {createChat}
+const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+    const chats=await Chat.find({members:{$in:[req.user?._id]}})
+    res.status(200).json(chats)
+})
+
+export {createChat,getUserChats}

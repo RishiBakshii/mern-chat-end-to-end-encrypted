@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express"
+import { NextFunction, Response } from "express"
 import jwt from 'jsonwebtoken'
+import { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js"
+import { User } from "../models/user.model.js"
 import { env } from "../schemas/env.schema.js"
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js"
-import { Payload } from "../interfaces/payload.interface.js"
-import { User } from "../models/user.model.js"
-import { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js"
+import { IUser } from "../interfaces/user.interface.js"
 
 export const verifyToken=asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
@@ -14,7 +14,7 @@ export const verifyToken=asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
             return next(new CustomError("Token missing, please login again"))
         }
 
-        const decodedInfo=jwt.verify(token,env.JWT_SECRET) as Payload
+        const decodedInfo=jwt.verify(token,env.JWT_SECRET) as IUser['_id']
 
         if(!decodedInfo || !decodedInfo._id){
             return next(new CustomError("Invalid token please login again"))

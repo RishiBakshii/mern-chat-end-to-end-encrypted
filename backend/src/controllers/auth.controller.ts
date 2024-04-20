@@ -5,7 +5,6 @@ import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { sendToken } from "../utils/auth.util.js";
 import type { loginSchemaType } from "../schemas/auth.schema.js";
 import bcrypt from 'bcryptjs'
-import { Payload } from "../interfaces/payload.interface.js";
 
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
@@ -27,9 +26,8 @@ const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
     const hashedPassword = await bcrypt.hash(password,10)
 
     const newUser = await User.create({avatar,email,name,password:hashedPassword,username})
-    const payload:Payload = {_id:newUser._id}
     
-    sendToken(res,payload,201,newUser)
+    sendToken(res,newUser._id,201,newUser)
 }) 
 
 const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
@@ -39,8 +37,7 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
 
     if(isExistingUser && await bcrypt.compare(password,isExistingUser.password)){
         
-        const payload:Payload = {_id:isExistingUser._id}
-        sendToken(res,payload,200,isExistingUser)
+        sendToken(res,isExistingUser['_id'],200,isExistingUser)
         return 
     }
 

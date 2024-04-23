@@ -10,7 +10,8 @@ const envSchema = z.object({
     JWT_TOKEN_EXPIRATION_DAYS:z.string({required_error:"JWT_TOKEN_EXPIRATION_DAYS is required"}).min(1,'JWT_TOKEN_EXPIRATION_DAYS cannot be less than 1'),
     EMAIL:z.string().email("Please provide a valid email"),
     PASSWORD:z.string({required_error:"Password for email is required"}),
-    OTP_EXPIRATION_MINUTES:z.string({required_error:"OTP_EXPIRATION_MINUTES is required"})
+    OTP_EXPIRATION_MINUTES:z.string({required_error:"OTP_EXPIRATION_MINUTES is required"}),
+    PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES:z.string({required_error:"PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES is required"})
 })
 
 type envType = z.infer<typeof envSchema>

@@ -13,6 +13,8 @@ import type { AuthenticatedSocket } from './interfaces/authenticated-socket.inte
 import authRoutes from './routes/auth.router.js'
 import chatRoutes from './routes/chat.router.js'
 import userRoutes from './routes/user.router.js'
+import requestRoutes from './routes/request.router.js'
+
 import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
 
 
@@ -34,6 +36,7 @@ app.use(morgan('tiny'))
 app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/chat",chatRoutes)
 app.use("/api/v1/user",userRoutes)
+app.use("/api/v1/request",requestRoutes)
 
 io.use(socketAuthenticatorMiddleware)
 

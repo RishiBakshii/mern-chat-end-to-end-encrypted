@@ -15,7 +15,8 @@ const requestSchema = new Schema<IRequest>({
         required:true
     },
     status:{
-        enum:[RequestStatus.Accepted,RequestStatus.Pending,RequestStatus.Rejected],
+        type:String,
+        enum:RequestStatus,
         default:RequestStatus.Pending
     },
 },{versionKey:false,timestamps:true})

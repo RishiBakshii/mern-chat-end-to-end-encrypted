@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 
 export interface IOtp {
-    otp:string
+    hashedOtp:string
     user:Types.ObjectId
     expiresAt?:Date
 }

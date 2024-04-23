@@ -3,7 +3,7 @@ import type { IOtp } from "../interfaces/otp.interface.js";
 import { env } from "../schemas/env.schema.js";
 
 const otpSchema = new Schema<IOtp>({
-    otp:{
+    hashedOtp:{
         type:String,
         required:true
     },

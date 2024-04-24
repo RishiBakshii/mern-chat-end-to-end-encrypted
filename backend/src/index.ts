@@ -69,11 +69,12 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
             if(isExistingUnreadMessage){
                 isExistingUnreadMessage.count++
+                isExistingUnreadMessage.message = newMessage._id
                 isExistingUnreadMessage.save()
                 return isExistingUnreadMessage
             }
 
-           return UnreadMessage.create({chat,count:1,user:memberId})
+           return UnreadMessage.create({chat,count:1,user:memberId,sender:socket.user?._id,message:newMessage._id})
 
         })
 

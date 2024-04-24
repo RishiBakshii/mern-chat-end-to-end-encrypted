@@ -18,6 +18,11 @@ const unreadMessageSchema = new Schema<IUnreadMessage>({
         ref:"User",
         required:true
     },
+    message:{
+        type:Schema.ObjectId,
+        ref:"Message",
+        required:true
+    },
     count:{
         type:Number,
         required:true

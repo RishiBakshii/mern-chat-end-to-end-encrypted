@@ -31,6 +31,9 @@ const io=new Server(server,{cors:{credentials:true,origin:'*'}})
 // database connection
 connectDB()
 
+// global
+app.set("io",io)
+
 // userSocketIds
 const userSocketIds = new Map()
 

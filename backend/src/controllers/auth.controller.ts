@@ -11,6 +11,8 @@ import { ResetPassword } from "../models/reset-password.model.js";
 import { env } from "../schemas/env.schema.js";
 import jwt from 'jsonwebtoken'
 import { config } from "../config/env.config.js";
+import type { resetPasswordSchemaType } from "../schemas/auth.schema.js";
+import { IUser } from "../interfaces/user.interface.js";
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
@@ -75,9 +77,45 @@ const forgotPassword = asyncErrorHandler(async(req:Request,res:Response,next:Nex
     res.status(200).json({message:`We have sent a password reset link on ${email}`})
 })
 
+const resetPassword = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
+    const {token,newPassword,userId}:resetPasswordSchemaType = req.body
+
+
+    const doesPasswordResetExists = await ResetPassword.findOne({user:userId})
+
+    if(!doesPasswordResetExists){
+        return next(new CustomError("Password reset link is invalid",404))
+    }
+
+    const isValidUser = await User.findById(userId)
+
+    if(!isValidUser){
+        return next(new CustomError("User not found",404))
+    }
+
+    if(doesPasswordResetExists.expiresAt! < new Date){
+        await doesPasswordResetExists.deleteOne()
+        return next(new CustomError("Password reset link has been expired",400))
+    }
+
+    const decodedInfo = jwt.verify(token,env.JWT_SECRET) as IUser['_id']
+
+    if(!decodedInfo || !decodedInfo._id || decodedInfo._id.toString()!==userId) {
+        return next(new CustomError("Password reset link is invalid",400))
+    }
+
+    isValidUser.password = await bcrypt.hash(newPassword,10)
+    await isValidUser.save()
+
+    await ResetPassword.deleteMany({user:decodedInfo._id})
+
+    return res.status(200).json({message:`Dear ${isValidUser.username}, your password has been reset successfuly`})
+
+})
+
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
     res.clearCookie("token").status(200).json({message:"Logout successful"})
 })
 
 
-export {signup,login,logout,forgotPassword}
+export {signup,login,logout,forgotPassword,resetPassword}

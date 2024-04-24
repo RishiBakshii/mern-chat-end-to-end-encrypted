@@ -20,6 +20,8 @@ import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middlew
 import { Events } from './enums/event.enum.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
+import { IUnreadMessage } from './interfaces/unread-message.interface.js'
+import { IChat } from './interfaces/chat.interface.js'
 
 
 const app=express()
@@ -80,6 +82,21 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
         await Promise.all(updateOrCreateUnreadMessagePromise)
         io.to(memberSocketsIds).emit(Events.UNREAD_MESSAGE,{chat,message:newMessage.content.substring(0,30)})
+
+    })
+
+    socket.on(Events.MESSAGE_SEEN,async({chatId,members}:{chatId:string,members:Array<string>})=>{
+
+        const areUnreadMessages = await UnreadMessage.findOne({chat:chatId,user:socket.user?._id})   
+
+        if(areUnreadMessages){
+            areUnreadMessages.count=0
+            areUnreadMessages.readAt=new Date()
+            await areUnreadMessages.save()
+        }
+
+        const memberSocketIds = members.map(memberId=>userSocketIds.get(memberId))
+        io.to(memberSocketIds).emit(Events.MESSAGE_SEEN,{user:socket.user?._id.toString(),readAt:areUnreadMessages?.readAt,chat:chatId})
 
     })
 

@@ -64,13 +64,13 @@ const forgotPassword = asyncErrorHandler(async(req:Request,res:Response,next:Nex
 
     await ResetPassword.deleteMany({user:isValidUser._id})
 
-    const expirationTime = Date.now() + (parseInt(env.PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES) * 60 * 1000)
+    const expirationTime = new Date(Date.now() + (parseInt(env.PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES) * 60 * 1000));
 
     const token = jwt.sign(isValidUser._id.toString(),env.JWT_SECRET)
     const hashedToken = await bcrypt.hash(token,10)
 
-    const newResetPasswordDoc = await ResetPassword.create({user:isValidUser._id,hashedToken,expiresAt:Date.now() + expirationTime})
-    const resetUrl = `${config.clientUrl}?token=${newResetPasswordDoc.hashedToken}`
+    await ResetPassword.create({user:isValidUser._id,hashedToken,expiresAt:expirationTime})
+    const resetUrl = `${config.clientUrl}?token=${token}&user=${isValidUser._id.toString()}`
 
     await sendMail(email,isValidUser.username,resetUrl,"resetPassword")
 

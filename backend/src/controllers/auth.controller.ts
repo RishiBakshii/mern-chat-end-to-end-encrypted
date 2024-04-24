@@ -5,7 +5,12 @@ import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { sendToken } from "../utils/auth.util.js";
 import type { loginSchemaType } from "../schemas/auth.schema.js";
 import bcrypt from 'bcryptjs'
-
+import type { forgotPasswordSchemaType } from "../schemas/auth.schema.js";
+import { sendMail } from "../utils/email.util.js";
+import { ResetPassword } from "../models/reset-password.model.js";
+import { env } from "../schemas/env.schema.js";
+import jwt from 'jsonwebtoken'
+import { config } from "../config/env.config.js";
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
@@ -45,9 +50,34 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
     
 })
 
+const forgotPassword = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
+
+    const {email}:forgotPasswordSchemaType = req.body
+
+    const isValidUser = await User.findOne({email})
+
+    if(!isValidUser){
+        return next(new CustomError("User with this email does not exists",404))
+    }
+
+    await ResetPassword.deleteMany({user:isValidUser._id})
+
+    const expirationTime = Date.now() + (parseInt(env.PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES) * 60 * 1000)
+
+    const token = jwt.sign(isValidUser._id.toString(),env.JWT_SECRET)
+    const hashedToken = await bcrypt.hash(token,10)
+
+    const newResetPasswordDoc = await ResetPassword.create({user:isValidUser._id,hashedToken,expiresAt:Date.now() + expirationTime})
+    const resetUrl = `${config.clientUrl}?token=${newResetPasswordDoc.hashedToken}`
+
+    await sendMail(email,isValidUser.username,resetUrl,"resetPassword")
+
+    res.status(200).json({message:`We have sent a password reset link on ${email}`})
+})
+
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
     res.clearCookie("token").status(200).json({message:"Logout successful"})
 })
 
 
-export {signup,login,logout}
+export {signup,login,logout,forgotPassword}

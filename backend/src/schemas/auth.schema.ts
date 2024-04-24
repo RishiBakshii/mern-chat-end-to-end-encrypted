@@ -15,5 +15,10 @@ export const loginSchema = z.object({
     password:z.string({required_error:"Password is required"}),
 })
 
+export const forgotPasswordSchema = z.object({
+    email:z.string({required_error:"Email is required for sending password reset link"})
+})
+
 export type signupSchemaType = z.infer<typeof signupSchema>
 export type loginSchemaType = z.infer<typeof loginSchema>
+export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>

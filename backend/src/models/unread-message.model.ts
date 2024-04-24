@@ -13,6 +13,11 @@ const unreadMessageSchema = new Schema<IUnreadMessage>({
         ref:"Chat",
         required:true
     },
+    sender:{
+        type:Schema.ObjectId,
+        ref:"User",
+        required:true
+    },
     count:{
         type:Number,
         required:true

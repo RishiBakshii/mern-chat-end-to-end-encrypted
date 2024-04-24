@@ -6,6 +6,8 @@ import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType } from "../schemas/chat.schema.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { Message } from "../models/message.model.js";
+import { emitEvent, getMemberSockets, getOtherMembers } from "../utils/socket.util.js";
+import { Events } from "../enums/event.enum.js";
 
 const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
@@ -31,6 +33,10 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
         }
 
         const newGroupChat = await Chat.create({avatar:avatar?avatar:"defaultAvatar",isGroupChat,members:membersWithReqUser,admin:req.user?._id,name})
+
+        const otherMembers = getOtherMembers({members:newGroupChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
+        emitEvent(req,Events.NEW_GROUP,getMemberSockets(otherMembers),newGroupChat)
+        
         res.status(201).json(newGroupChat)
 
     }
@@ -59,6 +65,10 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
         }
 
         const normalChat = await Chat.create({members:[...members,req.user?._id]})
+
+        const otherMembers = getOtherMembers({members:normalChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
+        emitEvent(req,Events.NEW_GROUP,getMemberSockets(otherMembers),normalChat)
+        
         res.status(201).json(normalChat)
     }
 

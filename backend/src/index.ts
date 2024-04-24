@@ -22,6 +22,7 @@ import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
 import { IUnreadMessage } from './interfaces/unread-message.interface.js'
 import { IChat } from './interfaces/chat.interface.js'
+import { emitEvent, getMemberSockets, getOtherMembers } from './utils/socket.util.js'
 
 
 const app=express()
@@ -35,7 +36,7 @@ connectDB()
 app.set("io",io)
 
 // userSocketIds
-const userSocketIds = new Map()
+export const userSocketIds = new Map()
 
 // middlewares
 app.use(cors({credentials:true,origin:"*"}))
@@ -63,9 +64,10 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
         const newMessage = await Message.create({chat,content,attachments,sender:socket.user?._id})
         
         // realtime response
-        const memberIds = members.filter(member=>member!==socket.user?._id.toString())
-        const memberSocketsIds = memberIds.map(memberId=>userSocketIds.get(memberId))
-        io.to(memberSocketsIds).emit(Events.MESSAGE,newMessage)
+        const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
+        const memberSocketIds = getMemberSockets(memberIds)
+
+        io.to(memberSocketIds).emit(Events.MESSAGE,newMessage)
 
         // unread message creation for receivers
         const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
@@ -84,7 +86,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
         })
 
         await Promise.all(updateOrCreateUnreadMessagePromise)
-        io.to(memberSocketsIds).emit(Events.UNREAD_MESSAGE,{chat,message:newMessage.content.substring(0,30)})
+        io.to(memberSocketIds).emit(Events.UNREAD_MESSAGE,{chat,message:newMessage.content.substring(0,30)})
 
     })
 
@@ -98,7 +100,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             await areUnreadMessages.save()
         }
 
-        const memberSocketIds = members.map(memberId=>userSocketIds.get(memberId))
+        const memberSocketIds = getMemberSockets(members)
         io.to(memberSocketIds).emit(Events.MESSAGE_SEEN,{user:socket.user?._id.toString(),readAt:areUnreadMessages?.readAt,chat:chatId})
 
     })

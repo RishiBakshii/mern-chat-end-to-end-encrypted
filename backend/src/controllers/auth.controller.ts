@@ -66,7 +66,7 @@ const forgotPassword = asyncErrorHandler(async(req:Request,res:Response,next:Nex
 
     const expirationTime = new Date(Date.now() + (parseInt(env.PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES) * 60 * 1000));
 
-    const token = jwt.sign(isValidUser._id.toString(),env.JWT_SECRET)
+    const token = jwt.sign({_id:isValidUser._id.toString()},env.JWT_SECRET)
     const hashedToken = await bcrypt.hash(token,10)
 
     await ResetPassword.create({user:isValidUser._id,hashedToken,expiresAt:expirationTime})
@@ -101,6 +101,7 @@ const resetPassword = asyncErrorHandler(async(req:Request,res:Response,next:Next
     const decodedInfo = jwt.verify(token,env.JWT_SECRET) as IUser['_id']
 
     if(!decodedInfo || !decodedInfo._id || decodedInfo._id.toString()!==userId) {
+        console.log(decodedInfo._id);
         return next(new CustomError("Password reset link is invalid",400))
     }
 

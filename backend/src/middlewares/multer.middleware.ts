@@ -1,6 +1,7 @@
 import multer from 'multer'
+import { MAX_FILE_SIZE } from '../constants/file.constant.js'
 
 export const upload = multer({
-    limits:{fileSize:5*1024*1024}
+    limits:{fileSize:MAX_FILE_SIZE}
 })
 

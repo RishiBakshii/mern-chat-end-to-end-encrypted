@@ -2,7 +2,7 @@ import { Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { IUser } from '../interfaces/user.interface.js'
 import { env } from '../schemas/env.schema.js'
-
+import {v2 as cloudinary} from 'cloudinary'
 
 export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:IUser)=>{
 
@@ -26,4 +26,12 @@ export const generateOtp=():string=>{
 
     return OTP
 
+}
+
+export const getBase64 = (file:Express.Multer.File) => `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+export const uploadFilesToCloudinary = async(files:Array<Express.Multer.File>)=>{
+    const uploadPromises = files.map(file=>cloudinary.uploader.upload(getBase64(file)))
+    const result = await Promise.all(uploadPromises)
+    return result
 }

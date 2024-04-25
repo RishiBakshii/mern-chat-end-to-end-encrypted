@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { type signupSchemaType } from "../schemas/auth.schema.js";
 import { User } from "../models/user.model.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import { generateOtp, sendToken } from "../utils/auth.util.js";
+import { generateOtp, sendToken, uploadFilesToCloudinary } from "../utils/auth.util.js";
 import type { loginSchemaType, verifyOtpSchemaType } from "../schemas/auth.schema.js";
 import bcrypt from 'bcryptjs'
 import type { forgotPasswordSchemaType } from "../schemas/auth.schema.js";
@@ -15,10 +15,23 @@ import type { resetPasswordSchemaType } from "../schemas/auth.schema.js";
 import { IUser } from "../interfaces/user.interface.js";
 import type { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
 import { Otp } from "../models/otp.model.js";
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "../constants/file.constant.js";
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
-    const {username,password,avatar,email,name}:signupSchemaType=req.body
+    const {username,password,email,name}:signupSchemaType=req.body
+
+    if(!req.file){
+        return next(new CustomError("Please upload an avatar",400))
+    }
+
+    if(!ACCEPTED_IMAGE_TYPES.includes(req.file.mimetype)){
+        return next(new CustomError(`Only ${ACCEPTED_IMAGE_TYPES.join(" ")} file types are supported and you are trying to upload a file with ${req.file.mimetype} type`,400))
+    }
+
+    if(req.file.size > MAX_FILE_SIZE){
+        return next(new CustomError(`Avatar must not be larger than ${MAX_FILE_SIZE/1000000.}MB`,400))
+    }
 
     const isExistingUser = await User.findOne({email})
 
@@ -34,7 +47,8 @@ const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
 
     const hashedPassword = await bcrypt.hash(password,10)
 
-    const newUser = await User.create({avatar,email,name,password:hashedPassword,username})
+    const avatarUrl = await uploadFilesToCloudinary([req.file])
+    const newUser = await User.create({email,name,password:hashedPassword,username,avatar:avatarUrl[0].secure_url})
     
     sendToken(res,newUser._id,201,newUser)
 }) 

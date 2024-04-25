@@ -10,6 +10,7 @@ import { connectDB } from './config/db.config.js'
 import { env } from './schemas/env.schema.js'
 import type { AuthenticatedSocket } from './interfaces/authenticated-socket.interface.js'
 import type { IMessage } from './interfaces/message.interface.js'
+import './config/cloudinary.config.js'
 
 import authRoutes from './routes/auth.router.js'
 import chatRoutes from './routes/chat.router.js'

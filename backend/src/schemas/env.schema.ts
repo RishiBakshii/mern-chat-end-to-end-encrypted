@@ -11,7 +11,10 @@ const envSchema = z.object({
     EMAIL:z.string().email("Please provide a valid email"),
     PASSWORD:z.string({required_error:"Password for email is required"}),
     OTP_EXPIRATION_MINUTES:z.string({required_error:"OTP_EXPIRATION_MINUTES is required"}),
-    PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES:z.string({required_error:"PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES is required"})
+    PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES:z.string({required_error:"PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES is required"}),
+    CLOUDINARY_CLOUD_NAME:z.string({required_error:"CLOUDINARY_CLOUD_NAME is required"}),
+    CLOUDINARY_API_KEY:z.string({required_error:"CLOUDINARY_API_KEY is required"}),
+    CLOUDINARY_API_SECRET:z.string({required_error:"CLOUDINARY_API_SECRET is required"}),
 })
 
 type envType = z.infer<typeof envSchema>

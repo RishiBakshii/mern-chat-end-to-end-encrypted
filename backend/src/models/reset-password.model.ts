@@ -14,7 +14,7 @@ const resetPasswordSchema = new Schema<IResetPassword>({
     },
     expiresAt:{
         type:Date,
-        default:()=>Date.now() + (parseInt(env.PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES)*60*1000)
+        default:()=>new Date(Date.now() + (parseInt(env.PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES)*60*1000))
     }
 },{versionKey:false})
 

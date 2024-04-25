@@ -25,6 +25,10 @@ const userSchema = new Schema<IUser>({
         type:String,
         select:false,
         required:true
+    },
+    verified:{
+        type:Boolean,
+        default:false
     }
 },{versionKey:false,timestamps:true})
 

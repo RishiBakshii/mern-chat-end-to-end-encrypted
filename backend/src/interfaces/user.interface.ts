@@ -7,4 +7,5 @@ export interface IUser {
     avatar:string
     email:string
     password:string
+    verified?:boolean
 }

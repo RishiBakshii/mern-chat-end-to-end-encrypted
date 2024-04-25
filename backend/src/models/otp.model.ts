@@ -14,7 +14,7 @@ const otpSchema = new Schema<IOtp>({
     },
     expiresAt:{
         type:Date,
-        default:()=>Date.now() + (parseInt(env.OTP_EXPIRATION_MINUTES)*60*1000)
+        default:()=>new Date(Date.now() + (parseInt(env.OTP_EXPIRATION_MINUTES)*60*1000))
     }
 },{versionKey:false})
 

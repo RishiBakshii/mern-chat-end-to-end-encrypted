@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { type signupSchemaType } from "../schemas/auth.schema.js";
 import { User } from "../models/user.model.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import { sendToken } from "../utils/auth.util.js";
+import { generateOtp, sendToken } from "../utils/auth.util.js";
 import type { loginSchemaType } from "../schemas/auth.schema.js";
 import bcrypt from 'bcryptjs'
 import type { forgotPasswordSchemaType } from "../schemas/auth.schema.js";
@@ -13,6 +13,8 @@ import jwt from 'jsonwebtoken'
 import { config } from "../config/env.config.js";
 import type { resetPasswordSchemaType } from "../schemas/auth.schema.js";
 import { IUser } from "../interfaces/user.interface.js";
+import type { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
+import { Otp } from "../models/otp.model.js";
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
@@ -72,7 +74,7 @@ const forgotPassword = asyncErrorHandler(async(req:Request,res:Response,next:Nex
     await ResetPassword.create({user:isValidUser._id,hashedToken,expiresAt:expirationTime})
     const resetUrl = `${config.clientUrl}?token=${token}&user=${isValidUser._id.toString()}`
 
-    await sendMail(email,isValidUser.username,resetUrl,"resetPassword")
+    await sendMail(email,isValidUser.username,"resetPassword",resetUrl,undefined)
 
     res.status(200).json({message:`We have sent a password reset link on ${email}`})
 })
@@ -114,9 +116,23 @@ const resetPassword = asyncErrorHandler(async(req:Request,res:Response,next:Next
 
 })
 
+const sendOtp = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    await Otp.deleteMany({user:req.user?._id})
+
+    const otp = generateOtp()
+    const hashedOtp = await bcrypt.hash(otp,10)
+
+    const newOtp = await Otp.create({user:req.user?._id,hashedOtp})
+
+    await sendMail(req.user?.email!,req.user?.username!,"OTP",undefined,otp)
+
+    return res.status(201).json({message:`We have sent the otp on ${req.user?.email}`})
+})
+
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
     res.clearCookie("token").status(200).json({message:"Logout successful"})
 })
 
 
-export {signup,login,logout,forgotPassword,resetPassword}
+export {signup,login,logout,forgotPassword,resetPassword,sendOtp}

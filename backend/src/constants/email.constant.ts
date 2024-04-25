@@ -21,3 +21,23 @@ export const resetPasswordBody=(username:string,resetUrl:string)=>{
     The [Your Application Name] Team
     `
 }
+
+export const otpVerificationSubject = "Verify Your Email Address for [Your App Name]"
+
+export const otpVerificationBody = (username:string,otp:string)=>{
+    return `
+    Hi ${username},
+
+    Thanks for signing up for [Your App Name]!
+
+    To complete your registration, please verify your email address by entering the following OTP (one-time password) within ${env.OTP_EXPIRATION_MINUTES} minutes:
+
+    **${otp}**
+
+    If you didn't request this email, please ignore it.
+
+    Thanks,
+
+    The [Your App Name] Team
+    `
+}

@@ -3,7 +3,7 @@ import { type signupSchemaType } from "../schemas/auth.schema.js";
 import { User } from "../models/user.model.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { generateOtp, sendToken } from "../utils/auth.util.js";
-import type { loginSchemaType } from "../schemas/auth.schema.js";
+import type { loginSchemaType, verifyOtpSchemaType } from "../schemas/auth.schema.js";
 import bcrypt from 'bcryptjs'
 import type { forgotPasswordSchemaType } from "../schemas/auth.schema.js";
 import { sendMail } from "../utils/email.util.js";
@@ -130,9 +130,34 @@ const sendOtp = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,ne
     return res.status(201).json({message:`We have sent the otp on ${req.user?.email}`})
 })
 
+const verifyOtp = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const {otp}:verifyOtpSchemaType = req.body
+
+    const isOtpExisting = await Otp.findOne({user:req.user?._id})
+
+    if(!isOtpExisting){
+        return next(new CustomError("Otp does not exists",404))
+    }
+
+    if(isOtpExisting.expiresAt! < new Date){
+        await isOtpExisting.deleteOne()
+        return next(new CustomError("Otp has been expired",400))
+    }
+
+    if(!(await bcrypt.compare(otp,isOtpExisting.hashedOtp))){
+        return next(new CustomError("Otp is invalid",400))
+    }
+
+    await isOtpExisting.deleteOne()
+    const verifiedUser = await User.findByIdAndUpdate(req.user?._id,{verified:true},{new:true})
+    return res.status(200).json(verifiedUser)
+
+})
+
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
     res.clearCookie("token").status(200).json({message:"Logout successful"})
 })
 
 
-export {signup,login,logout,forgotPassword,resetPassword,sendOtp}
+export {signup,login,logout,forgotPassword,resetPassword,sendOtp,verifyOtp}

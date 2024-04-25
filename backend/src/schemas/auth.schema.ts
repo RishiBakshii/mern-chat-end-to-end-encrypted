@@ -26,7 +26,12 @@ export const resetPasswordSchema = z.object({
     newPassword:passwordValidation
 })
 
+export const verifyOtpSchema = z.object({
+    otp:z.string({required_error:"otp is required"})
+})
+
 export type signupSchemaType = z.infer<typeof signupSchema>
 export type loginSchemaType = z.infer<typeof loginSchema>
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>
 export type resetPasswordSchemaType = z.infer<typeof resetPasswordSchema>
+export type verifyOtpSchemaType = z.infer<typeof verifyOtpSchema>

@@ -2,13 +2,14 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import type { IUser } from '../../interfaces/auth'
 import type { IResetPassword } from '../../interfaces/auth'
 import type { IOtp } from '../../interfaces/auth'
+import { config } from '../../config/envConfig'
 
 export const authApi = createApi({
 
     reducerPath:"authApi",
     
     baseQuery:fetchBaseQuery({
-        baseUrl:"https://localhost:8000",
+        baseUrl:`${config.base_url}/auth`,
         credentials:"include"
     }),
 

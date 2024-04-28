@@ -11,19 +11,19 @@ export const verifyToken=asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
         const {token} = req.cookies
 
         if(!token){
-            return next(new CustomError("Token missing, please login again"))
+            return next(new CustomError("Token missing, please login again",401))
         }
 
         const decodedInfo=jwt.verify(token,env.JWT_SECRET) as IUser['_id']
 
         if(!decodedInfo || !decodedInfo._id){
-            return next(new CustomError("Invalid token please login again"))
+            return next(new CustomError("Invalid token please login again",401))
         }
 
         const existingUser = await User.findOne({_id:decodedInfo._id})
 
         if(!existingUser){
-            return next(new CustomError('Invalid Token, please login again'))
+            return next(new CustomError('Invalid Token, please login again',401))
         }
 
         req.user=existingUser

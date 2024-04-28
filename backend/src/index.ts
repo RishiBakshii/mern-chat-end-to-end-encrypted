@@ -40,7 +40,7 @@ app.set("io",io)
 export const userSocketIds = new Map()
 
 // middlewares
-app.use(cors({credentials:true,origin:"*"}))
+app.use(cors({credentials:true,origin:config.clientUrl}))
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan('tiny'))

@@ -19,18 +19,18 @@ import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "../constants/file.constant.
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
+    let avatarUrl
     const {username,password,email,name}:signupSchemaType=req.body
-
-    if(!req.file){
-        return next(new CustomError("Please upload an avatar",400))
-    }
-
-    if(!ACCEPTED_IMAGE_TYPES.includes(req.file.mimetype)){
-        return next(new CustomError(`Only ${ACCEPTED_IMAGE_TYPES.join(" ")} file types are supported and you are trying to upload a file with ${req.file.mimetype} type`,400))
-    }
-
-    if(req.file.size > MAX_FILE_SIZE){
-        return next(new CustomError(`Avatar must not be larger than ${MAX_FILE_SIZE/1000000.}MB`,400))
+    
+    if(req.file){
+        
+        if(!ACCEPTED_IMAGE_TYPES.includes(req.file.mimetype)){
+            return next(new CustomError(`Only ${ACCEPTED_IMAGE_TYPES.join(" ")} file types are supported and you are trying to upload a file with ${req.file.mimetype} type`,400))
+        }
+        
+        if(req.file.size > MAX_FILE_SIZE){
+            return next(new CustomError(`Avatar must not be larger than ${MAX_FILE_SIZE/1000000.}MB`,400))
+        }
     }
 
     const isExistingUser = await User.findOne({email})
@@ -47,10 +47,19 @@ const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
 
     const hashedPassword = await bcrypt.hash(password,10)
 
-    const avatarUrl = await uploadFilesToCloudinary([req.file])
-    const newUser = await User.create({email,name,password:hashedPassword,username,avatar:avatarUrl[0].secure_url})
+    if(req.file){
+        avatarUrl = await uploadFilesToCloudinary([req.file])
+    }
+
+    if(avatarUrl){
+        const newUser = await User.create({email,name,password:hashedPassword,username,avatar:avatarUrl[0].secure_url})
+        sendToken(res,newUser._id,201,newUser)
+    }
+    else{
+        const newUser = await User.create({email,name,password:hashedPassword,username})
+        sendToken(res,newUser._id,201,newUser)
+    }
     
-    sendToken(res,newUser._id,201,newUser)
 }) 
 
 const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{

@@ -1,7 +1,10 @@
-import { signupSchema } from "./auth";
+import { loginSchema, signupSchema } from "./auth";
 import type { signupSchemaType } from "./auth";
+import type { loginSchemaType } from "./auth";
 
 export {
     signupSchema,
-    signupSchemaType
+    signupSchemaType,
+    loginSchema,
+    loginSchemaType
 }

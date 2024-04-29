@@ -1,16 +1,29 @@
 import { Navigate } from "react-router-dom"
-import { useCheckAuthQuery } from "../api"
+import { useAppSelector } from "../../../app/hooks"
+import { selectLoggedInUser } from "../authSlice"
 
 type propTypes = {
     children:React.ReactNode
+    authorized?:boolean
 }
-export const Protected = ({children}:propTypes) => {
+export const Protected = ({children,authorized=true}:propTypes) => {
 
-    const {isSuccess} = useCheckAuthQuery()
-
-    if(isSuccess){
-        return children
+    const loggedInUser = useAppSelector(selectLoggedInUser)
+    
+    if(authorized){
+        if(loggedInUser){
+            return children
+        }
+        else{
+            return <Navigate to="/login" />
+        }
     }
-
-    return <Navigate to={'/login'} replace/>
+    else if(!authorized){
+        if(!loggedInUser){
+            return children
+        }
+        else{
+            return <Navigate to="/" />
+        }
+    }
 }

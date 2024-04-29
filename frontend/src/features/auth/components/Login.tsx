@@ -3,24 +3,23 @@ import Lottie from "lottie-react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
 import { chatAnimation, githubPng, googlePng } from "../../../assets"
+import type { loginSchemaType, signupSchemaType } from "../../../schemas"
+import { loginSchema } from "../../../schemas"
+import { useLoginMutation } from "../api"
 import { useUpdateLogin } from "../../../hooks/useUpdateLogin"
-import type { signupSchemaType } from "../../../schemas"
-import { signupSchema } from "../../../schemas"
-import { useSignupMutation } from "../api"
 
-export const Signup = () => {
-
-    const [signup,{data,isSuccess}] = useSignupMutation()
+export const Login = () => {    
     
+    const [login,{isSuccess,data}] = useLoginMutation()
+
     useUpdateLogin(isSuccess,data)
 
     const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
-        resolver:zodResolver(signupSchema)
+        resolver:zodResolver(loginSchema)
     })
 
-    const onSubmit: SubmitHandler<signupSchemaType> = (data) => {
-        const {confirmPassword,...credentials}=data
-        signup(credentials)
+    const onSubmit: SubmitHandler<loginSchemaType> = (credentials) => {
+        login(credentials)
     }
     
   return (
@@ -77,17 +76,6 @@ export const Signup = () => {
                         <div className="flex flex-col gap-y-4">
 
                             <div className="flex flex-col gap-y-1">
-                                <input {...register("name")} className="p-3 rounded outline outline-1 outline-gray-200 hover:outline-black" type="text" placeholder="Name"/>
-                                {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
-                            </div>
-
-
-                            <div className="flex flex-col gap-y-1">
-                                <input {...register("username")} className="p-3 rounded outline outline-1 outline-gray-200 hover:outline-black" type="text" placeholder="Username"/>
-                                {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
-                            </div>
-
-                            <div className="flex flex-col gap-y-1">
                                 <input {...register("email")} className="p-3 rounded outline outline-1 outline-gray-200 hover:outline-black" placeholder="Email"/>
                                 {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                             </div>
@@ -95,11 +83,6 @@ export const Signup = () => {
                             <div className="flex flex-col gap-y-1">
                                 <input {...register("password")}  className="p-3 rounded outline outline-1 outline-gray-200 hover:outline-black" type="password" placeholder="Password" />
                                 {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-                            </div>
-
-                            <div className="flex flex-col gap-y-1">
-                                <input {...register("confirmPassword")} className="p-3 rounded outline outline-1 outline-gray-200 hover:outline-black" type="password" placeholder="Confirm Password"/>
-                                {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
                             </div>
                         </div>
                         
@@ -110,10 +93,10 @@ export const Signup = () => {
                                 <p className="text-gray-400 font-light">By creating this account, you agree that you have read and accepted our Terms of Use and Privacy Policy.</p>
                             </div>
                             
-                            <p>Already have an account?
+                            <p>Create new account?
                                 <span className="text-violet-500 font-medium cursor-pointer ml-1">
-                                <Link to='/login'>
-                                    Log In
+                                <Link to='/signup'>
+                                    Sign Up
                                 </Link>
                                 </span>
                             </p>

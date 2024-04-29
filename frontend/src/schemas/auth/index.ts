@@ -11,11 +11,19 @@ const signupSchema = z.object({
     confirmPassword:z.string()
 }).refine(({password,confirmPassword})=>password===confirmPassword,{message:"Passwords doesn't match",path:['confirmPassword']})
 
+const loginSchema = z.object({
+    email:z.string({required_error:"Email is required"}),
+    password:z.string({required_error:"Password is required"}),
+})
+
 
 type signupSchemaType = z.infer<typeof signupSchema>
+type loginSchemaType = z.infer<typeof loginSchema>
 
 
 export {
     signupSchema,
-    type signupSchemaType   
+    type signupSchemaType,
+    loginSchema,
+    type loginSchemaType 
 }

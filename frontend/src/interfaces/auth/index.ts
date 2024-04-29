@@ -7,6 +7,10 @@ export interface IUser {
     verified?:boolean
 }
 
+export interface IAuth {
+    loggedInUser:IUser | null
+}
+
 export interface IResetPassword {
     token:string
     userId:string

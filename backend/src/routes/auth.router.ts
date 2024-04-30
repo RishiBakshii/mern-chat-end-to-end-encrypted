@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validate.middleware.js";
 import { forgotPasswordSchema, loginSchema, resetPasswordSchema, signupSchema, verifyOtpSchema } from "../schemas/auth.schema.js";
-import { checkAuth, forgotPassword, login, logout, resetPassword, sendOtp, signup, verifyOtp } from "../controllers/auth.controller.js";
+import { checkAuth, forgotPassword, login, logout, redirectHandler, resetPassword, sendOtp, signup, verifyOtp } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middlewares/verify-token.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import passport from 'passport'
 
 export default Router()
 
@@ -15,3 +16,5 @@ export default Router()
 .post("/verify-otp",verifyToken,validate(verifyOtpSchema),verifyOtp)
 .get("/check-auth",verifyToken,checkAuth)
 .get("/logout",logout)
+.get("/google",passport.authenticate("google",{session:false,scope:["email","profile"]}))
+.get("/google/callback",passport.authenticate("google",{session:false,failureRedirect:"/"}),redirectHandler)

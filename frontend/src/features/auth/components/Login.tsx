@@ -7,6 +7,7 @@ import type { loginSchemaType, signupSchemaType } from "../../../schemas"
 import { loginSchema } from "../../../schemas"
 import { useLoginMutation } from "../api"
 import { useUpdateLogin } from "../../../hooks/useUpdateLogin"
+import { config } from "../../../config/envConfig"
 
 export const Login = () => {    
     
@@ -60,7 +61,7 @@ export const Login = () => {
                         <div className="flex items-center gap-x-2">
                             <button className="px-6 py-2 outline outline-1 rounded-sm outline-gray-200 flex items-center gap-x-2 w-full">
                                 <img src={googlePng} className="w-7" alt="google" />
-                                <p>Sign up with google</p>
+                                <a href={`${config.base_url}/auth/google`}><p>Sign up with google</p></a>
                             </button>
                             <button className="px-6 py-2 outline outline-1 rounded-sm  outline-gray-200 flex items-center gap-x-2 w-full">
                                 <img src={githubPng} className="w-7 scale-[1.5]" alt="github" />

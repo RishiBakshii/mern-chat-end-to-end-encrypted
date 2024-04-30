@@ -7,7 +7,7 @@ export class CustomError extends Error {
     }
 }
 
-export const asyncErrorHandler = (func:(req:Request | AuthenticatedRequest,res:Response,next:NextFunction)=>Promise<void | Response>) => async(req:Request,res:Response,next:NextFunction)=>{
+export const asyncErrorHandler = (func:(req:Request | AuthenticatedRequest | any ,res:Response,next:NextFunction)=>Promise<void | Response>) => async(req:Request,res:Response,next:NextFunction)=>{
     try {
         await func(req,res,next)
     } catch (error) {

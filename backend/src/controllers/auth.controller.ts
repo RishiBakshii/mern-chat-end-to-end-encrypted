@@ -184,9 +184,16 @@ const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,
     return next(new CustomError("Token missing, please login again",401))
 })
 
+const redirectHandler = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    if(req.user){
+        sendToken(res,req.user?._id,200,req.user,true)
+    }
+})
+
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
     res.clearCookie("token").status(200).json({message:"Logout successful"})
 })
 
 
-export {signup,login,logout,forgotPassword,resetPassword,sendOtp,verifyOtp,checkAuth}
+export {signup,login,logout,forgotPassword,resetPassword,sendOtp,verifyOtp,checkAuth,redirectHandler}

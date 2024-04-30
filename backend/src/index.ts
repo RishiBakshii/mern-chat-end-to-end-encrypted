@@ -11,6 +11,8 @@ import { env } from './schemas/env.schema.js'
 import type { AuthenticatedSocket } from './interfaces/authenticated-socket.interface.js'
 import type { IMessage } from './interfaces/message.interface.js'
 import './config/cloudinary.config.js'
+import passport from 'passport'
+import './passport/google.strategy.js'
 
 import authRoutes from './routes/auth.router.js'
 import chatRoutes from './routes/chat.router.js'
@@ -41,6 +43,7 @@ export const userSocketIds = new Map()
 
 // middlewares
 app.use(cors({credentials:true,origin:config.clientUrl}))
+app.use(passport.initialize())
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan('tiny'))

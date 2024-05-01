@@ -1,7 +1,7 @@
 import { useGetChatsQuery } from "../api"
 import { ChatList } from "./ChatList"
 import { MemberList } from "./MemberList"
-import { MessageList } from "./MessageList"
+import { MessageList } from "../../messages/components/MessageList"
 
 export const Chat = () => {
   
@@ -24,7 +24,6 @@ export const Chat = () => {
             !isFetching && chats && <ChatList chats={chats}/>
           }
          
-          
       </div>
 
       {/* middle */}

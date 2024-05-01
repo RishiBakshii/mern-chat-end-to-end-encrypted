@@ -2,11 +2,16 @@ export interface IChatIntitalState {
     selectedChatId:string | null
 }
 
+export interface IChatMember {
+    _id:string
+    username:string
+    avatar:string
+}
 export interface IChat {
     _id:string
     name?:string
     isGroupChat?:boolean
-    members:Array<{_id:string,username:string,avatar:string}>
+    members:Array<IChatMember>
     avatar?:string
     admin?:string,
 }

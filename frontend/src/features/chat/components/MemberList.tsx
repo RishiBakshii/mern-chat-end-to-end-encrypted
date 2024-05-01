@@ -1,11 +1,15 @@
+import { IChatWithUnreadMessages } from "../../../interfaces/chat"
 import { MemberItem } from "./MemberItem"
 
-export const MemberList = () => {
+type PropTypes = {
+  members:IChatWithUnreadMessages['members'] | undefined
+}
+export const MemberList = ({members}:PropTypes) => {
   return (
     <div className="flex flex-col gap-y-2">
         {
-            Array(15).fill(0).map(_=>
-                <MemberItem/>
+            members?.map(member=>
+                <MemberItem member={member}/>
             )
         }
     </div>

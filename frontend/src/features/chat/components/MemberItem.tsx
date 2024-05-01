@@ -1,9 +1,15 @@
+import type { IChatMember } from "../../../interfaces/chat"
 
-export const MemberItem = () => {
+type PropTypes = {
+  member: IChatMember
+}
+export const MemberItem = ({member}:PropTypes) => {
   return (
     <div className="flex gap-x-2 items-center hover:bg-gray-100">
-        <img className="aspect-square object-cover w-[4rem] rounded" src={`https://source.unsplash.com/random/?people$${Math.floor(Math.random() * 100)}`} alt="people name" />
-        <p className="font-medium text-base">People {Math.floor(Math.random() * 100)}</p>
+        <img className="aspect-square object-cover w-[4rem] rounded" 
+        src={member.avatar} 
+        alt={`${member.username} avatar`} />
+        <p className="font-medium text-base">{member.username}</p>
     </div>
   )
 }

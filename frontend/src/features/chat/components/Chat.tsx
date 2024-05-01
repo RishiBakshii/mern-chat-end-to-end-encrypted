@@ -2,10 +2,13 @@ import { useGetChatsQuery } from "../api"
 import { ChatList } from "./ChatList"
 import { MemberList } from "./MemberList"
 import { MessageList } from "../../messages/components/MessageList"
+import { useAppSelector } from "../../../app/hooks"
+import { selectSelectedChatId } from "../chatSlice"
 
 export const Chat = () => {
   
   const {data:chats,isFetching} = useGetChatsQuery()
+  const selectedChatId = useAppSelector(selectSelectedChatId)
 
   return (
     <div className="flex w-screen h-full">
@@ -75,8 +78,14 @@ export const Chat = () => {
       <div className="flex-[.8] flex flex-col justify-between p-6">
 
           <div className="flex flex-col gap-y-4 overflow-y-scroll scroll-smooth">
-            <h6 className="text-xl font-medium">23 Members</h6>
-            <MemberList/>
+
+            {
+              !isFetching && chats && selectedChatId &&
+              <>
+              <h6 className="text-xl font-medium">{chats?.find(chat=>chat._id===selectedChatId)?.members.length} Members</h6>
+              <MemberList members={chats.find(chat=>chat._id===selectedChatId)?.members}/>
+              </>
+            }
           </div>
       </div>
 

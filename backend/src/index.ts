@@ -13,6 +13,7 @@ import type { IMessage } from './interfaces/message.interface.js'
 import './config/cloudinary.config.js'
 import passport from 'passport'
 import './passport/google.strategy.js'
+import './passport/github.strategy.js'
 
 import authRoutes from './routes/auth.router.js'
 import chatRoutes from './routes/chat.router.js'

@@ -65,7 +65,7 @@ export const Login = () => {
                             </button>
                             <button className="px-6 py-2 outline outline-1 rounded-sm  outline-gray-200 flex items-center gap-x-2 w-full">
                                 <img src={githubPng} className="w-7 scale-[1.5]" alt="github" />
-                                <p>Sign up with github</p>
+                                <a href={`${config.base_url}/auth/github`}><p>Sign up with github</p></a>
                             </button>
                         </div>
                     </div>

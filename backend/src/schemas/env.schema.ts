@@ -16,7 +16,9 @@ const envSchema = z.object({
     CLOUDINARY_API_KEY:z.string({required_error:"CLOUDINARY_API_KEY is required"}),
     CLOUDINARY_API_SECRET:z.string({required_error:"CLOUDINARY_API_SECRET is required"}),
     GOOGLE_CLIENT_ID:z.string({required_error:"GOOGLE_CLIENT_ID is required"}),
-    GOOGLE_CLIENT_SECRET:z.string({required_error:"GOOGLE_CLIENT_SECRET is required"})
+    GOOGLE_CLIENT_SECRET:z.string({required_error:"GOOGLE_CLIENT_SECRET is required"}),
+    GITHUB_CLIENT_ID:z.string({required_error:"GITHUB_CLIENT_ID is required"}),
+    GITHUB_CLIENT_SECRET:z.string({required_error:"GITHUB_CLIENT_SECRET is required"})
 })
 
 type envType = z.infer<typeof envSchema>

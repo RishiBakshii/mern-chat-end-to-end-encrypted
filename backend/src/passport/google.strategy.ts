@@ -8,7 +8,7 @@ import { config } from '../config/env.config.js';
 passport.use(new GoogleStrategy({
     clientID: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
-    callbackURL: config.callbackUrl
+    callbackURL: `${config.callbackUrl}/google/callback`
   },
 
   async function (accessToken, refreshToken, profile, done){

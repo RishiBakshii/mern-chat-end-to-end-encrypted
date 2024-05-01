@@ -3,7 +3,7 @@ import { env } from "../schemas/env.schema.js"
 
 const developmentConfig:IConfig = {
     clientUrl:"http://localhost:5173",
-    callbackUrl:`http://localhost:${env.PORT}/api/v1/auth/google/callback`,
+    callbackUrl:`http://localhost:${env.PORT}/api/v1/auth`,
 }
 
 const productionConfig:IConfig = {

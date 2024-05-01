@@ -189,6 +189,9 @@ const redirectHandler = asyncErrorHandler(async(req:AuthenticatedRequest,res:Res
     if(req.user){
         sendToken(res,req.user?._id,200,req.user,true)
     }
+    else{
+        return res.redirect("/")
+    }
 })
 
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{

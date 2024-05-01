@@ -19,6 +19,7 @@ import authRoutes from './routes/auth.router.js'
 import chatRoutes from './routes/chat.router.js'
 import userRoutes from './routes/user.router.js'
 import requestRoutes from './routes/request.router.js'
+import messageRoutes from './routes/message.router.js'
 
 import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
 import { Events } from './enums/event.enum.js'
@@ -55,6 +56,7 @@ app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/chat",chatRoutes)
 app.use("/api/v1/user",userRoutes)
 app.use("/api/v1/request",requestRoutes)
+app.use("/api/v1/message",messageRoutes)
 
 io.use(socketAuthenticatorMiddleware)
 

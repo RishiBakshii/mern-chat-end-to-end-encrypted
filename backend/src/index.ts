@@ -32,7 +32,7 @@ import { emitEvent, getMemberSockets, getOtherMembers } from './utils/socket.uti
 
 const app=express()
 const server=createServer(app)
-const io=new Server(server,{cors:{credentials:true,origin:'*'}})
+const io=new Server(server,{cors:{credentials:true,origin:config.clientUrl}})
 
 // database connection
 connectDB()

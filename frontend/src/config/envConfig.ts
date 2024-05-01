@@ -5,11 +5,13 @@ import { envSchema } from "../schemas/envSchema"
 let env
 
 const productionConfig:IConfig = {
-    base_url:""
+    base_url:"",
+    absolute_base_url:""
 }
 
 const developmentConfig:IConfig = {
-    base_url:"http://localhost:8000/api/v1"
+    base_url:"http://localhost:8000/api/v1",
+    absolute_base_url:"http://localhost:8000"
 }
 
 try {

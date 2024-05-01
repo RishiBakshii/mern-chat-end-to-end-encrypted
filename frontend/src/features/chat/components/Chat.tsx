@@ -1,8 +1,12 @@
+import { useGetChatsQuery } from "../api"
 import { ChatList } from "./ChatList"
 import { MemberList } from "./MemberList"
 import { MessageList } from "./MessageList"
 
 export const Chat = () => {
+  
+  const {data:chats,isFetching} = useGetChatsQuery()
+
   return (
     <div className="flex w-screen h-full">
       
@@ -16,8 +20,10 @@ export const Chat = () => {
             </svg>
             <input className="outline-none bg-inherit rounded-sm w-full  px-3 py-3" type="text" placeholder="Search"/>
           </div>
-
-          <ChatList/>
+          {
+            !isFetching && chats && <ChatList chats={chats}/>
+          }
+         
           
       </div>
 

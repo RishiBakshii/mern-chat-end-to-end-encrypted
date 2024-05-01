@@ -9,7 +9,7 @@ export const chatApi = createApi({
         credentials:"include"
     }),
     endpoints:(builder)=>({
-        getChats:builder.query<IChatWithUnreadMessages,void>({
+        getChats:builder.query<Array<IChatWithUnreadMessages>,void>({
             query:()=>"/chat"
         }),
         createChat:builder.mutation<IChat,IChat>({
@@ -37,6 +37,7 @@ export const chatApi = createApi({
 })
 
 export const {
+    useLazyGetChatsQuery,
     useGetChatsQuery,
     useCreateChatMutation,
     useAddMemberMutation,

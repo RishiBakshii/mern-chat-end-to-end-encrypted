@@ -4,11 +4,20 @@ import { MemberList } from "./MemberList"
 import { MessageList } from "../../messages/components/MessageList"
 import { useAppSelector } from "../../../app/hooks"
 import { selectSelectedChatId } from "../chatSlice"
+import { useEffect } from "react"
+import { useLazyGetMessagesByChatIdQuery } from "../../messages/api"
 
 export const Chat = () => {
   
   const {data:chats,isFetching} = useGetChatsQuery()
   const selectedChatId = useAppSelector(selectSelectedChatId)
+  const [getMessagesByChatIdQuery,{data,isFetching:isMessagesFetching}]=useLazyGetMessagesByChatIdQuery()
+
+  useEffect(()=>{
+    if(selectedChatId){
+        getMessagesByChatIdQuery({_id:selectedChatId})
+    }
+  },[selectedChatId])
 
   return (
     <div className="flex w-screen h-full">
@@ -53,8 +62,10 @@ export const Chat = () => {
 
                 {/* messages area */}
                 <div className="h-full flex px-2 flex-col gap-y-5 overflow-y-scroll">
-                    <MessageList/>
-                  
+                  {
+                    !isMessagesFetching && data && <MessageList messages={data}/>
+                  }
+                    
                 </div>
 
                 {/* input box */}

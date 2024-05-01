@@ -1,17 +1,15 @@
+import { IMessage } from "../../../interfaces/messages"
 import { MessageItem } from "./MessageItem"
 
-export const MessageList = () => {
+type PropTypes = {
+  messages:Array<IMessage>
+}
+export const MessageList = ({messages}:PropTypes) => {
   return (
     <>
-        <MessageItem/>
-        <MessageItem/>
-        <MessageItem/>
-        <MessageItem myMessage/>
-        <MessageItem/>
-        <MessageItem/>
-        <MessageItem/>
-        <MessageItem myMessage/>
-        <MessageItem/>
+      {messages.map(message => (
+        <MessageItem key={message._id} message={message} />
+      ))}
     </>
   )
 }

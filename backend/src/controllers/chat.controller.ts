@@ -8,6 +8,9 @@ import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { Message } from "../models/message.model.js";
 import { emitEvent, getMemberSockets, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event.enum.js";
+import { UnreadMessage } from "../models/unread-message.model.js";
+import { IChatWithUnreadMessages } from "../interfaces/chat.interface.js";
+import { IMessage } from "../interfaces/message.interface.js";
 
 const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
@@ -75,8 +78,43 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 })
 
 const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
-    const chats=await Chat.find({members:{$in:[req.user?._id]}})
-    res.status(200).json(chats)
+
+    const chats=await Chat.find({members:{$in:[req.user?._id]}}).populate("members",['username','avatar'])
+
+    const transformedChatsPromise = chats.map(async(chat)=>{
+        
+        const unreadMessage = await UnreadMessage.findOne({chat:chat._id,user:req.user?._id}).select("-chat").select("-user")
+        .populate<{message:Pick<IMessage, '_id' | 'content'>}>("message",['content'])
+        .populate<{sender:Pick<IUser, "username" | 'avatar'> & {_id:string}}>("sender",["username","avatar"])
+        
+        const chatWithUnreadMessage:IChatWithUnreadMessages = {
+            _id:chat._id,
+            name:chat.name,
+            members:chat.members,
+            admin:chat.admin,
+            isGroupChat:chat.isGroupChat,
+            avatar:chat.avatar,
+            unreadMessages:{
+                count:unreadMessage?.count,
+                message:{
+                    _id:unreadMessage?.message._id,
+                    content:unreadMessage?.message.content
+                },
+                sender:{
+                    _id:unreadMessage?.sender._id,
+                    username:unreadMessage?.sender.username,
+                    avatar:unreadMessage?.sender.avatar
+                },
+            }
+        }
+        
+        return chatWithUnreadMessage
+
+    })
+
+    const transformedChats = await Promise.all(transformedChatsPromise)
+
+    res.status(200).json(transformedChats)
 })
 
 const addMemberToChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{

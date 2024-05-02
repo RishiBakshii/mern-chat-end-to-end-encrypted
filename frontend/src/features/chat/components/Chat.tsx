@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 import { messageApi, useLazyGetMessagesByChatIdQuery } from "../../messages/api"
 import { ChatDetails } from "./ChatDetails"
 import { Events } from "../../../enums/events"
-import type { IMessage, IMessageEventPayloadData, IUnreadMessageEventReceiveData } from "../../../interfaces/messages"
+import type { IMessage, IMessageEventPayloadData, IMessageSeenEventPayloadData, IUnreadMessageEventReceiveData } from "../../../interfaces/messages"
 import { selectLoggedInUser } from "../../auth/authSlice"
 import { useSocketEvent } from "../../../hooks/useSocketEvent"
 import { getSocket } from "../../../context/socket"
@@ -39,19 +39,30 @@ export const Chat = () => {
 
   useSocketEvent(Events.UNREAD_MESSAGE,(data:IUnreadMessageEventReceiveData)=>{
 
-    dispatch(
-      chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
+    if(data.chatId === selectedChatId){
 
-        const chat = draft.find(draft=>draft._id===data.chatId)
+      const payload:IMessageSeenEventPayloadData =  {
+        chatId:selectedChatId,
+        members:chats?.find(chat=>chat._id===selectedChatId)?.members.map(member=>member._id)!
+      }
 
-        if(chat){
-          chat.unreadMessages.count++
-          chat.unreadMessages.message = data.message
-          chat.unreadMessages.sender = data.sender
-        }
-        
-      })
-    )
+      socket?.emit(Events.MESSAGE_SEEN,payload)
+    }
+    else{
+      dispatch(
+        chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
+  
+          const chat = draft.find(draft=>draft._id===data.chatId)
+  
+          if(chat){
+            chat.unreadMessages.count++
+            chat.unreadMessages.message = data.message
+            chat.unreadMessages.sender = data.sender
+          }
+          
+        })
+      )
+    }
 
   })
 

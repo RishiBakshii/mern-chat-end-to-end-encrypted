@@ -34,6 +34,12 @@ export interface IMessageSeenEventPayloadData {
     members:Array<string>
 }
 
+export interface IMessageSeenEventReceiveData {
+    chat:string,
+    user:IChatMember
+    readAt:Date
+}
+
 export interface IUnreadMessageEventReceiveData {
     chatId:string
     message:IUnreadMessage['message']

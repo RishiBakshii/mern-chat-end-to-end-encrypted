@@ -18,4 +18,5 @@ export interface IChatWithUnreadMessages {
     avatar?:string
     admin:string,
     unreadMessages:IUnreadMessage
+    seenBy?:Array<IChatMember>
 }

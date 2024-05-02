@@ -8,10 +8,11 @@ import { useEffect, useState } from "react"
 import { messageApi, useLazyGetMessagesByChatIdQuery } from "../../messages/api"
 import { ChatDetails } from "./ChatDetails"
 import { Events } from "../../../enums/events"
-import type { IMessage, IMessageEventPayloadData, IMessageSeenEventPayloadData, IUnreadMessageEventReceiveData } from "../../../interfaces/messages"
+import type { IMessage, IMessageEventPayloadData, IMessageSeenEventPayloadData, IMessageSeenEventReceiveData, IUnreadMessageEventReceiveData } from "../../../interfaces/messages"
 import { selectLoggedInUser } from "../../auth/authSlice"
 import { useSocketEvent } from "../../../hooks/useSocketEvent"
 import { getSocket } from "../../../context/socket"
+import { SeenByList } from "./SeenByList"
 
 export const Chat = () => {
   
@@ -64,6 +65,32 @@ export const Chat = () => {
       )
     }
 
+  })
+
+  useSocketEvent(Events.MESSAGE_SEEN,(seenMessageDetails:IMessageSeenEventReceiveData)=>{
+    if(seenMessageDetails.user._id === loggedInUser?._id){
+      dispatch(
+        chatApi.util.updateQueryData("getChats",undefined,(draft)=>{
+          const chat = draft.find(chat=>chat._id===seenMessageDetails.chat)
+  
+          if(chat){
+            chat.unreadMessages.count=0
+          }
+        })
+      )
+    }
+    else{
+      dispatch(
+        chatApi.util.updateQueryData("getChats",undefined,(draft)=>{
+          const chat = draft.find(chat=>chat._id===seenMessageDetails.chat)
+  
+          if(chat){
+            console.log('pushed brotherrrrr');
+            chat.seenBy?.push(seenMessageDetails.user)
+          }
+        })
+      )
+    }
   })
 
   const sendMessage = (e:React.FormEvent)=>{
@@ -129,7 +156,10 @@ export const Chat = () => {
                   {
                     !isMessagesFetching && data && <MessageList messages={data} loggedInUserId={loggedInUser?._id!}/>
                   }
-                    
+                  { 
+                    selectedChatId && 
+                    <SeenByList members={chats.find(chat=>chat._id===selectedChatId)?.seenBy!}/>  
+                  }
                 </div>
 
                 {/* input box */}

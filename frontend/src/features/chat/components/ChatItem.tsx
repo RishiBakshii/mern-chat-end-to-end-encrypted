@@ -39,7 +39,7 @@ export const ChatItem = ({chat}:PropTypes) => {
                 <div className="flex flex-col">
                   <p  className="text-sm text-gray-500">{1}m</p>
                   {
-                    chat.unreadMessages.count && 
+                    chat.unreadMessages.count>0 && 
                     <p className="bg-violet-500 flex items-center justify-center text-white rounded-full w-6 h-6">
                       {chat.unreadMessages.count}
                     </p>

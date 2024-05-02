@@ -1,5 +1,5 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import { Loader } from './components/Loader/Loader';
+import { Loader } from './components/shared/Loader';
 import { useCheckAuthQuery } from './features/auth/api';
 import { Login } from './features/auth/components/Login';
 import { Protected } from './features/auth/components/Protected';

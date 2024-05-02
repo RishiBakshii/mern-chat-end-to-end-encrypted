@@ -101,7 +101,7 @@ export const Chat = () => {
 
   useSocketEvent(Events.USER_TYPING,(data:IUserTypingEventReceiveData)=>{
     if(data.chatId===selectedChatId){
-      setIsTyping(false)
+      setIsTyping(true)
     }
     else{
       const chat = chats?.find(chat=>chat._id===data.chatId)

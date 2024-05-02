@@ -13,6 +13,7 @@ import { selectLoggedInUser } from "../../auth/authSlice"
 import { useSocketEvent } from "../../../hooks/useSocketEvent"
 import { getSocket } from "../../../context/socket"
 import { SeenByList } from "./SeenByList"
+import { useUpdateUnreadMessage } from "../../../hooks/useUpdateUnreadMessage"
 
 export const Chat = () => {
   
@@ -27,7 +28,8 @@ export const Chat = () => {
   const [messageVal,setMessageVal]=useState<string>('')
   
   const socket = getSocket()
-
+  
+  useUpdateUnreadMessage()
   useSocketEvent(Events.MESSAGE,(newMessage:IMessage)=>{
     if(selectedChatId){
       dispatch(
@@ -92,6 +94,7 @@ export const Chat = () => {
       )
     }
   })
+
 
   const sendMessage = (e:React.FormEvent)=>{
 

@@ -68,15 +68,14 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
     socket.on(Events.MESSAGE,async({chat,content,attachments,members}:Omit<IMessage , "sender"> & {members : Array<string>})=>{
 
         // save to db
-        const newMessage = await Message.create({chat,content,attachments,sender:socket.user?._id})
+        const newMessage = await (await Message.create({chat,content,attachments,sender:socket.user?._id})).populate("sender",['avatar','username'])
         
         // realtime response
-        const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
-        const memberSocketIds = getMemberSockets(memberIds)
-
+        const memberSocketIds = getMemberSockets(members)
         io.to(memberSocketIds).emit(Events.MESSAGE,newMessage)
 
         // unread message creation for receivers
+        const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
         const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
 
             const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:memberId})

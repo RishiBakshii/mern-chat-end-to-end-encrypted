@@ -11,3 +11,9 @@ export interface IMessage {
     createdAt:Date
     updatedAt:Date
 }
+
+export interface IMessageEventPayloadData {
+    chat:string
+    content:string
+    members:Array<string>
+}

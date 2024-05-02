@@ -2,7 +2,7 @@ import { memo } from "react";
 import type { IMessage } from "../../../interfaces/messages";
 
 type PropTypes = {
-    myMessage?:boolean;
+    myMessage:boolean;
     message:IMessage
 }
 

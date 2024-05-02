@@ -10,8 +10,8 @@ export const messageApi = createApi({
         credentials:'include'
     }),
     endpoints:(builder)=>({
-        getMessagesByChatId:builder.query<Array<IMessage>,Pick<IChat,'_id'>>({
-            query:({_id})=>`/message/${_id}`
+        getMessagesByChatId:builder.query<Array<IMessage>,IChat['_id']>({
+            query:(_id)=>`/message/${_id}`
         })
     })
 })

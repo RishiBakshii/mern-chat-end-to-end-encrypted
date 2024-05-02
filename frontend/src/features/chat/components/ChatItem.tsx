@@ -1,5 +1,6 @@
-import { useAppDispatch } from "../../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import type { IChatWithUnreadMessages } from "../../../interfaces/chat"
+import { selectLoggedInUser } from "../../auth/authSlice"
 import { updateSelectedChatId } from "../chatSlice"
 
 type PropTypes = {
@@ -12,6 +13,7 @@ export const ChatItem = ({chat}:PropTypes) => {
   const handleChangeSelectedChat = (id:string) => {
     dispatch(updateSelectedChatId(id))
   }
+  const loggedInUser = useAppSelector(selectLoggedInUser)
 
   return (
     <div onClick={()=>handleChangeSelectedChat(chat._id)} className="flex items-center w-full hover:bg-gray-100 hover:cursor-pointer gap-x-3">
@@ -29,13 +31,13 @@ export const ChatItem = ({chat}:PropTypes) => {
           </div> 
           :
           <img className="aspect-square w-16 rounded-md object-cover"
-          src={chat.members[0].avatar}
+          src={chat.members.filter(member=>member._id!==loggedInUser?._id)[0].avatar}
           />
         }
 
         <div className="w-full">
             <div className="flex justify-between items-center">
-                <p className="font-medium">{chat.isGroupChat?`${chat.name?.substring(0,20)}..`:chat.members[1].username}</p>
+                <p className="font-medium">{chat.isGroupChat?`${chat.name?.substring(0,20)}..`:chat.members.filter(member=>member._id!==loggedInUser?._id)[0].username}</p>
                 <div className="flex flex-col">
                   <p  className="text-sm text-gray-500">{1}m</p>
                   {

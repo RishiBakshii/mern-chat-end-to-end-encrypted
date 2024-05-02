@@ -18,7 +18,7 @@ export const Navbar = () => {
     <nav className="flex items-center h-14 justify-around shadow">
       <h4 className="text-3xl font-bold">Chorus</h4>
       <div className="relative">
-          <img onClick={()=>setIsOpen(prev=>!prev)} className="h-12 rounded-full aspect-square cursor-pointer" src={loggedInUser?.avatar} alt={`${loggedInUser?.name} avatar`} />
+          <img onClick={()=>setIsOpen(prev=>!prev)} className="h-12 rounded-full aspect-square cursor-pointer object-cover" src={loggedInUser?.avatar} alt={`${loggedInUser?.name} avatar`} />
           {
             isOpen && <div className="bg-gray-100 w-[15rem] absolute rounded-lg shadow-2xl p-4">
               <ul>

@@ -4,11 +4,13 @@ import authSlice from '../features/auth/authSlice'
 import chatSlice from '../features/chat/chatSlice'
 import { chatApi } from '../features/chat/api'
 import { messageApi } from '../features/messages/api'
+import uiSlice from '../features/ui/uiSlice'
 
 export const store = configureStore({
     reducer:{
         [authSlice.name]:authSlice.reducer,
         [chatSlice.name]:chatSlice.reducer,
+        [uiSlice.name]:uiSlice.reducer,
         [authApi.reducerPath]:authApi.reducer,
         [chatApi.reducerPath]:chatApi.reducer,
         [messageApi.reducerPath]:messageApi.reducer

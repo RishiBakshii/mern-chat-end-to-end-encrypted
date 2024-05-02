@@ -76,6 +76,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
         // unread message creation for receivers
         const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
+        const otherMemberSockets = getMemberSockets(memberIds)
         const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
 
             const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:memberId})
@@ -92,7 +93,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
         })
 
         await Promise.all(updateOrCreateUnreadMessagePromise)
-        io.to(memberSocketIds).emit(Events.UNREAD_MESSAGE,{chat,message:newMessage.content.substring(0,30)})
+        io.to(otherMemberSockets).emit(Events.UNREAD_MESSAGE,{chatId:chat,message:{_id:newMessage._id.toString(),content:newMessage.content.substring(0,30)},sender:newMessage.sender})
 
     })
 

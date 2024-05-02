@@ -1,3 +1,5 @@
+import type { IUnreadMessage } from "../messages"
+
 export interface IChatIntitalState {
     selectedChatId:string | null
 }
@@ -7,26 +9,13 @@ export interface IChatMember {
     username:string
     avatar:string
 }
-export interface IChat {
+
+export interface IChatWithUnreadMessages {
     _id:string
     name?:string
-    isGroupChat?:boolean
+    isGroupChat:boolean
     members:Array<IChatMember>
     avatar?:string
-    admin?:string,
-}
-
-export interface IChatWithUnreadMessages extends IChat {
-    unreadMessages:{
-        count:number
-        message:{
-            _id:string,
-            content:string
-        },
-        sender:{
-            _id:string,
-            username:string,
-            avatar:string
-        }
-    }
+    admin:string,
+    unreadMessages:IUnreadMessage
 }

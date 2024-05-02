@@ -1,4 +1,4 @@
-import { useGetChatsQuery } from "../api"
+import { chatApi, useGetChatsQuery } from "../api"
 import { ChatList } from "./ChatList"
 import { MemberList } from "./MemberList"
 import { MessageList } from "../../messages/components/MessageList"
@@ -8,30 +8,51 @@ import { useEffect, useState } from "react"
 import { messageApi, useLazyGetMessagesByChatIdQuery } from "../../messages/api"
 import { ChatDetails } from "./ChatDetails"
 import { Events } from "../../../enums/events"
-import type { IMessage, IMessageEventPayloadData } from "../../../interfaces/messages"
+import type { IMessage, IMessageEventPayloadData, IUnreadMessageEventReceiveData } from "../../../interfaces/messages"
 import { selectLoggedInUser } from "../../auth/authSlice"
 import { useSocketEvent } from "../../../hooks/useSocketEvent"
 import { getSocket } from "../../../context/socket"
 
 export const Chat = () => {
   
-  const loggedInUser = useAppSelector(selectLoggedInUser)
-  const {data:chats,isFetching} = useGetChatsQuery()
   const dispatch = useAppDispatch()
+
   const selectedChatId = useAppSelector(selectSelectedChatId)
-  const [messageVal,setMessageVal]=useState<string>('')
+  const loggedInUser = useAppSelector(selectLoggedInUser)
+
+  const {data:chats,isFetching}= useGetChatsQuery()
   const [getMessagesByChatIdQueryTrigger,{data,isFetching:isMessagesFetching}]=useLazyGetMessagesByChatIdQuery()
+
+  const [messageVal,setMessageVal]=useState<string>('')
+  
   const socket = getSocket()
 
   useSocketEvent(Events.MESSAGE,(newMessage:IMessage)=>{
     if(selectedChatId){
       dispatch(
         messageApi.util.updateQueryData('getMessagesByChatId',selectedChatId,(draft)=>{
-          console.log(draft);
           draft.push(newMessage)
         })
       )
     }
+  })
+
+  useSocketEvent(Events.UNREAD_MESSAGE,(data:IUnreadMessageEventReceiveData)=>{
+
+    dispatch(
+      chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
+
+        const chat = draft.find(draft=>draft._id===data.chatId)
+
+        if(chat){
+          chat.unreadMessages.count++
+          chat.unreadMessages.message = data.message
+          chat.unreadMessages.sender = data.sender
+        }
+        
+      })
+    )
+
   })
 
   const sendMessage = (e:React.FormEvent)=>{

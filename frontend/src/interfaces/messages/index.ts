@@ -45,3 +45,5 @@ export interface IUnreadMessageEventReceiveData {
     message:IUnreadMessage['message']
     sender:IChatMember
 }
+
+export interface IUserTypingEventPayloadData extends IMessageSeenEventPayloadData {}

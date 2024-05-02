@@ -8,12 +8,13 @@ import { useEffect, useState } from "react"
 import { messageApi, useLazyGetMessagesByChatIdQuery } from "../../messages/api"
 import { ChatDetails } from "./ChatDetails"
 import { Events } from "../../../enums/events"
-import type { IMessage, IMessageEventPayloadData, IMessageSeenEventPayloadData, IMessageSeenEventReceiveData, IUnreadMessageEventReceiveData } from "../../../interfaces/messages"
+import type { IMessage, IMessageEventPayloadData, IMessageSeenEventPayloadData, IMessageSeenEventReceiveData, IUnreadMessageEventReceiveData, IUserTypingEventPayloadData } from "../../../interfaces/messages"
 import { selectLoggedInUser } from "../../auth/authSlice"
 import { useSocketEvent } from "../../../hooks/useSocketEvent"
 import { getSocket } from "../../../context/socket"
 import { SeenByList } from "./SeenByList"
 import { useUpdateUnreadMessage } from "../../../hooks/useUpdateUnreadMessage"
+import { useUserTyping } from "../../../hooks/useUserTyping"
 
 export const Chat = () => {
   
@@ -94,7 +95,8 @@ export const Chat = () => {
       )
     }
   })
-
+  
+  useUserTyping(messageVal,socket,chats,300)
 
   const sendMessage = (e:React.FormEvent)=>{
 

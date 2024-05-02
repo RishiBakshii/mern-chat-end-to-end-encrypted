@@ -15,6 +15,8 @@ import { getSocket } from "../../../context/socket"
 import { SeenByList } from "./SeenByList"
 import { useUpdateUnreadMessage } from "../../../hooks/useUpdateUnreadMessage"
 import { useUserTyping } from "../../../hooks/useUserTyping"
+import { IUserTypingEventReceiveData } from "../../../interfaces/chat"
+import { useDebounce } from "../../../hooks/useDebounce"
 
 export const Chat = () => {
   
@@ -27,6 +29,7 @@ export const Chat = () => {
   const [getMessagesByChatIdQueryTrigger,{data,isFetching:isMessagesFetching}]=useLazyGetMessagesByChatIdQuery()
 
   const [messageVal,setMessageVal]=useState<string>('')
+  const [isTyping,setIsTyping] = useDebounce(false,2000)
   
   const socket = getSocket()
   
@@ -95,7 +98,29 @@ export const Chat = () => {
       )
     }
   })
+
+  useSocketEvent(Events.USER_TYPING,(data:IUserTypingEventReceiveData)=>{
+    if(data.chatId===selectedChatId){
+      setIsTyping(false)
+    }
+    else{
+      const chat = chats?.find(chat=>chat._id===data.chatId)
+
+      if(chat){
+        dispatch(
+          chatApi.util.updateQueryData("getChats",undefined,(draft)=>{
+            const chat = draft.find(chat=>chat._id===data.chatId)
+
+            if(chat){
+              chat.userTyping=data.user
+            }
+          })
+        )
+      }
+    }
+  })
   
+
   useUserTyping(messageVal,socket,chats,300)
 
   const sendMessage = (e:React.FormEvent)=>{
@@ -152,7 +177,7 @@ export const Chat = () => {
                 <div className="flex flex-row justify-between items-center">
                   {
                     !isFetching && chats && selectedChatId &&  
-                    <ChatDetails chat={chats.find(chat=>chat._id===selectedChatId)!} />
+                    <ChatDetails chat={chats.find(chat=>chat._id===selectedChatId)!} isTyping={isTyping}/>
                   }
                 </div>
 

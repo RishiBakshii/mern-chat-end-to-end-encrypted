@@ -19,4 +19,10 @@ export interface IChatWithUnreadMessages {
     admin:string,
     unreadMessages:IUnreadMessage
     seenBy?:Array<IChatMember>
+    userTyping?:IChatMember
+}
+
+export interface IUserTypingEventReceiveData {
+    chatId:string
+    user:IChatMember
 }

@@ -1,13 +1,20 @@
+import Lottie from "lottie-react"
 import { IChatWithUnreadMessages } from "../../../interfaces/chat"
+import { typingAnimation } from "../../../assets"
 
 type PropTypes = {
   chat:IChatWithUnreadMessages
+  isTyping:boolean
 }
-export const ChatDetails = ({chat}:PropTypes) => {
+export const ChatDetails = ({chat,isTyping}:PropTypes) => {
   return (
     <>
     <div className="flex flex-col gap-y-1">
-        <h4 className="font-medium text-4xl">{chat.isGroupChat?chat.name:chat.members[1].username}</h4>
+        <div className="flex gap-x-4">
+            <h4 className="font-medium text-4xl">{chat.isGroupChat?chat.name:chat.members[1].username}</h4>
+            {isTyping && 
+            <Lottie animationData={typingAnimation}/>}
+        </div>
         <p className="text-gray-500">{chat.members.length} Members</p>
     </div>
     <div className="flex items-center gap-x-5">

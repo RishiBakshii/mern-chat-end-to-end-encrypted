@@ -112,6 +112,20 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     })
 
+    socket.on(Events.USER_TYPING,({chatId,members}:{chatId:string,members:Array<string>})=>{
+        const otherMembers = getOtherMembers({members,user:socket.user?._id.toString()!})
+        const otherMemberSockets = getMemberSockets(otherMembers)
+
+        io.to(otherMemberSockets).emit(Events.USER_TYPING,{
+            user:{
+                _id:socket.user?._id.toString(),
+                username:socket.user?.username,
+                avatar:socket.user?.avatar
+            },
+            chatId:chatId
+        })
+    })
+
     socket.on("disconnect",()=>{
         console.log(`${socket.user?.name} left`);
     })

@@ -9,13 +9,16 @@ import { Message } from "../models/message.model.js";
 import { emitEvent, getMemberSockets, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event.enum.js";
 import { UnreadMessage } from "../models/unread-message.model.js";
-import { IChatWithUnreadMessages } from "../interfaces/chat.interface.js";
+import { IChat, IChatWithUnreadMessages } from "../interfaces/chat.interface.js";
 import { IMessage } from "../interfaces/message.interface.js";
+import { uploadFilesToCloudinary } from "../utils/auth.util.js";
+import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 
 const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
-    const {isGroupChat,members,avatar,name}:createChatSchemaType = req.body
+    let secureUrl:string=''
 
+    const {isGroupChat,members,avatar,name}:createChatSchemaType = req.body
     if(isGroupChat){
 
         if(members.length<2){
@@ -35,12 +38,23 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
             return next(new CustomError("group chat already exists",400))
         }
 
-        const newGroupChat = await Chat.create({avatar:avatar?avatar:"defaultAvatar",isGroupChat,members:membersWithReqUser,admin:req.user?._id,name})
+        if(req.file){
+            const result = await uploadFilesToCloudinary([req.file])
+            secureUrl = result[0].secure_url
+        }
+        const newGroupChat = await Chat.create({
+            avatar:secureUrl?secureUrl:DEFAULT_AVATAR,
+            isGroupChat,members:membersWithReqUser,
+            admin:req.user?._id,name
+        })
 
-        const otherMembers = getOtherMembers({members:newGroupChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
+        await newGroupChat.populate("members",['username','avatar'])
+
+        const otherMembers = getOtherMembers({members: newGroupChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
         emitEvent(req,Events.NEW_GROUP,getMemberSockets(otherMembers),newGroupChat)
         
-        res.status(201).json(newGroupChat)
+
+        return res.status(201).json(newGroupChat)
 
     }
 
@@ -72,7 +86,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
         const otherMembers = getOtherMembers({members:normalChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
         emitEvent(req,Events.NEW_GROUP,getMemberSockets(otherMembers),normalChat)
         
-        res.status(201).json(normalChat)
+        return res.status(201).json(normalChat)
     }
 
 })

@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../config/envConfig";
-import type { IChat, IChatWithUnreadMessages } from "../../interfaces/chat";
+import type { IChatWithUnreadMessages } from "../../interfaces/chat";
+import toast from "react-hot-toast";
 
 export const chatApi = createApi({
     reducerPath:"chatApi",
@@ -12,12 +13,44 @@ export const chatApi = createApi({
         getChats:builder.query<Array<IChatWithUnreadMessages>,void>({
             query:()=>"/chat"
         }),
-        createChat:builder.mutation<IChat,IChat>({
-            query:(chat)=>({
-                url:"/chat",
-                method:"POST",
-                body:chat
-            })
+        createChat:builder.mutation<Omit<IChatWithUnreadMessages, "unreadMessages">, Required<Pick<IChatWithUnreadMessages,'name'> & {members:Array<string>,isGroupChat:string}> & {avatar?:Blob}>({
+            query:({name,members,isGroupChat,avatar})=>{
+
+                const formData = new FormData()
+                formData.append("name", name);
+                for (const member of members) {
+                    formData.append("members[]", member);
+                }
+                formData.append("isGroupChat", isGroupChat); 
+
+                if(avatar){
+                    formData.append("avatar",avatar)
+                }
+
+                return {
+                    url: "/chat",
+                    method: "POST",
+                    body: formData,
+                  };
+            },
+
+            async onQueryStarted({}, { dispatch, queryFulfilled }) {
+                try {
+                  const { data: createdChat } = await queryFulfilled
+                  const transformedChat:IChatWithUnreadMessages = {...createdChat,unreadMessages:{
+                    count:0,
+                    message:{_id:"",content:""},
+                    sender:{_id:"",avatar:"",username:""}
+                  }}
+                  dispatch(
+                    chatApi.util.updateQueryData('getChats', undefined, (draft) => {
+                      draft.push(transformedChat)
+                    })
+                  )
+                } catch(error) {
+                    console.log(error);
+                }
+              },
         }),
         addMember:builder.mutation<IChat,Pick<IChat, 'members' | '_id'>>({
             query:({_id,members})=>({

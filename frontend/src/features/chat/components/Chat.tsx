@@ -17,6 +17,9 @@ import { useUpdateUnreadMessage } from "../../../hooks/useUpdateUnreadMessage"
 import { useUserTyping } from "../../../hooks/useUserTyping"
 import { IUserTypingEventReceiveData } from "../../../interfaces/chat"
 import { useDebounce } from "../../../hooks/useDebounce"
+import { Modal } from "../../../components/shared/Modal"
+import { GroupChatForm } from "./GroupChatForm"
+import { selectGroupChatForm, setNewgroupChatForm } from "../../ui/uiSlice"
 
 export const Chat = () => {
   
@@ -234,6 +237,10 @@ export const Chat = () => {
             }
           </div>
       </div>
+
+      <Modal isOpen={useAppSelector(selectGroupChatForm)} onClose={()=>dispatch(setNewgroupChatForm(false))} height="auto">
+        <GroupChatForm/>
+      </Modal>
 
     </div>
   )

@@ -19,8 +19,11 @@ import { IUserTypingEventReceiveData } from "../../../interfaces/chat"
 import { useDebounce } from "../../../hooks/useDebounce"
 import { Modal } from "../../../components/shared/Modal"
 import { GroupChatForm } from "./GroupChatForm"
-import { selectAddFriendForm, selectGroupChatForm, setAddFriendForm, setNewgroupChatForm } from "../../ui/uiSlice"
+import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, setAddFriendForm, setFriendRequestForm, setNewgroupChatForm } from "../../ui/uiSlice"
 import { AddFriendForm } from "../../friends/components/AddFriendForm"
+import { useGetUserFriendRequestsQuery } from "../../friends/api"
+import { useToast } from "../../../hooks/useToast"
+import { FriendRequestForm } from "../../friends/components/FriendRequestForm"
 
 export const Chat = () => {
   
@@ -30,7 +33,41 @@ export const Chat = () => {
   const loggedInUser = useAppSelector(selectLoggedInUser)
 
   const {data:chats,isFetching}= useGetChatsQuery()
-  const [getMessagesByChatIdQueryTrigger,{data,isFetching:isMessagesFetching}]=useLazyGetMessagesByChatIdQuery()
+
+  const [
+    getMessagesByChatIdQueryTrigger,{
+    data:messagesData,
+    isError:messagesIsError,
+    isFetching:messagesIsFetching,
+    isUninitialized:messagesIsUninitialized,
+    isSuccess:messagesIsSuccess,
+    error:messagesError
+  }]=useLazyGetMessagesByChatIdQuery()
+
+  useToast({
+    error:messagesError,
+    isError:messagesIsError,
+    isLoading:messagesIsFetching,
+    isSuccess:messagesIsSuccess,
+    isUninitialized:messagesIsUninitialized,
+  })
+  
+  const {
+    data:friendRequestData,
+    isError:friendRequestIsError,
+    isFetching:friendRequestIsFetching,
+    isSuccess:friendRequestIsSuccess,
+    isUninitialized:friendRequestIsUninitialized,
+    error:friendRequestError,
+  } = useGetUserFriendRequestsQuery()
+
+  useToast({
+    error:friendRequestError,
+    isError:friendRequestIsError,
+    isLoading:friendRequestIsFetching,
+    isSuccess:friendRequestIsSuccess,
+    isUninitialized:friendRequestIsUninitialized,
+  })
 
   const [messageVal,setMessageVal]=useState<string>('')
   const [isTyping,setIsTyping] = useDebounce(false,2000)
@@ -188,7 +225,7 @@ export const Chat = () => {
                 {/* messages area */}
                 <div className="h-full flex px-2 flex-col gap-y-5 overflow-y-scroll">
                   {
-                    !isMessagesFetching && data && <MessageList messages={data} loggedInUserId={loggedInUser?._id!}/>
+                    !messagesIsFetching && messagesData && <MessageList messages={messagesData} loggedInUserId={loggedInUser?._id!}/>
                   }
                   { 
                     selectedChatId && 
@@ -245,6 +282,10 @@ export const Chat = () => {
       <Modal isOpen={useAppSelector(selectAddFriendForm)} onClose={()=>dispatch(setAddFriendForm(false))} height="auto">
         <AddFriendForm/>
       </Modal>
+      <Modal isOpen={useAppSelector(selectFriendRequestForm)} onClose={()=>dispatch(setFriendRequestForm(false))} height="auto">
+        <FriendRequestForm/>
+      </Modal>
+      
 
     </div>
   )

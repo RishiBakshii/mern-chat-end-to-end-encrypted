@@ -6,7 +6,8 @@ import { RootState } from "../../app/store";
 const initialState:IUi = {
     navMenu:false,
     newgroupChatForm:false,
-    addFriendForm:false
+    addFriendForm:false,
+    friendRequestForm:false
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -20,6 +21,9 @@ const uiSlice = createSlice({
         },
         setAddFriendForm:(state,action:PayloadAction<boolean>)=>{
             state.addFriendForm=action.payload
+        },
+        setFriendRequestForm:(state,action:PayloadAction<boolean>)=>{
+            state.friendRequestForm=action.payload
         }
     }
 })
@@ -28,12 +32,14 @@ const uiSlice = createSlice({
 export const selectNavMenu = (state:RootState)=>state.uiSlice.navMenu
 export const selectGroupChatForm = (state:RootState)=>state.uiSlice.newgroupChatForm
 export const selectAddFriendForm = (state:RootState)=>state.uiSlice.addFriendForm
+export const selectFriendRequestForm = (state:RootState)=>state.uiSlice.friendRequestForm
 
 // exporting actions
 export const {
     setNavMenu,
     setNewgroupChatForm,
     setAddFriendForm,
+    setFriendRequestForm,
 } = uiSlice.actions
 
 export default uiSlice

@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { config } from '../../config/envConfig'
+import { IFriendRequest } from '../../interfaces/friends'
 
 export const friendsApi = createApi({
 
@@ -19,10 +20,14 @@ export const friendsApi = createApi({
                 body:{receiver:receiverId}
             })
         }),
+        getUserFriendRequests:builder.query<Array<IFriendRequest>,void>({
+            query:()=>"/"
+        }),
 
     })
 })
 
 export const {
-    useSendFriendRequestMutation
+    useSendFriendRequestMutation,
+    useGetUserFriendRequestsQuery,
 } = friendsApi

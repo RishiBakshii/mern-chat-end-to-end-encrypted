@@ -34,6 +34,15 @@ const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
     }
 
     const newRequest = await Request.create({receiver,sender:req.user?._id})
+    await newRequest.populate("sender",['avatar','username'])
+
+    emitEvent(req,Events.NEW_FRIEND_REQUEST,[receiver],{
+        _id:newRequest._id.toString(),
+        sender:newRequest.sender,
+        status:newRequest.status,
+        createdAt:Date.now()
+    })
+
     return res.status(201).json(newRequest)
 
 })

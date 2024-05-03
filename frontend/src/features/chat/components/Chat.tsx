@@ -21,9 +21,10 @@ import { Modal } from "../../../components/shared/Modal"
 import { GroupChatForm } from "./GroupChatForm"
 import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, setAddFriendForm, setFriendRequestForm, setNewgroupChatForm } from "../../ui/uiSlice"
 import { AddFriendForm } from "../../friends/components/AddFriendForm"
-import { useGetUserFriendRequestsQuery } from "../../friends/api"
+import { friendsApi, useGetUserFriendRequestsQuery } from "../../friends/api"
 import { useToast } from "../../../hooks/useToast"
 import { FriendRequestForm } from "../../friends/components/FriendRequestForm"
+import { IFriendRequest } from "../../../interfaces/friends"
 
 export const Chat = () => {
   
@@ -162,7 +163,6 @@ export const Chat = () => {
   })
 
   useSocketEvent(Events.NEW_GROUP,(newChat:IChatWithUnreadMessages)=>{
-    console.log('new group chat',newChat);
     dispatch(
       chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
         draft.push(newChat)
@@ -170,6 +170,13 @@ export const Chat = () => {
     )
   })
   
+  useSocketEvent(Events.NEW_FRIEND_REQUEST,(newRequest:IFriendRequest)=>{
+    dispatch(
+      friendsApi.util.updateQueryData("getUserFriendRequests",undefined,(draft)=>{
+        draft.push(newRequest)
+      })
+    )
+  })
 
   useUserTyping(messageVal,socket,chats,300)
 

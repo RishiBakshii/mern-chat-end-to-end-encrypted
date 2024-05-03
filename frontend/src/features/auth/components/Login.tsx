@@ -8,12 +8,14 @@ import { loginSchema } from "../../../schemas"
 import { useLoginMutation } from "../api"
 import { useUpdateLogin } from "../../../hooks/useUpdateLogin"
 import { config } from "../../../config/envConfig"
+import { useToast } from "../../../hooks/useToast"
 
 export const Login = () => {    
     
-    const [login,{isSuccess,data}] = useLoginMutation()
+    const [login,{isSuccess,data,isError,isLoading,isUninitialized,error}] = useLoginMutation()
 
     useUpdateLogin(isSuccess,data)
+    useToast({error,isError,isLoading,isSuccess,isUninitialized})
 
     const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
         resolver:zodResolver(loginSchema)

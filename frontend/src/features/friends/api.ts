@@ -23,6 +23,26 @@ export const friendsApi = createApi({
         getUserFriendRequests:builder.query<Array<IFriendRequest>,void>({
             query:()=>"/"
         }),
+        handleFriendRequest:builder.mutation<IFriendRequest['_id'],{requestId:IFriendRequest['_id'],action: "accept" | "reject"}>({
+            query:({requestId,action})=>({
+                url:`/${requestId}`,
+                method:"DELETE",
+                body:{action},
+            }),
+            
+            async onQueryStarted({}, { dispatch, queryFulfilled }) {
+                try {
+                  const { data: handledRequestId } = await queryFulfilled
+                  dispatch(
+                    friendsApi.util.updateQueryData('getUserFriendRequests', undefined , (draft) => {
+                      draft.filter(friendRequest=>friendRequest._id!==handledRequestId)
+                    })
+                  )
+                } catch(error) {
+                    console.log(error);
+                }
+              },
+        })
 
     })
 })
@@ -30,4 +50,5 @@ export const friendsApi = createApi({
 export const {
     useSendFriendRequestMutation,
     useGetUserFriendRequestsQuery,
+    useHandleFriendRequestMutation,
 } = friendsApi

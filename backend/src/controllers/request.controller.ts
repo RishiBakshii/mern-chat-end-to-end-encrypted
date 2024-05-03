@@ -52,9 +52,9 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
     }
 
     if(action==='accept'){
-        const newChat = await Chat.create({members:[isExistingRequest.sender,isExistingRequest.receiver]})
+        await Chat.create({members:[isExistingRequest.sender,isExistingRequest.receiver]})
         await isExistingRequest.deleteOne()
-        return res.status(201).json(newChat)
+        return res.status(200).json(isExistingRequest._id)
     }
     else if(action==='reject'){
         await isExistingRequest.deleteOne()

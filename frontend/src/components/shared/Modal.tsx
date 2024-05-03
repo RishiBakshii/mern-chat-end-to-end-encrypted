@@ -4,17 +4,17 @@ type PropTypes  = {
     onClose:()=>void
     isOpen:boolean
     children:React.ReactNode
-    width?:string
-    height?:string
+    width?:number
+    height?:number
 }
 
-export const Modal = ({isOpen=false,onClose,children,width="30rem",height="30rem"}:PropTypes) => {
+export const Modal = ({isOpen=false,onClose,children,width=30,height=30}:PropTypes) => {
 
   return (
     isOpen ? 
     createPortal(
     <div onClick={onClose} className="bg-black bg-opacity-15 w-screen h-screen absolute flex items-center justify-center">
-        <div onClick={e=>e.stopPropagation()} className={`bg-white w-[${width}] h-[${height}] rounded-lg p-4 shadow-xl`}>
+        <div onClick={e=>e.stopPropagation()} className={`bg-white w-[${width}rem] h-[${height}rem] rounded-lg p-4 shadow-xl`}>
             {children}
         </div>
     </div>,

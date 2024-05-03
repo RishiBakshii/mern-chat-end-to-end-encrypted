@@ -71,6 +71,6 @@ export const {
     useResetPasswordMutation,
     useVerifyOtpMutation,
     useSendOtpQuery,
-    useLogoutQuery,
+    useLazyLogoutQuery,
     useCheckAuthQuery
 } = authApi

@@ -5,6 +5,8 @@ import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import type { createRequestSchemaType, handleRequestSchemaType } from "../schemas/request.schema.js";
 import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
+import { emitEvent } from "../utils/socket.util.js";
+import { Events } from "../enums/event.enum.js";
 
 const getUserRequests = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     const requests = await Request.find({receiver:req.user?._id}).populate("sender",['username','avatar']).select('-receiver').select("-updatedAt")
@@ -52,8 +54,28 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
     }
 
     if(action==='accept'){
-        await Chat.create({members:[isExistingRequest.sender,isExistingRequest.receiver]})
+        const newChat = await Chat.create({members:[isExistingRequest.sender,isExistingRequest.receiver]})
+        await newChat.populate("members",['username','avatar'])
         await isExistingRequest.deleteOne()
+        
+        const membersStringIds = [isExistingRequest.sender.toString(),isExistingRequest.receiver.toString()]
+        emitEvent(req,Events.NEW_GROUP,membersStringIds,{
+            _id:newChat._id.toString(),
+            isGroupChat:newChat.isGroupChat,
+            members:newChat.members,
+            unreadMessages:{
+                count:0,
+                message:{
+                    _id:"",
+                    content:""
+                },
+                sender:{
+                    _id:"",
+                    username:"",
+                    avatar:""
+                }
+            }
+        })
         return res.status(200).json(isExistingRequest._id)
     }
     else if(action==='reject'){

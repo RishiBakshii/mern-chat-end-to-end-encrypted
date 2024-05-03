@@ -15,7 +15,7 @@ import { getSocket } from "../../../context/socket"
 import { SeenByList } from "./SeenByList"
 import { useUpdateUnreadMessage } from "../../../hooks/useUpdateUnreadMessage"
 import { useUserTyping } from "../../../hooks/useUserTyping"
-import { IUserTypingEventReceiveData } from "../../../interfaces/chat"
+import { IChatWithUnreadMessages, IUserTypingEventReceiveData } from "../../../interfaces/chat"
 import { useDebounce } from "../../../hooks/useDebounce"
 import { Modal } from "../../../components/shared/Modal"
 import { GroupChatForm } from "./GroupChatForm"
@@ -159,6 +159,15 @@ export const Chat = () => {
         )
       }
     }
+  })
+
+  useSocketEvent(Events.NEW_GROUP,(newChat:IChatWithUnreadMessages)=>{
+    console.log('new group chat',newChat);
+    dispatch(
+      chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
+        draft.push(newChat)
+      })
+    )
   })
   
 

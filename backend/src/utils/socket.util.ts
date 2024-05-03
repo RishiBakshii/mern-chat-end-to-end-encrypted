@@ -5,7 +5,7 @@ import { userSocketIds } from "../index.js";
 
 export const emitEvent = (req:AuthenticatedRequest,event:Events,users:Array<string>,data:unknown)=>{
     const io:Server = req.app.get("io")
-    io.to(users).emit(event,data)
+    io.to(getMemberSockets(users)).emit(event,data)
 }
 
 export const getOtherMembers=({members,user}:{members:Array<string>,user:string})=>{

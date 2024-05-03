@@ -10,28 +10,38 @@ type PropTypes = {
     isSuccess:boolean,
     isError:boolean,
     error:FetchBaseQueryError | SerializedError | undefined
+    loaderToast?:boolean
+    errorToast?:boolean,
+    successToast?:boolean,
+    successMessage?:string
 }
-export const useToast = ({error,isError,isLoading,isSuccess,isUninitialized}:PropTypes) => {
+export const useToast = ({error,isError,isLoading,isSuccess,isUninitialized,loaderToast=false,errorToast=true,successToast=false,successMessage="success"}:PropTypes) => {
 
     useEffect(()=>{
         if(!isUninitialized){
 
             if(isLoading){
-                toast.loading("loading")
+                if(loaderToast){
+                    toast.loading("loading")
+                }
             }
 
             if(!isLoading && !isSuccess && isError){
-                toast.dismiss()
-                if(isErrorWithMessage(error)){
-                    toast.error(error.data.message)
-                }else{
-                    toast.error("some Error occured")
+                if(errorToast){
+                    toast.dismiss()
+                    if(isErrorWithMessage(error)){
+                        toast.error(error.data.message)
+                    }else{
+                        toast.error("some Error occured")
+                    }
                 }
             }
 
             if(!isLoading && isSuccess && !isError){
-                toast.dismiss()
-                toast.success("success")
+                if(successToast){
+                    toast.dismiss()
+                    toast.success(successMessage)
+                }
             }
 
         }

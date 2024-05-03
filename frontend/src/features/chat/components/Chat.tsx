@@ -19,7 +19,8 @@ import { IUserTypingEventReceiveData } from "../../../interfaces/chat"
 import { useDebounce } from "../../../hooks/useDebounce"
 import { Modal } from "../../../components/shared/Modal"
 import { GroupChatForm } from "./GroupChatForm"
-import { selectGroupChatForm, setNewgroupChatForm } from "../../ui/uiSlice"
+import { selectAddFriendForm, selectGroupChatForm, setAddFriendForm, setNewgroupChatForm } from "../../ui/uiSlice"
+import { AddFriendForm } from "../../friends/components/AddFriendForm"
 
 export const Chat = () => {
   
@@ -240,6 +241,9 @@ export const Chat = () => {
 
       <Modal isOpen={useAppSelector(selectGroupChatForm)} onClose={()=>dispatch(setNewgroupChatForm(false))} height="auto">
         <GroupChatForm/>
+      </Modal>
+      <Modal isOpen={useAppSelector(selectAddFriendForm)} onClose={()=>dispatch(setAddFriendForm(false))} height="auto">
+        <AddFriendForm/>
       </Modal>
 
     </div>

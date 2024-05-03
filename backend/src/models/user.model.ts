@@ -10,7 +10,8 @@ const userSchema = new Schema<IUser>({
     username:{
         type:String,
         unique:true,
-        required:true
+        required:true,
+        index:true
     },
     avatar:{
         type:String,

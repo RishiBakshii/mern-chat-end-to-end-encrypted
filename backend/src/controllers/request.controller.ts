@@ -7,7 +7,7 @@ import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
 
 const getUserRequests = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
-    const requests = await Request.find({receiver:req.user?._id})
+    const requests = await Request.find({receiver:req.user?._id}).populate("sender",['username','avatar']).select('-receiver').select("-updatedAt")
     return res.status(200).json(requests)
 })
 

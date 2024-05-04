@@ -60,22 +60,16 @@ export const GroupChatForm = () => {
       return toast.error("Atleast 2 members are required")
     }
 
-    if(image){
-      createChat({
-        avatar:image,
-        name:data.name,
-        isGroupChat:"true",
-        members:selectedMembers,
-      })
-    }
-    else if(!image){
-      createChat({
-        name:data.name,
-        isGroupChat:"true",
-        members:selectedMembers,
-      })
-    }
+    else{
 
+      createChat({
+        avatar:image?image:undefined,
+        name:data.name,
+        isGroupChat:"true",
+        members:selectedMembers,
+      })
+    }
+    
   }
 
   const handleAddOrRemoveMember = (newMember:string)=>{

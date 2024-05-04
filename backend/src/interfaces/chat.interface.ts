@@ -13,12 +13,12 @@ export interface IChat {
 export interface IMemberDetails {
     _id:string
     username:string
-    avatar:string
+    avatar:IAvatar
 }
 
-export interface IChatWithUnreadMessages extends Omit<IChat, 'members'>{
-
-    members:Array<IMemberDetails>
+export interface IChatWithUnreadMessages extends Omit<IChat, 'members' | 'avatar'>{
+    avatar?:IAvatar['secureUrl']
+    members:Array<Omit<IMemberDetails, 'avatar'> & {avatar:string}>
     unreadMessages:{
 
         count?:number

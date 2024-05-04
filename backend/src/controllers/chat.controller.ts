@@ -9,14 +9,15 @@ import { Message } from "../models/message.model.js";
 import { emitEvent, getMemberSockets, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event.enum.js";
 import { UnreadMessage } from "../models/unread-message.model.js";
-import { IChatWithUnreadMessages } from "../interfaces/chat.interface.js";
+import { IChatWithUnreadMessages, IMemberDetails } from "../interfaces/chat.interface.js";
 import { IMessage } from "../interfaces/message.interface.js";
 import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
+import { UploadApiResponse } from "cloudinary";
 
 const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
-    let secureUrl:string=''
+    let uploadResults:UploadApiResponse[] = []
 
     const {isGroupChat,members,avatar,name}:createChatSchemaType = req.body
     if(isGroupChat){
@@ -39,25 +40,35 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
         }
 
         if(req.file){
-            const result = await uploadFilesToCloudinary([req.file])
-            secureUrl = result[0].secure_url
+            uploadResults = await uploadFilesToCloudinary([req.file])
         }
-        const newGroupChat = await Chat.create({
-            avatar:secureUrl?secureUrl:DEFAULT_AVATAR,
-            isGroupChat,members:membersWithReqUser,
-            admin:req.user?._id,name
-        })
+        const newGroupChat = await new Chat({
+            avatar:{
+                secureUrl:uploadResults[0]?.secure_url?uploadResults[0].secure_url:DEFAULT_AVATAR,
+                publicId:uploadResults[0]?.public_id?uploadResults[0].public_id:null
+            },
+            isGroupChat,
+            members:membersWithReqUser,
+            admin:req.user?._id,
+            name
+        }).populate<{members:Array<IMemberDetails>}>("members",['username','avatar'])
 
-        await newGroupChat.populate("members",['username','avatar'])
+        newGroupChat.save()
 
         const otherMembers = getOtherMembers({members: newGroupChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
         
-        const transformedChat = {
+        const transformedChat:IChatWithUnreadMessages = {
             _id:newGroupChat._id,
             name:newGroupChat.name,
             isGroupChat:newGroupChat.isGroupChat,
-            members:newGroupChat.members,
-            avatar:newGroupChat.avatar,
+            members:newGroupChat.members.map((member)=>{
+                return {
+                    _id:member._id,
+                    avatar:member.avatar.secureUrl,
+                    username:member.username
+                }
+            }),
+            avatar:newGroupChat.avatar?.secureUrl,
             admin:newGroupChat.admin,
             unreadMessages:{
                 count:0,

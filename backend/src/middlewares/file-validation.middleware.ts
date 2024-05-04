@@ -17,4 +17,6 @@ export const fileValidation = (req:Request,res:Response,next:NextFunction)=>{
         return next()
     }
 
+    return next()
+
 }

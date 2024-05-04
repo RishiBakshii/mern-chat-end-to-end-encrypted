@@ -51,10 +51,30 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
         await newGroupChat.populate("members",['username','avatar'])
 
         const otherMembers = getOtherMembers({members: newGroupChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
-        emitEvent(req,Events.NEW_GROUP,getMemberSockets(otherMembers),newGroupChat)
         
-
-        return res.status(201).json(newGroupChat)
+        const transformedChat = {
+            _id:newGroupChat._id,
+            name:newGroupChat.name,
+            isGroupChat:newGroupChat.isGroupChat,
+            members:newGroupChat.members,
+            avatar:newGroupChat.avatar,
+            admin:newGroupChat.admin,
+            unreadMessages:{
+                count:0,
+                message:{
+                    _id:"",
+                    content:""
+                },
+                sender:{
+                    _id:"",
+                    username:"",
+                    avatar:""
+                }
+            }
+        }
+        emitEvent(req,Events.NEW_GROUP,otherMembers,transformedChat)
+        
+        return res.status(201).json(transformedChat)
 
     }
 

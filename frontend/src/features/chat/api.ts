@@ -13,7 +13,7 @@ export const chatApi = createApi({
         getChats:builder.query<Array<IChatWithUnreadMessages>,void>({
             query:()=>"/chat"
         }),
-        createChat:builder.mutation<Omit<IChatWithUnreadMessages, "unreadMessages">, Required<Pick<IChatWithUnreadMessages,'name'> & {members:Array<string>,isGroupChat:string}> & {avatar?:Blob}>({
+        createChat:builder.mutation<IChatWithUnreadMessages, Required<Pick<IChatWithUnreadMessages,'name'> & {members:Array<string>,isGroupChat:string}> & {avatar?:Blob}>({
             query:({name,members,isGroupChat,avatar})=>{
 
                 const formData = new FormData()
@@ -37,14 +37,9 @@ export const chatApi = createApi({
             async onQueryStarted({}, { dispatch, queryFulfilled }) {
                 try {
                   const { data: createdChat } = await queryFulfilled
-                  const transformedChat:IChatWithUnreadMessages = {...createdChat,unreadMessages:{
-                    count:0,
-                    message:{_id:"",content:""},
-                    sender:{_id:"",avatar:"",username:""}
-                  }}
                   dispatch(
                     chatApi.util.updateQueryData('getChats', undefined, (draft) => {
-                      draft.push(transformedChat)
+                      draft.push(createdChat)
                     })
                   )
                 } catch(error) {

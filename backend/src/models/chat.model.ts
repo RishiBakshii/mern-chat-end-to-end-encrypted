@@ -20,7 +20,12 @@ const chatSchema = new Schema<IChat>({
         required:true
     },
     avatar:{
-        type:String,
+        secureUrl:{
+            type:String
+        },
+        publicId:{
+            type:String
+        }
     },
     admin:{
         type:Schema.ObjectId,

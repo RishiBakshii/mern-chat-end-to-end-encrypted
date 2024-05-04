@@ -1,11 +1,12 @@
 import { Types } from "mongoose"
+import { IAvatar } from "./user.interface.js"
 
 export interface IChat {
     _id:Types.ObjectId
     name?:string
     isGroupChat?:boolean
     members:Array<Types.ObjectId>
-    avatar?:string
+    avatar?:IAvatar
     admin?:Types.ObjectId,
 }
 

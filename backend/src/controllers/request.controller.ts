@@ -87,15 +87,24 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
     }
 
     if(action==='accept'){
-        const newChat = await Chat.create({members:[isExistingRequest.sender,isExistingRequest.receiver]})
-        await newChat.populate("members",['username','avatar'])
+        const newChat = await new Chat({members:[isExistingRequest.sender,isExistingRequest.receiver]})
+        .populate<{"members":Array<IMemberDetails>}>("members",['username','avatar'])
+
+        await newChat.save()
         await isExistingRequest.deleteOne()
         
         const membersStringIds = [isExistingRequest.sender.toString(),isExistingRequest.receiver.toString()]
+
         emitEvent(req,Events.NEW_GROUP,membersStringIds,{
             _id:newChat._id.toString(),
             isGroupChat:newChat.isGroupChat,
-            members:newChat.members,
+            members:newChat.members.map(({_id,avatar,username})=>{
+                return {
+                    _id,
+                    avatar:avatar.secureUrl,
+                    username
+                }
+            }),
             unreadMessages:{
                 count:0,
                 message:{

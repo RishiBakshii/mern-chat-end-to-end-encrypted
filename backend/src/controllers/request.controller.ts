@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, request } from "express";
 import { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
 import { Request } from "../models/request.model.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
@@ -7,10 +7,27 @@ import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
 import { emitEvent } from "../utils/socket.util.js";
 import { Events } from "../enums/event.enum.js";
+import { IMemberDetails } from "../interfaces/chat.interface.js";
 
 const getUserRequests = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
-    const requests = await Request.find({receiver:req.user?._id}).populate("sender",['username','avatar']).select('-receiver').select("-updatedAt")
-    return res.status(200).json(requests)
+    const requests = await Request.find({receiver:req.user?._id})
+    .populate<{sender:IMemberDetails}>("sender",['username','avatar.secureUrl']).select('-receiver').select("-updatedAt")
+    
+    const transformedRequests = requests.map(request=>{
+        
+        return {
+            _id:request._id.toString(),
+            sender:{
+                _id:request.sender._id,
+                username:request.sender.username,
+                avatar:request.sender.avatar.secureUrl
+            },
+            status:request.status,
+            createdAt:Date.now()
+        }
+    })
+
+    return res.status(200).json(transformedRequests)
 })
 
 const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
@@ -33,17 +50,24 @@ const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
         return next(new CustomError("Request is already sent",400))
     }
 
-    const newRequest = await Request.create({receiver,sender:req.user?._id})
-    await newRequest.populate("sender",['avatar','username'])
+    const newRequest = await new Request({receiver,sender:req.user?._id}).populate<{sender:IMemberDetails}>('sender',['username','avatar'])
+    await newRequest.save()
 
-    emitEvent(req,Events.NEW_FRIEND_REQUEST,[receiver],{
+    const transformedRequest = {
+
         _id:newRequest._id.toString(),
-        sender:newRequest.sender,
+        sender:{
+            _id:newRequest.sender._id,
+            username:newRequest.sender.username,
+            avatar:newRequest.sender.avatar.secureUrl
+        },
         status:newRequest.status,
         createdAt:Date.now()
-    })
+    }
 
-    return res.status(201).json(newRequest)
+    emitEvent(req,Events.NEW_FRIEND_REQUEST,[receiver],transformedRequest)
+
+    return res.status(201).json(transformedRequest)
 
 })
 

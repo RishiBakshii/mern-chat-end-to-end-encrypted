@@ -144,7 +144,7 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
             }),
             admin:chat.admin,
             isGroupChat:chat.isGroupChat,
-            avatar:chat.avatar,
+            avatar:chat.avatar?.secureUrl,
             unreadMessages:{
                 count:unreadMessage?.count,
                 message:{

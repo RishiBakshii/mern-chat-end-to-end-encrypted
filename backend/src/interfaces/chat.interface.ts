@@ -1,5 +1,4 @@
 import { Types } from "mongoose"
-import type { IUnreadMessage } from "./unread-message.interface.js"
 
 export interface IChat {
     _id:Types.ObjectId
@@ -10,7 +9,15 @@ export interface IChat {
     admin?:Types.ObjectId,
 }
 
-export interface IChatWithUnreadMessages extends IChat {
+export interface IMemberDetails {
+    _id:string
+    username:string
+    avatar:string
+}
+
+export interface IChatWithUnreadMessages extends Omit<IChat, 'members'>{
+
+    members:Array<IMemberDetails>
     unreadMessages:{
 
         count?:number

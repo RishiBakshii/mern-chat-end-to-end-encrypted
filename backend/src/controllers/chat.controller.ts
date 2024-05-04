@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import type { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
-import { IUser } from "../interfaces/user.interface.js";
+import { IAvatar, IUser } from "../interfaces/user.interface.js";
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType } from "../schemas/chat.schema.js";
@@ -9,7 +9,7 @@ import { Message } from "../models/message.model.js";
 import { emitEvent, getMemberSockets, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event.enum.js";
 import { UnreadMessage } from "../models/unread-message.model.js";
-import { IChat, IChatWithUnreadMessages } from "../interfaces/chat.interface.js";
+import { IChatWithUnreadMessages } from "../interfaces/chat.interface.js";
 import { IMessage } from "../interfaces/message.interface.js";
 import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
@@ -113,7 +113,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 
 const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
-    const chats=await Chat.find({members:{$in:[req.user?._id]}}).populate("members",['username','avatar'])
+    const chats=await Chat.find({members:{$in:[req.user?._id]}}).populate<{members:Array<{_id:string,username:string,avatar:IAvatar}>}>("members",['username','avatar'])
 
     const transformedChatsPromise = chats.map(async(chat)=>{
         
@@ -124,7 +124,13 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
         const chatWithUnreadMessage:IChatWithUnreadMessages = {
             _id:chat._id,
             name:chat.name,
-            members:chat.members,
+            members:chat.members.map((member)=>{
+                return {
+                    _id:member._id,
+                    avatar:member.avatar.secureUrl,
+                    username:member.username
+                }
+            }),
             admin:chat.admin,
             isGroupChat:chat.isGroupChat,
             avatar:chat.avatar,
@@ -137,7 +143,7 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
                 sender:{
                     _id:unreadMessage?.sender._id,
                     username:unreadMessage?.sender.username,
-                    avatar:unreadMessage?.sender.avatar
+                    avatar:unreadMessage?.sender.avatar?.secureUrl
                 },
             }
         }

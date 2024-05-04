@@ -129,7 +129,7 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
     const transformedChatsPromise = chats.map(async(chat)=>{
         
         const unreadMessage = await UnreadMessage.findOne({chat:chat._id,user:req.user?._id}).select("-chat").select("-user")
-        .populate<{message:Pick<IMessage, '_id' | 'content'>}>("message",['content'])
+        .populate<{message:Pick<IMessage , 'content'> & {_id:string} }>("message",['content'])
         .populate<{sender:Pick<IUser, "username" | 'avatar'> & {_id:string}}>("sender",["username","avatar"])
         
         const chatWithUnreadMessage:IChatWithUnreadMessages = {

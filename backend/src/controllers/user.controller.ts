@@ -20,7 +20,16 @@ const getUserByUsername = asyncErrorHandler(async(req:AuthenticatedRequest,res:R
 
     const results = await User.find({username:searchTerm},{avatar:1,username:1,name:1},{fuzzy:true})
 
-    return res.status(200).json(results)
+    const transformedResults = results.map(result=>{
+        return {
+            avatar:result.avatar?.secureUrl,
+            name:result.name,
+            username:result.username,
+            _id:result._id
+        }
+    })
+
+    return res.status(200).json(transformedResults)
     
 })
 

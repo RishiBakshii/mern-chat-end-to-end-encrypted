@@ -26,7 +26,7 @@ import { Events } from './enums/event.enum.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
 import { IUnreadMessage } from './interfaces/unread-message.interface.js'
-import { IChat } from './interfaces/chat.interface.js'
+import { IChat, IMemberDetails } from './interfaces/chat.interface.js'
 import { emitEvent, getMemberSockets, getOtherMembers } from './utils/socket.util.js'
 
 
@@ -68,11 +68,25 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
     socket.on(Events.MESSAGE,async({chat,content,attachments,members}:Omit<IMessage , "sender"> & {members : Array<string>})=>{
 
         // save to db
-        const newMessage = await (await Message.create({chat,content,attachments,sender:socket.user?._id})).populate("sender",['avatar','username'])
+        const newMessage = await (await Message.create({chat,content,attachments,sender:socket.user?._id})).populate<{sender:IMemberDetails}>("sender",['avatar','username'])
         
         // realtime response
         const memberSocketIds = getMemberSockets(members)
-        io.to(memberSocketIds).emit(Events.MESSAGE,newMessage)
+        io.to(memberSocketIds).emit(Events.MESSAGE,{
+            
+            _id: newMessage._id,
+            content: newMessage.content,
+            sender: {
+                _id: newMessage.sender._id,
+                avatar: newMessage.sender.avatar.secureUrl,
+                username: newMessage.sender.username
+            },
+            chat: newMessage.chat.toString(),
+            attachments: newMessage.attachments,
+            createdAt: newMessage.createdAt,
+            updatedAt:  newMessage.updatedAt
+              
+        })
 
         // unread message creation for receivers
         const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})

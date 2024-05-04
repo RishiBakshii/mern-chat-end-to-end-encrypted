@@ -6,4 +6,6 @@ export interface IMessage {
     sender:Types.ObjectId
     chat:Types.ObjectId
     attachments?:Array<String>
+    createdAt:Date
+    updatedAt:Date
 }

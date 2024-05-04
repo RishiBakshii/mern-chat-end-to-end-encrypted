@@ -19,12 +19,13 @@ import { IChatWithUnreadMessages, IUserTypingEventReceiveData } from "../../../i
 import { useDebounce } from "../../../hooks/useDebounce"
 import { Modal } from "../../../components/shared/Modal"
 import { GroupChatForm } from "./GroupChatForm"
-import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, setAddFriendForm, setFriendRequestForm, setNewgroupChatForm } from "../../ui/uiSlice"
+import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, selectProfileForm, setAddFriendForm, setFriendRequestForm, setNewgroupChatForm, setProfileForm } from "../../ui/uiSlice"
 import { AddFriendForm } from "../../friends/components/AddFriendForm"
 import { friendsApi, useGetUserFriendRequestsQuery } from "../../friends/api"
 import { useToast } from "../../../hooks/useToast"
 import { FriendRequestForm } from "../../friends/components/FriendRequestForm"
 import { IFriendRequest } from "../../../interfaces/friends"
+import { ProfileForm } from "../../user/components/ProfileForm"
 
 export const Chat = () => {
   
@@ -300,6 +301,9 @@ export const Chat = () => {
       </Modal>
       <Modal isOpen={useAppSelector(selectFriendRequestForm)} onClose={()=>dispatch(setFriendRequestForm(false))}>
         <FriendRequestForm/>
+      </Modal>
+      <Modal isOpen={useAppSelector(selectProfileForm)} onClose={()=>dispatch(setProfileForm(false))}>
+        <ProfileForm/>
       </Modal>
       
 

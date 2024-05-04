@@ -1,6 +1,7 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import { config } from '../../config/envConfig'
 import { IUser } from '../../interfaces/auth'
+import { updateLoggedInUser } from '../auth/authSlice'
 
 export const userApi = createApi({
 
@@ -17,9 +18,28 @@ export const userApi = createApi({
             query:(username)=>`/search?username=${username}`
         }),
 
+        updateProfile:builder.mutation<IUser,{avatar:Blob}>({
+            query:({avatar})=>{
+
+                const formData = new FormData()
+                formData.append("avatar",avatar)
+
+                return {
+                    url:"/",
+                    method:"PATCH",
+                    body:formData,
+                }
+            },
+            async onQueryStarted({},{dispatch,queryFulfilled}){
+                const {data:UpdatedUser} = await queryFulfilled
+                dispatch(updateLoggedInUser(UpdatedUser))
+            }
+        })
+
     })
 })
 
 export const {
-    useLazySearchUserQuery
+    useLazySearchUserQuery,
+    useUpdateProfileMutation,
 } = userApi

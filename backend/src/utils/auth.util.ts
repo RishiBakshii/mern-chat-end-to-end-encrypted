@@ -36,10 +36,25 @@ export const generateOtp=():string=>{
 
 }
 
-export const getBase64 = (file:Express.Multer.File) => `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-
 export const uploadFilesToCloudinary = async(files:Array<Express.Multer.File>)=>{
-    const uploadPromises = files.map(file=>cloudinary.uploader.upload(getBase64(file)))
+    const uploadPromises = files.map(file=>cloudinary.uploader.upload(file.path))
     const result = await Promise.all(uploadPromises)
     return result
+}
+
+export const deleteFileFromCloudinary = async(public_id:string)=>{
+    await cloudinary.uploader.destroy(public_id)
+}
+
+export const getSecureUserInfo = (user:IUser)=>{
+    return {
+        _id:user._id,
+        name:user.name,
+        username:user.username,
+        avatar:user.avatar?.secureUrl,
+        email:user.email,
+        createdAt:user.createdAt,
+        updatedAt:user.updatedAt,
+        verified:user.verified
+    }
 }

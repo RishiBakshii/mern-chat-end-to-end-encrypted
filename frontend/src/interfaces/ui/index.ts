@@ -3,4 +3,5 @@ export interface IUi {
     newgroupChatForm:boolean
     addFriendForm:boolean
     friendRequestForm:boolean
+    profileForm:boolean
 }

@@ -14,7 +14,12 @@ const userSchema = new Schema<IUser>({
         index:true
     },
     avatar:{
-        type:String,
+        secureUrl:{
+            type:String
+        },
+        publicId:{
+            type:String
+        }
     },
     email:{
         type:String,

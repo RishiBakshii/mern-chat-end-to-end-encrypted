@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../config/envConfig";
 import type { IChatWithUnreadMessages } from "../../interfaces/chat";
-import toast from "react-hot-toast";
 
 export const chatApi = createApi({
     reducerPath:"chatApi",
@@ -54,12 +53,24 @@ export const chatApi = createApi({
                 body:members
             })
         }),
-        removeMember:builder.mutation<IChat,Pick<IChat ,'_id'> & {member:string}>({
-            query:({_id,member})=>({
-                url:`/chat/${_id}/members`,
+        removeMember:builder.mutation<{removedMemberId:string},{chatId:string,memberId:string}>({
+            query:({chatId,memberId})=>({
+                url:`/chat/${chatId}/members`,
                 method:"DELETE",
-                body:member
-            })
+                body:{member:memberId}
+            }),
+            async onQueryStarted({chatId},{dispatch,queryFulfilled}){
+                const {data:removedMemberId} = await queryFulfilled
+
+                dispatch(
+                    chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
+                        const affectedChat = draft.find(chat=>chat._id===chatId)
+                        if(affectedChat){
+                            affectedChat.members=affectedChat.members.filter(member=>member._id!==removedMemberId)
+                        }
+                    })
+                )
+            }
         })
     })
 })

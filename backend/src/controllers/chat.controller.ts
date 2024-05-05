@@ -253,8 +253,7 @@ const removeMemberFromChat = asyncErrorHandler(async(req:AuthenticatedRequest,re
     const memberToBeRemovedIndex = isExistingChat.members.findIndex(chatMember => chatMember._id.toString() === member)
     isExistingChat.members.splice(memberToBeRemovedIndex,1)
     await isExistingChat.save()
-    return res.status(200).json(isExistingChat)
-
+    return res.status(200).json(member)
 
 })
 

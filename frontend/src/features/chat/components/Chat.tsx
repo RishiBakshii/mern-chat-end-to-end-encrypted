@@ -19,13 +19,14 @@ import { IChatWithUnreadMessages, IUserTypingEventReceiveData } from "../../../i
 import { useDebounce } from "../../../hooks/useDebounce"
 import { Modal } from "../../../components/shared/Modal"
 import { GroupChatForm } from "./GroupChatForm"
-import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, selectProfileForm, setAddFriendForm, setFriendRequestForm, setNewgroupChatForm, setProfileForm } from "../../ui/uiSlice"
+import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, selectMemberForm, selectProfileForm, setAddFriendForm, setFriendRequestForm, setMemberForm, setNewgroupChatForm, setProfileForm } from "../../ui/uiSlice"
 import { AddFriendForm } from "../../friends/components/AddFriendForm"
 import { friendsApi, useGetUserFriendRequestsQuery } from "../../friends/api"
 import { useToast } from "../../../hooks/useToast"
 import { FriendRequestForm } from "../../friends/components/FriendRequestForm"
 import { IFriendRequest } from "../../../interfaces/friends"
 import { ProfileForm } from "../../user/components/ProfileForm"
+import { MemberForm } from "./MemberForm"
 
 export const Chat = () => {
   
@@ -205,6 +206,9 @@ export const Chat = () => {
     }
   },[selectedChatId])
 
+  const openMemberForm = ()=>{
+    dispatch(setMemberForm(true))
+  }
 
   return (
     <div className="flex w-screen h-full">
@@ -235,7 +239,7 @@ export const Chat = () => {
                 <div className="flex flex-row justify-between items-center">
                   {
                     !isFetching && chats && selectedChatId &&  
-                    <ChatDetails chat={chats.find(chat=>chat._id===selectedChatId)!} isTyping={isTyping}/>
+                    <ChatDetails chat={chats.find(chat=>chat._id===selectedChatId)!} isTyping={isTyping} openMemberForm={openMemberForm}/>
                   }
                 </div>
 
@@ -287,7 +291,7 @@ export const Chat = () => {
               !isFetching && chats && selectedChatId &&
               <>
               <h6 className="text-xl font-medium">{chats?.find(chat=>chat._id===selectedChatId)?.members.length} Members</h6>
-              <MemberList members={chats.find(chat=>chat._id===selectedChatId)?.members}/>
+              <MemberList loggedInUserId={loggedInUser?._id!} chatAdminId={chats.find(chat=>chat._id===selectedChatId)?.admin}  members={chats.find(chat=>chat._id===selectedChatId)?.members}/>
               </>
             }
           </div>
@@ -304,6 +308,9 @@ export const Chat = () => {
       </Modal>
       <Modal isOpen={useAppSelector(selectProfileForm)} onClose={()=>dispatch(setProfileForm(false))}>
         <ProfileForm/>
+      </Modal>
+      <Modal isOpen={useAppSelector(selectMemberForm)} onClose={()=>dispatch(setMemberForm(false))}>
+        <MemberForm/>
       </Modal>
       
 

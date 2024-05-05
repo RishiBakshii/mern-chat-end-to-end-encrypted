@@ -8,7 +8,8 @@ const initialState:IUi = {
     newgroupChatForm:false,
     addFriendForm:false,
     friendRequestForm:false,
-    profileForm:false
+    profileForm:false,
+    memberForm:false
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -28,6 +29,9 @@ const uiSlice = createSlice({
         },
         setProfileForm:(state,action:PayloadAction<boolean>)=>{
             state.profileForm=action.payload
+        },
+        setMemberForm:(state,action:PayloadAction<boolean>)=>{
+            state.memberForm=action.payload
         }
     }
 })
@@ -38,6 +42,7 @@ export const selectGroupChatForm = (state:RootState)=>state.uiSlice.newgroupChat
 export const selectAddFriendForm = (state:RootState)=>state.uiSlice.addFriendForm
 export const selectFriendRequestForm = (state:RootState)=>state.uiSlice.friendRequestForm
 export const selectProfileForm = (state:RootState)=>state.uiSlice.profileForm
+export const selectMemberForm = (state:RootState)=>state.uiSlice.memberForm
 
 // exporting actions
 export const {
@@ -46,6 +51,7 @@ export const {
     setAddFriendForm,
     setFriendRequestForm,
     setProfileForm,
+    setMemberForm,
 } = uiSlice.actions
 
 export default uiSlice

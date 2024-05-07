@@ -2,6 +2,7 @@ import type { IUnreadMessage } from "../messages"
 
 export interface IChatIntitalState {
     selectedChatId:string | null
+    selectedChatDetails:IChatWithUnreadMessages| null
 }
 
 export interface IChatMember {

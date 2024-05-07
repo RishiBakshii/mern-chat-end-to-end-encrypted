@@ -3,7 +3,7 @@ import { ChatList } from "./ChatList"
 import { MemberList } from "./MemberList"
 import { MessageList } from "../../messages/components/MessageList"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { selectSelectedChatId } from "../chatSlice"
+import { selectSelectedChatDetails, selectSelectedChatId, updateSelectedChatDetails } from "../chatSlice"
 import { useEffect, useState } from "react"
 import { messageApi, useLazyGetMessagesByChatIdQuery } from "../../messages/api"
 import { ChatDetails } from "./ChatDetails"
@@ -31,11 +31,28 @@ import { MemberForm } from "./MemberForm"
 export const Chat = () => {
   
   const dispatch = useAppDispatch()
+  const socket = getSocket()
 
   const selectedChatId = useAppSelector(selectSelectedChatId)
+  const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
   const loggedInUser = useAppSelector(selectLoggedInUser)
 
+  const [messageVal,setMessageVal]=useState<string>('')
+  const [isTyping,setIsTyping] = useDebounce(false,2000)
+
   const {data:chats,isFetching}= useGetChatsQuery()
+
+  useEffect(()=>{
+    if(selectedChatId){
+      getMessagesByChatIdQueryTrigger(selectedChatId,true)
+
+      const selectedChatDetails = chats?.find(chat=>chat._id===selectedChatId)
+
+      if(selectedChatDetails){
+        dispatch(updateSelectedChatDetails(selectedChatDetails))
+      }
+    }
+  },[selectedChatId])
 
   const [
     getMessagesByChatIdQueryTrigger,{
@@ -71,11 +88,6 @@ export const Chat = () => {
     isSuccess:friendRequestIsSuccess,
     isUninitialized:friendRequestIsUninitialized,
   })
-
-  const [messageVal,setMessageVal]=useState<string>('')
-  const [isTyping,setIsTyping] = useDebounce(false,2000)
-  
-  const socket = getSocket()
   
   useUpdateUnreadMessage()
   useSocketEvent(Events.MESSAGE,(newMessage:IMessage)=>{
@@ -208,12 +220,6 @@ export const Chat = () => {
 
   }
 
-  useEffect(()=>{
-    if(selectedChatId){
-      getMessagesByChatIdQueryTrigger(selectedChatId,true)
-    }
-  },[selectedChatId])
-
   const openMemberForm = ()=>{
     dispatch(setMemberForm(true))
   }
@@ -246,19 +252,24 @@ export const Chat = () => {
                 {/* chat name,info and options */}
                 <div className="flex flex-row justify-between items-center">
                   {
-                    !isFetching && chats && selectedChatId &&  
-                    <ChatDetails chat={chats.find(chat=>chat._id===selectedChatId)!} isTyping={isTyping} openMemberForm={openMemberForm}/>
+                    !isFetching && chats && selectedChatId &&  selectedChatDetails &&
+                    <ChatDetails chat={selectedChatDetails} isTyping={isTyping} openMemberForm={openMemberForm}/>
                   }
                 </div>
 
                 {/* messages area */}
                 <div className="h-full flex px-2 flex-col gap-y-5 overflow-y-scroll">
                   {
-                    !messagesIsFetching && messagesData && <MessageList isGroupChat={chats.find(chat=>chat._id===selectedChatId)?.isGroupChat!} messages={messagesData} loggedInUserId={loggedInUser?._id!}/>
+                    !messagesIsFetching && messagesData && selectedChatDetails && 
+                    <MessageList 
+                      isGroupChat={selectedChatDetails?.isGroupChat} 
+                      messages={messagesData} 
+                      loggedInUserId={loggedInUser?._id!}
+                      />
                   }
                   { 
-                    selectedChatId && 
-                    <SeenByList members={chats.find(chat=>chat._id===selectedChatId)?.seenBy!}/>  
+                    selectedChatId && selectedChatDetails?.seenBy && 
+                    <SeenByList members={selectedChatDetails.seenBy}/>  
                   }
                 </div>
 
@@ -296,10 +307,13 @@ export const Chat = () => {
           <div className="flex flex-col gap-y-4 overflow-y-scroll scroll-smooth">
 
             {
-              !isFetching && chats && selectedChatId &&
+              !isFetching && chats && selectedChatId && selectedChatDetails && loggedInUser &&
               <>
-              <h6 className="text-xl font-medium">{chats?.find(chat=>chat._id===selectedChatId)?.members.length} Members</h6>
-              <MemberList loggedInUserId={loggedInUser?._id!} chatAdminId={chats.find(chat=>chat._id===selectedChatId)?.admin}  members={chats.find(chat=>chat._id===selectedChatId)?.members}/>
+              <h6 className="text-xl font-medium">{selectedChatDetails.members.length} Members</h6>
+              <MemberList 
+                loggedInUserId={loggedInUser?._id} 
+                chatAdminId={selectedChatDetails.admin} 
+                members={selectedChatDetails.members}/>
               </>
             }
           </div>

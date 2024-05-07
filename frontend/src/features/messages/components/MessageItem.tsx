@@ -3,10 +3,11 @@ import type { IMessage } from "../../../interfaces/messages";
 
 type PropTypes = {
     myMessage:boolean;
-    message:IMessage
+    message:IMessage,
+    isGroupChat:boolean
 }
 
-export const MessageItem = memo(({message,myMessage=false}:PropTypes) => {
+export const MessageItem = memo(({message,myMessage=false,isGroupChat}:PropTypes) => {
 
 
     const [readMore,SetReadMore] = useState<boolean>(message.content.length>500?true:false)
@@ -25,10 +26,10 @@ export const MessageItem = memo(({message,myMessage=false}:PropTypes) => {
             alt={`${message.sender.username} avatar`} />
         }
         
-        <div className={`${myMessage?"bg-violet-500 text-white":"bg-gray-200"} max-w-96 min-w-16 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
+        <div className={`${myMessage?"bg-violet-500 text-white":"bg-gray-100"} max-w-96 min-w-16 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
             
             {
-            !myMessage && 
+            !myMessage && isGroupChat &&
             <p className="text-violet-500 font-medium">{message.sender.username}</p>
             }
             

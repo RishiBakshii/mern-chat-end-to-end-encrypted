@@ -246,7 +246,7 @@ export const Chat = () => {
                 {/* messages area */}
                 <div className="h-full flex px-2 flex-col gap-y-5 overflow-y-scroll">
                   {
-                    !messagesIsFetching && messagesData && <MessageList messages={messagesData} loggedInUserId={loggedInUser?._id!}/>
+                    !messagesIsFetching && messagesData && <MessageList isGroupChat={chats.find(chat=>chat._id===selectedChatId)?.isGroupChat!} messages={messagesData} loggedInUserId={loggedInUser?._id!}/>
                   }
                   { 
                     selectedChatId && 

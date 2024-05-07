@@ -180,6 +180,14 @@ export const Chat = () => {
     )
   })
 
+  useSocketEvent(Events.ONLINE,(userId:string)=>{
+    console.log(`${userId} is online`)
+  })
+
+  useSocketEvent(Events.OFFLINE,(userId:string)=>{
+    console.log(`${userId} is offline`)
+  })
+
   useUserTyping(messageVal,socket,chats,300)
 
   const sendMessage = (e:React.FormEvent)=>{

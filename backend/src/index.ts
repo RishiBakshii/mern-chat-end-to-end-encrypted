@@ -65,6 +65,8 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     userSocketIds.set(socket.user?._id.toString(),socket.id)
 
+    socket.broadcast.emit(Events.ONLINE,socket.user?._id)
+
     socket.on(Events.MESSAGE,async({chat,content,attachments,members}:Omit<IMessage , "sender"> & {members : Array<string>})=>{
 
         // save to db
@@ -141,7 +143,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
     })
 
     socket.on("disconnect",()=>{
-        console.log(`${socket.user?.name} left`);
+        socket.broadcast.emit(Events.OFFLINE,socket.user?._id)
     })
 })
 

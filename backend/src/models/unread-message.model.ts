@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import type { IUnreadMessage } from "../interfaces/unread-message.interface.js";
+import type { IUnreadMessage } from "../interfaces/unread-message/unread-message.interface.js";
 
 
 const unreadMessageSchema = new Schema<IUnreadMessage>({

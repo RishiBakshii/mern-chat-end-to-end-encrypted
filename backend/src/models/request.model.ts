@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
-import type { IRequest } from "../interfaces/request.interface.js";
-import { RequestStatus } from "../enums/request.enum.js";
+import type { IRequest } from "../interfaces/request/request.interface.js";
+import { RequestStatus } from "../enums/request/request.enum.js";
 
 
 const requestSchema = new Schema<IRequest>({

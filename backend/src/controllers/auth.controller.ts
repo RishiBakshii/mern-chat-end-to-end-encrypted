@@ -12,8 +12,8 @@ import { env } from "../schemas/env.schema.js";
 import jwt from 'jsonwebtoken'
 import { config } from "../config/env.config.js";
 import type { resetPasswordSchemaType } from "../schemas/auth.schema.js";
-import { IUser } from "../interfaces/user.interface.js";
-import type { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
+import type { IUser } from "../interfaces/auth/auth.interface.js";
+import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
 import { Otp } from "../models/otp.model.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 

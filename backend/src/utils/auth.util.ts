@@ -1,6 +1,6 @@
 import { CookieOptions, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { IUser } from '../interfaces/user.interface.js'
+import type { IUser } from '../interfaces/auth/auth.interface.js'
 import { env } from '../schemas/env.schema.js'
 import {v2 as cloudinary} from 'cloudinary'
 import { config } from '../config/env.config.js'

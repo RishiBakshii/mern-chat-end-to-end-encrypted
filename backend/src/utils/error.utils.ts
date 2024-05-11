@@ -1,5 +1,5 @@
 import {Request,Response,NextFunction} from 'express'
-import { AuthenticatedRequest } from '../interfaces/authenticated-request.interface.js'
+import type { AuthenticatedRequest } from '../interfaces/auth/auth.interface.js'
 
 export class CustomError extends Error {
     constructor(message:string='Interval Server Error', public statusCode:number=500){

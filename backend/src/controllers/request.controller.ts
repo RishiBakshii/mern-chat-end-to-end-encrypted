@@ -1,13 +1,13 @@
-import { NextFunction, Response, request } from "express";
-import { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
+import { NextFunction, Response } from "express";
+import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
 import { Request } from "../models/request.model.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import type { createRequestSchemaType, handleRequestSchemaType } from "../schemas/request.schema.js";
 import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
 import { emitEvent } from "../utils/socket.util.js";
-import { Events } from "../enums/event.enum.js";
-import { IMemberDetails } from "../interfaces/chat.interface.js";
+import { Events } from "../enums/event/event.enum.js";
+import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 
 const getUserRequests = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     const requests = await Request.find({receiver:req.user?._id})

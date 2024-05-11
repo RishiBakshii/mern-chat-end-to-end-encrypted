@@ -5,7 +5,7 @@ import { env } from '../schemas/env.schema.js';
 import bcrypt from 'bcryptjs'
 import { config } from '../config/env.config.js';
 import { VerifyCallback } from 'passport-google-oauth20';
-import type { IGithub } from '../interfaces/github.interface.js';
+import type { IGithub } from '../interfaces/auth/auth.interface.js';
 
 passport.use(new GithubStrategy({
     clientID: env.GITHUB_CLIENT_ID,

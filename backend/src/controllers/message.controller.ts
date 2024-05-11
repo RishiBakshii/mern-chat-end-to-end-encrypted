@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Message } from "../models/message.model.js";
 import { asyncErrorHandler } from "../utils/error.utils.js";
-import { IMemberDetails } from "../interfaces/chat.interface.js";
+import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 
 const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 

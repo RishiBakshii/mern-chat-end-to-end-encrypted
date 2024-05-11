@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import type { IOtp } from "../interfaces/otp.interface.js";
+import type { IOtp } from "../interfaces/auth/auth.interface.js";
 import { env } from "../schemas/env.schema.js";
 
 const otpSchema = new Schema<IOtp>({

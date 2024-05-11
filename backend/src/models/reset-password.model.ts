@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import type { IResetPassword } from "../interfaces/reset-password.interface.js";
+import type { IResetPassword } from "../interfaces/auth/auth.interface.js";
 import { env } from "../schemas/env.schema.js";
 
 const resetPasswordSchema = new Schema<IResetPassword>({

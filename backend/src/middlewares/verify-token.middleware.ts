@@ -1,10 +1,10 @@
 import { NextFunction, Response } from "express"
 import jwt from 'jsonwebtoken'
-import { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js"
+import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js"
 import { User } from "../models/user.model.js"
 import { env } from "../schemas/env.schema.js"
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js"
-import { IUser } from "../interfaces/user.interface.js"
+import type { IUser } from "../interfaces/auth/auth.interface.js"
 
 export const verifyToken=asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 

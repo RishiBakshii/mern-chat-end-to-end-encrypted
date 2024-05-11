@@ -1,5 +1,5 @@
 import { Types } from "mongoose"
-import { IAvatar } from "./user.interface.js"
+import type { IAvatar } from "../auth/auth.interface.js"
 
 export interface IChat {
     _id:Types.ObjectId

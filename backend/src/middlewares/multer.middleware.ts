@@ -1,6 +1,6 @@
 import multer from 'multer'
 import { MAX_FILE_SIZE } from '../constants/file.constant.js'
-import { AuthenticatedRequest } from '../interfaces/authenticated-request.interface.js'
+import type { AuthenticatedRequest } from '../interfaces/auth/auth.interface.js'
 import {v4 as uuidV4 } from 'uuid'
 
 export const upload = multer({

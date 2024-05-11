@@ -1,16 +1,14 @@
 import { NextFunction, Response } from "express";
-import type { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
-import { IAvatar, IUser } from "../interfaces/user.interface.js";
+import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
+import type { IUser } from "../interfaces/auth/auth.interface.js";
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType } from "../schemas/chat.schema.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { Message } from "../models/message.model.js";
 import { emitEvent, getMemberSockets, getOtherMembers } from "../utils/socket.util.js";
-import { Events } from "../enums/event.enum.js";
-import { UnreadMessage } from "../models/unread-message.model.js";
-import { IChatWithUnreadMessages, IMemberDetails } from "../interfaces/chat.interface.js";
-import { IMessage } from "../interfaces/message.interface.js";
+import { Events } from "../enums/event/event.enum.js";
+import { IChatWithUnreadMessages, IMemberDetails } from "../interfaces/chat/chat.interface.js";
 import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 import { UploadApiResponse } from "cloudinary";
@@ -121,52 +119,6 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
     }
 
 })
-
-// const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
-
-//     const chats=await Chat.find({members:{$in:[req.user?._id]}}).populate<{members:Array<{_id:string,username:string,avatar:IAvatar}>}>("members",['username','avatar'])
-
-//     const transformedChatsPromise = chats.map(async(chat)=>{
-        
-//         const unreadMessage = await UnreadMessage.findOne({chat:chat._id,user:req.user?._id}).select("-chat").select("-user")
-//         .populate<{message:Pick<IMessage , 'content'> & {_id:string} }>("message",['content'])
-//         .populate<{sender:Pick<IUser, "username" | 'avatar'> & {_id:string}}>("sender",["username","avatar"])
-        
-//         const chatWithUnreadMessage:IChatWithUnreadMessages = {
-//             _id:chat._id,
-//             name:chat.name,
-//             members:chat.members.map((member)=>{
-//                 return {
-//                     _id:member._id,
-//                     avatar:member.avatar.secureUrl,
-//                     username:member.username
-//                 }
-//             }),
-//             admin:chat.admin,
-//             isGroupChat:chat.isGroupChat,
-//             avatar:chat.avatar?.secureUrl,
-//             unreadMessages:{
-//                 count:unreadMessage?.count,
-//                 message:{
-//                     _id:unreadMessage?.message._id,
-//                     content:unreadMessage?.message.content
-//                 },
-//                 sender:{
-//                     _id:unreadMessage?.sender._id,
-//                     username:unreadMessage?.sender.username,
-//                     avatar:unreadMessage?.sender.avatar?.secureUrl
-//                 },
-//             }
-//         }
-        
-//         return chatWithUnreadMessage
-
-//     })
-
-//     const transformedChats = await Promise.all(transformedChatsPromise)
-
-//     res.status(200).json(transformedChats)
-// })
 
 const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 

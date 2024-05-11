@@ -1,4 +1,4 @@
-import { IConfig } from "../interfaces/config.interface.js"
+import type { IConfig } from "../interfaces/config/config.interface.js"
 import { env } from "../schemas/env.schema.js"
 
 const developmentConfig:IConfig = {

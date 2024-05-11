@@ -1,7 +1,7 @@
 import { NextFunction } from "connect";
 import jwt from 'jsonwebtoken';
-import type { AuthenticatedSocket } from "../interfaces/authenticated-socket.interface.js";
-import type { IUser } from "../interfaces/user.interface.js";
+import type { AuthenticatedSocket } from "../interfaces/auth/auth.interface.js";
+import type { IUser } from "../interfaces/auth/auth.interface.js";
 import { User } from "../models/user.model.js";
 import { env } from "../schemas/env.schema.js";
 import { CustomError } from "../utils/error.utils.js";

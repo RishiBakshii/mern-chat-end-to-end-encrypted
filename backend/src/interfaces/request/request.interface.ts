@@ -1,5 +1,5 @@
 import { Types } from "mongoose"
-import type { RequestStatus } from "../enums/request.enum.js"
+import type { RequestStatus } from "../../enums/request/request.enum.js"
 
 export interface IRequest {
     sender:Types.ObjectId

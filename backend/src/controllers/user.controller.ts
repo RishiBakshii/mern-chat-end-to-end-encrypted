@@ -1,9 +1,9 @@
 import { NextFunction, Response } from "express";
-import { AuthenticatedRequest } from "../interfaces/authenticated-request.interface.js";
+import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { User } from "../models/user.model.js";
 import { deleteFileFromCloudinary, getSecureUserInfo, uploadFilesToCloudinary } from "../utils/auth.util.js";
-import { IUser } from "../interfaces/user.interface.js";
+import type { IUser } from "../interfaces/auth/auth.interface.js";
 
 const getUserDetails = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     return res.status(200).json(req.user)

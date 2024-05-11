@@ -6,9 +6,8 @@ import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType } from "../schemas/chat.schema.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { Message } from "../models/message.model.js";
-import { emitEvent, getMemberSockets, getOtherMembers } from "../utils/socket.util.js";
+import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
-import { IChatWithUnreadMessages, IMemberDetails } from "../interfaces/chat/chat.interface.js";
 import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 import { UploadApiResponse } from "cloudinary";
@@ -17,8 +16,28 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 
     let uploadResults:UploadApiResponse[] = []
 
+    const addUnreadMessagesStage = {
+      $addFields: {
+        unreadMessages: {
+          count: 0,
+          message: {
+            _id: "",
+            content: "",
+          },
+          sender: {
+            _id: "",
+            username: "",
+            avatar: "",
+          },
+        },
+        userTyping: [],
+        seenBy: [],
+      },
+    }
+
     const {isGroupChat,members,avatar,name}:createChatSchemaType = req.body
-    if(isGroupChat){
+
+    if(isGroupChat==='true'){
 
         if(members.length<2){
             return next(new CustomError("Atleast 2 members are required to create group chat",400))
@@ -40,7 +59,8 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
         if(req.file){
             uploadResults = await uploadFilesToCloudinary([req.file])
         }
-        const newGroupChat = await new Chat({
+
+        const newGroupChat = await Chat.create({
             avatar:{
                 secureUrl:uploadResults[0]?.secure_url?uploadResults[0].secure_url:DEFAULT_AVATAR,
                 publicId:uploadResults[0]?.public_id?uploadResults[0].public_id:null
@@ -49,45 +69,55 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
             members:membersWithReqUser,
             admin:req.user?._id,
             name
-        }).populate<{members:Array<IMemberDetails>}>("members",['username','avatar'])
+        })
 
-        newGroupChat.save()
-
-        const otherMembers = getOtherMembers({members: newGroupChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
-        
-        const transformedChat:IChatWithUnreadMessages = {
-            _id:newGroupChat._id,
-            name:newGroupChat.name,
-            isGroupChat:newGroupChat.isGroupChat,
-            members:newGroupChat.members.map((member)=>{
-                return {
-                    _id:member._id,
-                    avatar:member.avatar.secureUrl,
-                    username:member.username
-                }
-            }),
-            avatar:newGroupChat.avatar?.secureUrl,
-            admin:newGroupChat.admin,
-            unreadMessages:{
-                count:0,
-                message:{
-                    _id:"",
-                    content:""
+        const transformedChat = await Chat.aggregate(
+        [
+          {
+            $match: {
+              _id: newGroupChat._id,
+            },
+          },
+          {
+            $addFields: {
+              avatar: "$avatar.secureUrl",
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "members",
+              foreignField: "_id",
+              as: "members",
+              pipeline: [
+                {
+                  $addFields: {
+                    avatar: "$avatar.secureUrl",
+                  },
                 },
-                sender:{
-                    _id:"",
-                    username:"",
-                    avatar:""
-                }
-            }
-        }
+                {
+                  $project: {
+                    username: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          addUnreadMessagesStage
+        ])
+        
+        const membersIdsInString:Array<string> = newGroupChat.members.map(member=>member._id.toString())
+
+        const otherMembers = getOtherMembers({members:membersIdsInString,user:req.user?._id.toString()!})
+        
         emitEvent(req,Events.NEW_GROUP,otherMembers,transformedChat)
         
         return res.status(201).json(transformedChat)
 
     }
 
-    else if(!isGroupChat){
+    else if(isGroupChat==='false'){
 
         if(members.length>1){
             return next(new CustomError("normal chat cannot have more than 1 member",400))
@@ -112,10 +142,44 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 
         const normalChat = await Chat.create({members:[...members,req.user?._id]})
 
-        const otherMembers = getOtherMembers({members:normalChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
-        emitEvent(req,Events.NEW_GROUP,getMemberSockets(otherMembers),normalChat)
+
+        const transformedChat = await Chat.aggregate([
+          {
+            $match:{
+              _id:normalChat._id
+            }
+          },
+
+          {
+            $lookup:{
+              from:"users",
+              localField:"members",
+              foreignField:"_id",
+              as:"members",
+              pipeline:[
+                {
+                  $addFields:{
+                    avatar:"$avatar.secureUrl"
+                  }
+                },
+                {
+                  $project:{
+                    username:1,
+                    avatar:1
+                  }
+                }
+              ]
+            }
+          },
+          addUnreadMessagesStage
+        ])
+
+        const memberStringIds = normalChat.members.map(member=>member._id.toString())
+        const otherMembers = getOtherMembers({members:memberStringIds,user:req.user?._id.toString()!})
+
+        emitEvent(req,Events.NEW_GROUP,otherMembers,transformedChat)
         
-        return res.status(201).json(normalChat)
+        return res.status(201).json(transformedChat)
     }
 
 })

@@ -10,24 +10,50 @@ import { Events } from "../enums/event/event.enum.js";
 import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 
 const getUserRequests = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
-    const requests = await Request.find({receiver:req.user?._id})
-    .populate<{sender:IMemberDetails}>("sender",['username','avatar.secureUrl']).select('-receiver').select("-updatedAt")
-    
-    const transformedRequests = requests.map(request=>{
-        
-        return {
-            _id:request._id.toString(),
-            sender:{
-                _id:request.sender._id,
-                username:request.sender.username,
-                avatar:request.sender.avatar.secureUrl
-            },
-            status:request.status,
-            createdAt:Date.now()
-        }
-    })
 
-    return res.status(200).json(transformedRequests)
+    const requests = await Request.aggregate([
+        {
+          $match: {
+            receiver: req.user?._id
+          }
+        },
+        {
+            $project:{
+                receiver:0,
+                updatedAt:0
+            }
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "sender",
+            foreignField: "_id",
+            as: "sender",
+            pipeline:[
+              {
+                $addFields:{
+                  avatar:"$avatar.secureUrl"
+                }
+              },
+              {
+                $project:{
+                  username:1,
+                  avatar:1
+                }
+              },
+            ]
+          }
+        },
+        {
+          $addFields: {
+            "sender": {
+              $arrayElemAt:["$sender",0]
+            }
+          }
+        }
+      ])
+
+    return res.status(200).json(requests)
 })
 
 const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{

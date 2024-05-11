@@ -15,6 +15,7 @@ export const Login = () => {
     const [login,{isSuccess,data,isError,isLoading,isUninitialized,error}] = useLoginMutation()
 
     useUpdateLogin(isSuccess,data)
+
     useToast({error,isError,isLoading,isSuccess,isUninitialized})
 
     const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
@@ -28,7 +29,6 @@ export const Login = () => {
   return (
     <div className="w-screen h-screen flex">
 
-            {/* left */}
             <div className="flex-auto flex justify-center items-center p-4">
 
                     <div className="text-black flex flex-col gap-y-2">

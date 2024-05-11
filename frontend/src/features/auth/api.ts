@@ -22,7 +22,7 @@ export const authApi = createApi({
                 body:credentials
             })
         }),
-        signup:builder.mutation<IUser,Omit<IUser,'avatar' | '_id'>>({
+        signup:builder.mutation<IUser,Omit<IUser,'avatar' | '_id' | 'createdAt' | 'updatedAt'>>({
             query:(credentials)=>({
                 url:"/signup",
                 method:"POST",

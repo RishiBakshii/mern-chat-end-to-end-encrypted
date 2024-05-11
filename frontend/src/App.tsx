@@ -1,17 +1,16 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Loader } from './components/shared/Loader';
 import { useCheckAuthQuery } from './features/auth/api';
-import { Login } from './features/auth/components/Login';
 import { Protected } from './features/auth/components/Protected';
-import { Signup } from './features/auth/components/Signup';
 import { useUpdateLogin } from './hooks/useUpdateLogin';
 import { RootLayout } from './layouts/RootLayout';
 import { Chat } from './features/chat/components/Chat';
+import { LoginPage, SignupPage } from './pages';
 
 export const App = () => {
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
-
+  
   useUpdateLogin(isSuccess,data)
 
   const router = createBrowserRouter(createRoutesFromElements(
@@ -20,8 +19,8 @@ export const App = () => {
     <Route path='/' element={<Protected><RootLayout/></Protected>}>
         <Route index element={<Chat/>}/>
     </Route>
-    <Route path='/signup' element={<Protected authorized={false}><Signup/></Protected>}/>
-    <Route path='/login' element={<Protected authorized={false}><Login/></Protected>}/>
+    <Route path='/signup' element={<Protected authorized={false}><SignupPage/></Protected>}/>
+    <Route path='/login' element={<Protected authorized={false}><LoginPage/></Protected>}/>
     </>
 
   ));

@@ -13,7 +13,7 @@ const signupSchema = z.object({
 
 const loginSchema = z.object({
     email:z.string({required_error:"Email is required"}),
-    password:z.string({required_error:"Password is required"}),
+    password:z.string({required_error:"Password is required"})
 })
 
 
@@ -22,8 +22,11 @@ type loginSchemaType = z.infer<typeof loginSchema>
 
 
 export {
-    signupSchema,
-    type signupSchemaType,
     loginSchema,
-    type loginSchemaType 
+    signupSchema,
+}
+
+export {
+    type loginSchemaType,
+    type signupSchemaType
 }

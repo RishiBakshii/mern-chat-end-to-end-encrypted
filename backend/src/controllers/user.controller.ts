@@ -10,24 +10,36 @@ const getUserDetails = asyncErrorHandler(async(req:AuthenticatedRequest,res:Resp
 })
 
 const getUserByUsername = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
     const {username} = req.query
 
     if(!username || !username?.toString().trim()){
         return next(new CustomError("Username cannot be empty"))
     }
 
-    const searchTerm = new RegExp(`${username.toString().toLowerCase()}`,'i')
+    const regexUsername = new RegExp(username.toString().trim(), "i")
 
-    const results = await User.find({username:searchTerm},{avatar:1,username:1,name:1},{fuzzy:true})
-
-    const transformedResults = results.map(result=>{
-        return {
-            avatar:result.avatar?.secureUrl,
-            name:result.name,
-            username:result.username,
-            _id:result._id
+    const transformedResults = await User.aggregate([
+        {
+            $match:{
+                username:{
+                    $regex:regexUsername
+                }
+            }
+        },
+        {
+            $addFields:{
+                avatar:"$avatar.secureUrl"
+            }
+        },
+        {
+            $project:{
+                name:1,
+                username:1,
+                avatar:1
+            }
         }
-    })
+    ])
 
     return res.status(200).json(transformedResults)
     

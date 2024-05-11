@@ -71,7 +71,7 @@ export const Navbar = () => {
               
               {
                 isNavMenuOpen && 
-                <div className="bg-gray-100 w-[15rem] absolute rounded-lg shadow-2xl p-4">
+                <div className="bg-gray-100 w-[15rem] absolute rounded-lg shadow-2xl p-4 z-50">
                   <ul>
                     <li onClick={openProfileForm} className="cursor-pointer flex item-center gap-x-2 hover:bg-gray-200 p-2 rounded">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-violet-500">

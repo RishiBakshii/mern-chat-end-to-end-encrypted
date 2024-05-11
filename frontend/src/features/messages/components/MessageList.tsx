@@ -8,10 +8,16 @@ type PropTypes = {
   isGroupChat:boolean
 }
 export const MessageList = ({messages,loggedInUserId,isGroupChat}:PropTypes) => {
+
   return (
     <>
       {messages.map(message => (
-        <MessageItem isGroupChat={isGroupChat} key={message._id} message={message} myMessage={loggedInUserId===message.sender._id} />
+        <MessageItem
+          isGroupChat={isGroupChat} 
+          key={message._id} 
+          message={message} 
+          myMessage={loggedInUserId===message.sender._id} 
+        />
       ))}
     </>
   )

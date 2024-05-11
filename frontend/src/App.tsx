@@ -4,8 +4,7 @@ import { useCheckAuthQuery } from './features/auth/api';
 import { Protected } from './features/auth/components/Protected';
 import { useUpdateLogin } from './hooks/useUpdateLogin';
 import { RootLayout } from './layouts/RootLayout';
-import { Chat } from './features/chat/components/Chat';
-import { LoginPage, SignupPage } from './pages';
+import { ChatPage, LoginPage, SignupPage } from './pages';
 
 export const App = () => {
 
@@ -17,7 +16,7 @@ export const App = () => {
 
     <>
     <Route path='/' element={<Protected><RootLayout/></Protected>}>
-        <Route index element={<Chat/>}/>
+        <Route index element={<ChatPage/>}/>
     </Route>
     <Route path='/signup' element={<Protected authorized={false}><SignupPage/></Protected>}/>
     <Route path='/login' element={<Protected authorized={false}><LoginPage/></Protected>}/>

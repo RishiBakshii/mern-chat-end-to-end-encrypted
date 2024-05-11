@@ -9,48 +9,53 @@ import { emitEvent } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
 import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 
+
+const requestPipeline = [
+  {
+      $project:{
+          receiver:0,
+          updatedAt:0
+      }
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "sender",
+      foreignField: "_id",
+      as: "sender",
+      pipeline:[
+        {
+          $addFields:{
+            avatar:"$avatar.secureUrl"
+          }
+        },
+        {
+          $project:{
+            username:1,
+            avatar:1
+          }
+        },
+      ]
+    }
+  },
+  {
+    $addFields: {
+      "sender": {
+        $arrayElemAt:["$sender",0]
+      }
+    }
+  }
+]
+
 const getUserRequests = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
     const requests = await Request.aggregate([
         {
-          $match: {
+          $match:{
             receiver: req.user?._id
           }
-        },
-        {
-            $project:{
-                receiver:0,
-                updatedAt:0
-            }
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "sender",
-            foreignField: "_id",
-            as: "sender",
-            pipeline:[
-              {
-                $addFields:{
-                  avatar:"$avatar.secureUrl"
-                }
-              },
-              {
-                $project:{
-                  username:1,
-                  avatar:1
-                }
-              },
-            ]
-          }
-        },
-        {
-          $addFields: {
-            "sender": {
-              $arrayElemAt:["$sender",0]
-            }
-          }
         }
+        ,...requestPipeline
       ])
 
     return res.status(200).json(requests)
@@ -76,20 +81,17 @@ const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
         return next(new CustomError("Request is already sent",400))
     }
 
-    const newRequest = await new Request({receiver,sender:req.user?._id}).populate<{sender:IMemberDetails}>('sender',['username','avatar'])
-    await newRequest.save()
+    const newRequest = await Request.create({receiver,sender:req.user?._id})
 
-    const transformedRequest = {
+    const transformedRequest = await Request.aggregate([
 
-        _id:newRequest._id.toString(),
-        sender:{
-            _id:newRequest.sender._id,
-            username:newRequest.sender.username,
-            avatar:newRequest.sender.avatar.secureUrl
-        },
-        status:newRequest.status,
-        createdAt:Date.now()
-    }
+      {
+        $match:{
+          _id:newRequest._id
+        }
+      },
+      ...requestPipeline
+    ])
 
     emitEvent(req,Events.NEW_FRIEND_REQUEST,[receiver],transformedRequest)
 

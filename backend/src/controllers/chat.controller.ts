@@ -122,50 +122,175 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 
 })
 
+// const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+//     const chats=await Chat.find({members:{$in:[req.user?._id]}}).populate<{members:Array<{_id:string,username:string,avatar:IAvatar}>}>("members",['username','avatar'])
+
+//     const transformedChatsPromise = chats.map(async(chat)=>{
+        
+//         const unreadMessage = await UnreadMessage.findOne({chat:chat._id,user:req.user?._id}).select("-chat").select("-user")
+//         .populate<{message:Pick<IMessage , 'content'> & {_id:string} }>("message",['content'])
+//         .populate<{sender:Pick<IUser, "username" | 'avatar'> & {_id:string}}>("sender",["username","avatar"])
+        
+//         const chatWithUnreadMessage:IChatWithUnreadMessages = {
+//             _id:chat._id,
+//             name:chat.name,
+//             members:chat.members.map((member)=>{
+//                 return {
+//                     _id:member._id,
+//                     avatar:member.avatar.secureUrl,
+//                     username:member.username
+//                 }
+//             }),
+//             admin:chat.admin,
+//             isGroupChat:chat.isGroupChat,
+//             avatar:chat.avatar?.secureUrl,
+//             unreadMessages:{
+//                 count:unreadMessage?.count,
+//                 message:{
+//                     _id:unreadMessage?.message._id,
+//                     content:unreadMessage?.message.content
+//                 },
+//                 sender:{
+//                     _id:unreadMessage?.sender._id,
+//                     username:unreadMessage?.sender.username,
+//                     avatar:unreadMessage?.sender.avatar?.secureUrl
+//                 },
+//             }
+//         }
+        
+//         return chatWithUnreadMessage
+
+//     })
+
+//     const transformedChats = await Promise.all(transformedChatsPromise)
+
+//     res.status(200).json(transformedChats)
+// })
+
 const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
-    const chats=await Chat.find({members:{$in:[req.user?._id]}}).populate<{members:Array<{_id:string,username:string,avatar:IAvatar}>}>("members",['username','avatar'])
+    const chats = await Chat.aggregate([
 
-    const transformedChatsPromise = chats.map(async(chat)=>{
-        
-        const unreadMessage = await UnreadMessage.findOne({chat:chat._id,user:req.user?._id}).select("-chat").select("-user")
-        .populate<{message:Pick<IMessage , 'content'> & {_id:string} }>("message",['content'])
-        .populate<{sender:Pick<IUser, "username" | 'avatar'> & {_id:string}}>("sender",["username","avatar"])
-        
-        const chatWithUnreadMessage:IChatWithUnreadMessages = {
-            _id:chat._id,
-            name:chat.name,
-            members:chat.members.map((member)=>{
-                return {
-                    _id:member._id,
-                    avatar:member.avatar.secureUrl,
-                    username:member.username
-                }
-            }),
-            admin:chat.admin,
-            isGroupChat:chat.isGroupChat,
-            avatar:chat.avatar?.secureUrl,
-            unreadMessages:{
-                count:unreadMessage?.count,
-                message:{
-                    _id:unreadMessage?.message._id,
-                    content:unreadMessage?.message.content
+        {
+          $match: {
+            members: req.user?._id,
+          },
+        },
+
+        {
+            $addFields: {
+                avatar: "$avatar.secureUrl"
+            } 
+        },
+
+        {
+          $lookup: {
+            from: "users",
+            localField: "members",
+            foreignField: "_id",
+            as: "members",
+            pipeline: [
+              {
+                $project: {
+                  username: 1,
+                  avatar: 1,
                 },
-                sender:{
-                    _id:unreadMessage?.sender._id,
-                    username:unreadMessage?.sender.username,
-                    avatar:unreadMessage?.sender.avatar?.secureUrl
+              },
+              {
+                $addFields: {
+                  avatar: "$avatar.secureUrl",
                 },
-            }
+              },
+            ],
+          },
+        },
+
+        {
+          $lookup: {
+            from: "unreadmessages",
+            let: {
+              chatId: "$_id",
+              userId: req.user?._id,
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$chat", "$$chatId"] },
+                      { $eq: ["$user", "$$userId"] },
+                    ],
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: "users",
+                  localField: "sender",
+                  foreignField: "_id",
+                  as: "sender",
+                  pipeline: [
+                    {
+                      $project: {
+                        username: 1,
+                        avatar: 1,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $lookup: {
+                  from: "messages",
+                  localField: "message",
+                  foreignField: "_id",
+                  as: "message",
+                  pipeline: [
+                    {
+                      $project: {
+                        content: 1,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $project: {
+                  count: 1,
+                  message: 1,
+                  sender: 1,
+                },
+              },
+            ],
+            as: "unreadMessages",
+          },
+        },
+      
+        {
+          $addFields: {
+            unreadMessages: {
+              $arrayElemAt: ["$unreadMessages", 0],
+            },
+          },
+        },
+        {
+          $addFields: {
+            "unreadMessages.sender":{$arrayElemAt:['$unreadMessages.sender',0]},
+            "unreadMessages.message":{$arrayElemAt:['$unreadMessages.message',0]},
+            seenBy: [],
+            userTyping: [],
+          },
+        },
+        {
+          $addFields: {
+            "unreadMessages.sender.avatar": "$unreadMessages.sender.avatar.secureUrl"
+          }
         }
-        
-        return chatWithUnreadMessage
+      ])
 
-    })
+    return res.status(200).json(chats)
 
-    const transformedChats = await Promise.all(transformedChatsPromise)
-
-    res.status(200).json(transformedChats)
 })
 
 const addMemberToChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{

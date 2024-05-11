@@ -45,7 +45,7 @@ export const ChatItem = ({chat}:PropTypes) => {
             {/* latest unread message */}
             <p className="text-sm text-gray-500">
               {
-                chat.unreadMessages.message.content && 
+                chat.unreadMessages.message?.content && 
                `${chat.unreadMessages.message.content.substring(0,25)}...`
               }
             </p>

@@ -23,14 +23,14 @@ export const ChatItem = ({chat}:PropTypes) => {
           chat.isGroupChat ? 
           <img className="aspect-square w-16 rounded-md object-cover" src={chat.avatar} />
           :
-          <img className="aspect-square w-16 rounded-md object-cover" src={chat.members.filter(member=>member._id!==loggedInUser?._id)[0].avatar} />
+          <img className="aspect-square w-16 rounded-md object-cover" src={chat.members.filter(member=>member._id!==loggedInUser?._id)[0]?.avatar} />
         }
         
         <div className="w-full">
 
             <div className="flex justify-between items-center">
               {/* chat name */}
-                <p className="font-medium">{chat.isGroupChat?`${chat.name?.substring(0,20)}..`:chat.members.filter(member=>member._id!==loggedInUser?._id)[0].username}</p>
+                <p className="font-medium">{chat.isGroupChat?`${chat.name?.substring(0,20)}..`:chat.members.filter(member=>member._id!==loggedInUser?._id)[0]?.username}</p>
                 {/*last mesage time and unread mesage count */}
                 <div className="flex flex-col">
                     <p  className="text-sm text-gray-500">{1}m</p>

@@ -56,9 +56,14 @@ const udpateUser  = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respons
         }
         else if(existingPublicId){
 
-            await deleteFileFromCloudinary(existingPublicId)
-            uploadResults = await uploadFilesToCloudinary([req.file])
+            const avatarPromise = [
+                deleteFileFromCloudinary(existingPublicId),
+                uploadFilesToCloudinary([req.file])
+            ]
 
+            const [_,result] = await Promise.all(avatarPromise)
+            uploadResults = result
+            
         }
 
         if(uploadResults){

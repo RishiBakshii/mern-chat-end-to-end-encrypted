@@ -1,31 +1,50 @@
 import { NextFunction, Request, Response } from "express";
 import { Message } from "../models/message.model.js";
 import { asyncErrorHandler } from "../utils/error.utils.js";
-import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
+import { Types } from "mongoose";
 
 const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
     const {id} = req.params
-    const messages = await Message.find({chat:id}).populate<{sender:IMemberDetails}>("sender",['username','avatar'])
 
-    const transformedMessages = messages.map(message=>{
-        return {
-            _id: message._id,
-            content: message.content,
-            sender: {
-                _id: message.sender._id,
-                avatar: message.sender.avatar.secureUrl,
-                username: message.sender.username
+    const messages = await Message.aggregate([
+
+        {
+            $match: {
+                chat: new Types.ObjectId(id),
             },
-            chat: message.chat.toString(),
-            attachments: message.attachments,
-            createdAt: message.createdAt,
-            updatedAt:  message.updatedAt
-              
-        }
-    })
+        },
+        {
+            $lookup: {
+            from: "users",
+            localField: "sender",
+            foreignField: "_id",
+            as: "sender",
+            pipeline: [
+                {
+                $addFields: {
+                    avatar: "$avatar.secureUrl",
+                },
+                },
+                {
+                $project: {
+                    username: 1,
+                    avatar: 1,
+                },
+                },
+            ],
+            },
+        },
+        {
+            $addFields: {
+                sender: {
+                    $arrayElemAt: ["$sender", 0],
+                },
+            },
+        },
+    ])
 
-    return res.status(200).json(transformedMessages)
+    return res.status(200).json(messages)
 
 })
 

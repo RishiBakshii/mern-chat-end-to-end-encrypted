@@ -7,7 +7,7 @@ import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
 import { emitEvent } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
-import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
+import { populateMembersStage } from "./chat.controller.js";
 
 
 const requestPipeline = [
@@ -115,37 +115,26 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
     }
 
     if(action==='accept'){
-        const newChat = await new Chat({members:[isExistingRequest.sender,isExistingRequest.receiver]})
-        .populate<{"members":Array<IMemberDetails>}>("members",['username','avatar'])
 
-        await newChat.save()
-        await isExistingRequest.deleteOne()
+        const members = [isExistingRequest.sender,isExistingRequest.receiver]
+        const newChat = await Chat.create({members})
+
+        const transformedChat =  await Chat.aggregate([
+          {
+            $match:{
+              _id:newChat._id
+            }
+          },
+          populateMembersStage,
+        ])
+
         
         const membersStringIds = [isExistingRequest.sender.toString(),isExistingRequest.receiver.toString()]
 
-        emitEvent(req,Events.NEW_GROUP,membersStringIds,{
-            _id:newChat._id.toString(),
-            isGroupChat:newChat.isGroupChat,
-            members:newChat.members.map(({_id,avatar,username})=>{
-                return {
-                    _id,
-                    avatar:avatar.secureUrl,
-                    username
-                }
-            }),
-            unreadMessages:{
-                count:0,
-                message:{
-                    _id:"",
-                    content:""
-                },
-                sender:{
-                    _id:"",
-                    username:"",
-                    avatar:""
-                }
-            }
-        })
+        emitEvent(req,Events.NEW_GROUP,membersStringIds,transformedChat)
+
+        await isExistingRequest.deleteOne()
+
         return res.status(200).json(isExistingRequest._id)
     }
     else if(action==='reject'){

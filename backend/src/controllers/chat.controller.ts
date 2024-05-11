@@ -12,28 +12,51 @@ import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 import { UploadApiResponse } from "cloudinary";
 
+
+export const addUnreadMessagesStage = {
+  $addFields: {
+    unreadMessages: {
+      count: 0,
+      message: {
+        _id: "",
+        content: "",
+      },
+      sender: {
+        _id: "",
+        username: "",
+        avatar: "",
+      },
+    },
+    userTyping: [],
+    seenBy: [],
+  },
+}
+
+export const populateMembersStage = {
+  $lookup: {
+    from: "users",
+    localField: "members",
+    foreignField: "_id",
+    as: "members",
+    pipeline: [
+      {
+        $addFields: {
+          avatar: "$avatar.secureUrl",
+        },
+      },
+      {
+        $project: {
+          username: 1,
+          avatar: 1,
+        },
+      },
+    ],
+  },
+}
+
 const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
     let uploadResults:UploadApiResponse[] = []
-
-    const addUnreadMessagesStage = {
-      $addFields: {
-        unreadMessages: {
-          count: 0,
-          message: {
-            _id: "",
-            content: "",
-          },
-          sender: {
-            _id: "",
-            username: "",
-            avatar: "",
-          },
-        },
-        userTyping: [],
-        seenBy: [],
-      },
-    }
 
     const {isGroupChat,members,avatar,name}:createChatSchemaType = req.body
 
@@ -83,27 +106,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
               avatar: "$avatar.secureUrl",
             },
           },
-          {
-            $lookup: {
-              from: "users",
-              localField: "members",
-              foreignField: "_id",
-              as: "members",
-              pipeline: [
-                {
-                  $addFields: {
-                    avatar: "$avatar.secureUrl",
-                  },
-                },
-                {
-                  $project: {
-                    username: 1,
-                    avatar: 1,
-                  },
-                },
-              ],
-            },
-          },
+          populateMembersStage,
           addUnreadMessagesStage
         ])
         
@@ -149,28 +152,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
               _id:normalChat._id
             }
           },
-
-          {
-            $lookup:{
-              from:"users",
-              localField:"members",
-              foreignField:"_id",
-              as:"members",
-              pipeline:[
-                {
-                  $addFields:{
-                    avatar:"$avatar.secureUrl"
-                  }
-                },
-                {
-                  $project:{
-                    username:1,
-                    avatar:1
-                  }
-                }
-              ]
-            }
-          },
+          populateMembersStage,
           addUnreadMessagesStage
         ])
 
@@ -200,28 +182,7 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
             } 
         },
 
-        {
-          $lookup: {
-            from: "users",
-            localField: "members",
-            foreignField: "_id",
-            as: "members",
-            pipeline: [
-              {
-                $project: {
-                  username: 1,
-                  avatar: 1,
-                },
-              },
-              {
-                $addFields: {
-                  avatar: "$avatar.secureUrl",
-                },
-              },
-            ],
-          },
-        },
-
+        populateMembersStage,
         {
           $lookup: {
             from: "unreadmessages",
@@ -303,7 +264,7 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
             "unreadMessages.sender.avatar": "$unreadMessages.sender.avatar.secureUrl"
           }
         }
-      ])
+    ])
 
     return res.status(200).json(chats)
 

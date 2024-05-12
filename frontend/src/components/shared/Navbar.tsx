@@ -42,7 +42,7 @@ export const Navbar = () => {
 
   return (
     <nav className="flex items-center h-14 justify-around shadow">
-      <h4 className="text-3xl font-bold">Chorus</h4>
+      <h4 className="text-3xl font-bold">Baatchit</h4>
 
 
       <div className="flex item-center gap-x-10">

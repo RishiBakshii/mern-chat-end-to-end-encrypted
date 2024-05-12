@@ -3,8 +3,11 @@ import { useMessageSubmit } from "../../hooks/useMessageSubmit"
 import { useUserTyping } from "../../hooks/useUserTyping"
 import { MessageInput } from "../ui/MessageInput"
 
+type PropTypes = {
+  toggleGif:()=>void
+}
 
-export const MessageForm = () => {
+export const MessageForm = ({toggleGif}:PropTypes) => {
 
     const [messageVal,setMessageVal] = useState<string>('')
 
@@ -18,10 +21,10 @@ export const MessageForm = () => {
         setMessageVal('')
         submitMessage(messageVal)
     }
-
+    
   return (
     <form onSubmit={handleMessageSubmit}>
-        <MessageInput messageVal={messageVal} setMessageVal={setMessageVal}/>
+        <MessageInput toggleGif={toggleGif} messageVal={messageVal} setMessageVal={setMessageVal}/>
     </form>
   )
 }

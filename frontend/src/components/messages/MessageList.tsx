@@ -13,6 +13,8 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat}:PropTypes) => 
     <>
       {messages.map(message => (
         <MessageItem
+          url={message.url}
+          isTextMessage={!message?.url?.length}
           isGroupChat={isGroupChat} 
           key={message._id} 
           message={message} 

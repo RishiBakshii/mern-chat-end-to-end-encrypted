@@ -10,13 +10,14 @@ export const useMessageSubmit = () => {
     const selectedChatId = useAppSelector(selectSelectedChatId)
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
 
-    const submitMessageHandler = (messageVal:string) => {
+    const submitMessageHandler = (messageVal?:string,url?:string) => {
 
         if(selectedChatId && selectedChatDetails){
 
             const data:IMessageEventPayloadData =  {
                 chat:selectedChatId,
-                content:messageVal,
+                content:messageVal?messageVal:undefined,
+                url:url?url:undefined,
                 members:selectedChatDetails?.members.map(member=>member._id.toString())
             }
 

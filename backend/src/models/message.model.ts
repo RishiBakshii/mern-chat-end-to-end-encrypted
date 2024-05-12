@@ -5,7 +5,6 @@ import type { IMessage } from "../interfaces/message/message.interface.js";
 const messageSchema = new Schema<IMessage>({
     content:{
         type:String,
-        required:true
     },
     sender:{
         type:Schema.ObjectId,
@@ -20,6 +19,9 @@ const messageSchema = new Schema<IMessage>({
     attachments:{
         type:[String],
     },
+    url:{
+        type:String
+    }
 },{versionKey:false,timestamps:true})
 
 export const Message = model<IMessage>("Message",messageSchema)

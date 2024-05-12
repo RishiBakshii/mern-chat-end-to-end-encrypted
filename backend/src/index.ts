@@ -66,10 +66,10 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     socket.broadcast.emit(Events.ONLINE,socket.user?._id)
 
-    socket.on(Events.MESSAGE,async({chat,content,attachments,members}:Omit<IMessage , "sender"> & {members : Array<string>})=>{
+    socket.on(Events.MESSAGE,async({chat,content,attachments,members,url}:Omit<IMessage , "sender"> & {members : Array<string>})=>{
 
         // save to db
-        const newMessage = await (await Message.create({chat,content,attachments,sender:socket.user?._id})).populate<{sender:IMemberDetails}>("sender",['avatar','username'])
+        const newMessage = await (await Message.create({chat,content,attachments,sender:socket.user?._id,url})).populate<{sender:IMemberDetails}>("sender",['avatar','username'])
         
         // realtime response
         const memberSocketIds = getMemberSockets(members)
@@ -83,10 +83,10 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
                 username: newMessage.sender.username
             },
             chat: newMessage.chat.toString(),
+            url:newMessage.url,
             attachments: newMessage.attachments,
             createdAt: newMessage.createdAt,
             updatedAt:  newMessage.updatedAt
-              
         })
 
         // unread message creation for receivers
@@ -108,7 +108,17 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
         })
 
         await Promise.all(updateOrCreateUnreadMessagePromise)
-        io.to(otherMemberSockets).emit(Events.UNREAD_MESSAGE,{chatId:chat,message:{_id:newMessage._id.toString(),content:newMessage.content.substring(0,30)},sender:newMessage.sender})
+
+        io.to(otherMemberSockets).emit(Events.UNREAD_MESSAGE,{
+
+            chatId:chat,
+            message:{
+                _id:newMessage._id.toString(),
+                content:newMessage?.content?.substring(0,30)
+            },
+            sender:newMessage.sender
+
+        })
 
     })
 

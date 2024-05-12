@@ -22,6 +22,7 @@ import { MessageForm } from "../components/chat/MessageForm"
 import { useGetChatName } from "../hooks/useGetChatName"
 import { useRef } from "react"
 import { useScrollToBottom } from "../hooks/useScrollToBottom"
+import { useToggleGif } from "../hooks/useToggleGif"
 
 export const ChatPage = () => {
 
@@ -48,6 +49,8 @@ export const ChatPage = () => {
     useUpdateUnreadMessage()
 
     const openMemberForm = useOpenMemberForm()
+
+    const toggleGif = useToggleGif()
 
     const chatName = useGetChatName(selectedChatDetails,loggedInUser?._id)
 
@@ -86,7 +89,7 @@ export const ChatPage = () => {
 
                         </div>
 
-                        <MessageForm/>  
+                        <MessageForm toggleGif={toggleGif}/>  
 
                     </div>
                 }

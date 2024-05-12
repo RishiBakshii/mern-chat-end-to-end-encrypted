@@ -1,12 +1,15 @@
 import { ZodError } from "zod"
 import type { IConfig } from "../interfaces/config"
-import { envSchema } from "../schemas/envSchema"
+import { envSchema, envSchemaType } from "../schemas/envSchema"
 
-let env
+let env:envSchemaType = {
+    VITE_ENV:"DEVELOPMENT",
+    VITE_TENOR_API_KEY:""
+}
 
 const productionConfig:IConfig = {
     base_url:"",
-    absolute_base_url:""
+    absolute_base_url:"",
 }
 
 const developmentConfig:IConfig = {
@@ -22,5 +25,9 @@ try {
     }
 }
 
-export const config = env?.VITE_ENV === 'PRODUCTION' ? productionConfig : developmentConfig
+export const config = env.VITE_ENV === 'PRODUCTION' ? productionConfig : developmentConfig
+
+export {
+    env
+}
 

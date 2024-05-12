@@ -5,4 +5,5 @@ export interface IUi {
     friendRequestForm:boolean
     profileForm:boolean
     memberForm:boolean
+    gifForm:boolean
 }

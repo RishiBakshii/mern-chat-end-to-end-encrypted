@@ -9,6 +9,7 @@ export interface IMessage {
         avatar:string
     }
     chat:string
+    url:string
     attachments:Array<string> | []
     createdAt:Date
     updatedAt:Date
@@ -25,7 +26,8 @@ export interface IUnreadMessage {
 
 export interface IMessageEventPayloadData {
     chat:string
-    content:string
+    content?:string
+    url?:string
     members:Array<string>
 }
 

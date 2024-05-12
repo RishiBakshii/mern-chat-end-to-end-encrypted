@@ -1,52 +1,40 @@
-import type { IChatWithUnreadMessages } from "../../interfaces/chat"
-import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
-import { updateSelectedChatId } from "../../services/redux/slices/chatSlice"
-import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 
 type PropTypes = {
-  chat:IChatWithUnreadMessages
+  chatId:string
+  chatName:string
+  avatar:string
+  unreadMessageCount:number
+  latestUnreadMessage:string
+  updateSelectedChatId:(chatId:string)=>void
 }
-export const ChatCard = ({chat}:PropTypes) => {
 
-  const dispatch = useAppDispatch()
-
-  const handleChangeSelectedChat = (id:string) => {
-    dispatch(updateSelectedChatId(id))
-  }
-  const loggedInUser = useAppSelector(selectLoggedInUser)
+export const ChatCard = ({chatName,avatar,chatId,unreadMessageCount,latestUnreadMessage,updateSelectedChatId}:PropTypes) => {
 
   return (
-    <div onClick={()=>handleChangeSelectedChat(chat._id)} className="flex items-center w-full hover:bg-gray-100 hover:cursor-pointer gap-x-3">
+    <div onClick={()=>updateSelectedChatId(chatId)} className="flex items-center w-full hover:bg-gray-100 hover:cursor-pointer gap-x-3">
 
-        {/* chat avatar */}
-        {
-          chat.isGroupChat ? 
-          <img className="aspect-square w-16 rounded-md object-cover" src={chat.avatar} />
-          :
-          <img className="aspect-square w-16 rounded-md object-cover" src={chat.members.filter(member=>member._id!==loggedInUser?._id)[0]?.avatar} />
-        }
+        <img className="aspect-square w-16 rounded-full object-cover" src={avatar} />
         
         <div className="w-full">
 
             <div className="flex justify-between items-center">
-              {/* chat name */}
-                <p className="font-medium">{chat.isGroupChat?`${chat.name?.substring(0,20)}..`:chat.members.filter(member=>member._id!==loggedInUser?._id)[0]?.username}</p>
-                {/*last mesage time and unread mesage count */}
+   
+                <p className="font-medium">{chatName}</p>
+
                 <div className="flex flex-col">
                     <p  className="text-sm text-gray-500">{1}m</p>
-                    {chat.unreadMessages.count>0 && 
+                    { unreadMessageCount > 0 && 
                       <p className="bg-violet-500 flex items-center justify-center text-white rounded-full w-6 h-6">
-                        {chat.unreadMessages.count}
+                        { unreadMessageCount }
                       </p>
                     }
                 </div>
             </div>
             
-            {/* latest unread message */}
             <p className="text-sm text-gray-500">
               {
-                chat.unreadMessages.message?.content && 
-               `${chat.unreadMessages.message.content.substring(0,25)}...`
+                latestUnreadMessage && 
+               `${latestUnreadMessage.substring(0,25)}...`
               }
             </p>
 

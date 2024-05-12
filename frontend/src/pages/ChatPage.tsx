@@ -1,4 +1,3 @@
-import { ChatListWithSearch } from "../components/chat/ChatListWithSearch"
 import { MemberListWithNumber } from "../components/chat/MemberListWithNumber"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
@@ -23,6 +22,9 @@ import { useGetChatName } from "../hooks/useGetChatName"
 import { useRef } from "react"
 import { useScrollToBottom } from "../hooks/useScrollToBottom"
 import { useToggleGif } from "../hooks/useToggleGif"
+import { useUpdateSelectedChat } from "../hooks/useUpdateSelectedChat"
+import { SearchInput } from "../components/ui/SearchInput"
+import { ChatList } from "../components/chat/ChatList"
 
 export const ChatPage = () => {
 
@@ -52,7 +54,8 @@ export const ChatPage = () => {
 
     const toggleGif = useToggleGif()
 
-    const chatName = useGetChatName(selectedChatDetails,loggedInUser?._id)
+    const chatName = useGetChatName(selectedChatDetails)
+    const updateSelectedChatId = useUpdateSelectedChat()
 
   return (
     <div className="h-full w-full flex p-6 gap-x-6">
@@ -60,9 +63,11 @@ export const ChatPage = () => {
             <div className="flex-[.5]">
                 {
                     !isFetching && chats && 
-                    <ChatListWithSearch 
-                      chats={chats}
-                    />
+
+                    <div className="flex flex-col gap-y-5">
+                        <SearchInput/>
+                        <ChatList chats={chats} updateSelectedChatId={updateSelectedChatId}/>
+                    </div>
                 }
             </div>
 

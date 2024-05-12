@@ -17,7 +17,7 @@ export const LoginPage = () => {
             <div className="w-[50rem] px-6 flex flex-col gap-y-14 shadow-xl mt-10">
 
                 <SocialLogin 
-                    title="Create Account"
+                    title="Login"
                     googleLink={`${config.base_url}/auth/google`}
                     githubLink={`${config.base_url}/auth/github`}
                     />

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../config/envConfig";
 import type { IMessage } from "../../interfaces/messages";
-import type { IChat } from "../../interfaces/chat";
+import type { IChatWithUnreadMessages } from "../../interfaces/chat";
 
 export const messageApi = createApi({
     reducerPath:'messageApi',
@@ -10,7 +10,7 @@ export const messageApi = createApi({
         credentials:'include'
     }),
     endpoints:(builder)=>({
-        getMessagesByChatId:builder.query<Array<IMessage>,IChat['_id']>({
+        getMessagesByChatId:builder.query<Array<IMessage>,IChatWithUnreadMessages['_id']>({
             query:(_id)=>`/message/${_id}`
         })
     })

@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import type { IAuth } from "../../interfaces/auth";
-import type { RootState } from "../../app/store";
-import type { IUser } from "../../interfaces/auth";
+import type { IAuth } from "../../../interfaces/auth";
+import type { IUser } from "../../../interfaces/auth";
+import { RootState } from "../store/store";
 
 const initialState:IAuth = {
     loggedInUser:null

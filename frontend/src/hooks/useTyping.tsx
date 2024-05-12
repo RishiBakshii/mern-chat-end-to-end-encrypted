@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 import { Events } from "../enums/events"
-import { chatApi, useGetChatsQuery } from "../features/chat/api"
-import { selectSelectedChatId } from "../features/chat/chatSlice"
+import { selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import { IUserTypingEventReceiveData } from "../interfaces/chat"
+import { chatApi, useGetChatsQuery } from "../services/api/chatApi"
 import { useDebounce } from "./useDebounce"
 import { useSocketEvent } from "./useSocketEvent"
 

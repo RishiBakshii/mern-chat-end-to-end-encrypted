@@ -1,8 +1,8 @@
 import { useEffect } from "react"
-import { useAppSelector } from "../app/hooks"
+import { useAppSelector } from "../services/redux/store/hooks"
 import { getSocket } from "../context/socket"
 import { Events } from "../enums/events"
-import { selectSelectedChatDetails, selectSelectedChatId } from "../features/chat/chatSlice"
+import { selectSelectedChatDetails, selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import { IMessageSeenEventPayloadData } from "../interfaces/messages"
 
 export const useUpdateUnreadMessage = () => {

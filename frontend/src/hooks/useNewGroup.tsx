@@ -1,7 +1,7 @@
-import { useAppDispatch } from "../app/hooks"
+import { useAppDispatch } from "../services/redux/store/hooks"
 import { Events } from "../enums/events"
-import { chatApi } from "../features/chat/api"
 import type { IChatWithUnreadMessages } from "../interfaces/chat"
+import { chatApi } from "../services/api/chatApi"
 import { useSocketEvent } from "./useSocketEvent"
 
 export const useNewGroup = () => {

@@ -3,12 +3,12 @@ import { ACCEPTED_IMAGE_TYPES, DEFAULT_AVATAR } from "../../../constants"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { GroupChatSchemaType, groupChatSchema } from "../../../schemas/chat"
-import { useCreateChatMutation, useGetChatsQuery } from "../api"
 import toast from "react-hot-toast"
-import { useAppSelector } from "../../../app/hooks"
-import { selectLoggedInUser } from "../../auth/authSlice"
+import { selectLoggedInUser } from "../../../services/redux/slices/authSlice"
 import { IChatMember } from "../../../interfaces/chat"
 import { useToast } from "../../../hooks/useToast"
+import { useCreateChatMutation, useGetChatsQuery } from "../../../services/api/chatApi"
+import { useAppSelector } from "../../../services/redux/store/hooks"
 
 
 

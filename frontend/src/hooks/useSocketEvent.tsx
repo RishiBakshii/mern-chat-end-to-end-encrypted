@@ -1,8 +1,8 @@
 import { useEffect } from "react"
 import { Events } from "../enums/events"
 import { getSocket } from "../context/socket"
-import { useAppSelector } from "../app/hooks"
-import { selectSelectedChatId } from "../features/chat/chatSlice"
+import { useAppSelector } from "../services/redux/store/hooks"
+import { selectSelectedChatId } from "../services/redux/slices/chatSlice"
 
 export const useSocketEvent = (eventName:Events,callback:any) => {
 

@@ -1,12 +1,14 @@
 import {configureStore} from '@reduxjs/toolkit'
-import { authApi } from '../features/auth/api'
-import authSlice from '../features/auth/authSlice'
-import chatSlice from '../features/chat/chatSlice'
-import { chatApi } from '../features/chat/api'
-import { messageApi } from '../features/messages/api'
-import uiSlice from '../features/ui/uiSlice'
-import { userApi } from '../features/user/api'
-import { friendsApi } from '../features/friends/api'
+
+import { authApi } from '../../api/authApi'
+import { friendsApi } from '../../api/friendsApi'
+import { messageApi } from '../../api/messageApi'
+import { userApi } from '../../api/userApi'
+import { chatApi } from '../../api/chatApi'
+
+import uiSlice from '../slices/uiSlice'
+import chatSlice from '../slices/chatSlice'
+import authSlice from '../slices/authSlice'
 
 export const store = configureStore({
     reducer:{

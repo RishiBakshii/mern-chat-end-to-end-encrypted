@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 import { Events } from "../enums/events"
-import { selectLoggedInUser } from "../features/auth/authSlice"
-import { chatApi } from "../features/chat/api"
+import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import type { IMessageSeenEventReceiveData } from "../interfaces/messages"
+import { chatApi } from "../services/api/chatApi"
 import { useSocketEvent } from "./useSocketEvent"
 
 export const useMessageSeen = () => {

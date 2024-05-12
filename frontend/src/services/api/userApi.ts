@@ -1,7 +1,7 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import { config } from '../../config/envConfig'
 import { IUser } from '../../interfaces/auth'
-import { updateLoggedInUser } from '../auth/authSlice'
+import { updateLoggedInUser } from '../redux/slices/authSlice'
 
 export const userApi = createApi({
 

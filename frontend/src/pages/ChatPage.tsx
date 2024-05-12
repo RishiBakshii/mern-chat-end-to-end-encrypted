@@ -1,10 +1,8 @@
-import { useAppSelector } from "../app/hooks"
 import { ChatArea } from "../components/chat/ChatArea"
 import { ChatListWithSearch } from "../components/chat/ChatListWithSearch"
 import { MemberListWithNumber } from "../components/chat/MemberListWithNumber"
-import { selectLoggedInUser } from "../features/auth/authSlice"
-import { useGetChatsQuery } from "../features/chat/api"
-import { selectSelectedChatDetails } from "../features/chat/chatSlice"
+import { selectLoggedInUser } from "../services/redux/slices/authSlice"
+import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { useChatHandling } from "../hooks/useChatHandling"
 import { useFriendRequest } from "../hooks/useFriendRequest"
 import { useMessageHandler } from "../hooks/useMessageHandler"
@@ -17,6 +15,8 @@ import { useToast } from "../hooks/useToast"
 import { useTyping } from "../hooks/useTyping"
 import { useUnreadMessageHandler } from "../hooks/useUnreadMessageHandler"
 import { useUpdateUnreadMessage } from "../hooks/useUpdateUnreadMessage"
+import { useAppSelector } from "../services/redux/store/hooks"
+import { useGetChatsQuery } from "../services/api/chatApi"
 
 export const ChatPage = () => {
 

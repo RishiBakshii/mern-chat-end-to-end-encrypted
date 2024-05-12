@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IChatIntitalState, IChatWithUnreadMessages } from "../../interfaces/chat";
-import { RootState } from "../../app/store";
+import { IChatIntitalState, IChatWithUnreadMessages } from "../../../interfaces/chat";
+import { RootState } from "../store/store";
 
 const initialState:IChatIntitalState =  {
     selectedChatId:null,

@@ -6,8 +6,8 @@ import { chatAnimation, githubPng, googlePng } from "../../../assets"
 import { useUpdateLogin } from "../../../hooks/useUpdateLogin"
 import type { signupSchemaType } from "../../../schemas"
 import { signupSchema } from "../../../schemas"
-import { useSignupMutation } from "../api"
 import { useToast } from "../../../hooks/useToast"
+import { useSignupMutation } from "../../../services/api/authApi"
 
 export const Signup = () => {
 

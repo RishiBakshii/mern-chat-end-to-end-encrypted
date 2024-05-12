@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IUi } from "../../interfaces/ui";
-import { RootState } from "../../app/store";
+import { IUi } from "../../../interfaces/ui";
+import { RootState } from "../store/store";
 
 
 const initialState:IUi = {

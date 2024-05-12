@@ -6,8 +6,8 @@ import { AddFriendForm } from "../features/friends/components/AddFriendForm"
 import { FriendRequestForm } from "../features/friends/components/FriendRequestForm"
 import { ProfileForm } from "../features/user/components/ProfileForm"
 import { MemberForm } from "../features/chat/components/MemberForm"
-import { useAppDispatch, useAppSelector } from "../app/hooks"
-import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, selectMemberForm, selectProfileForm, setAddFriendForm, setFriendRequestForm, setMemberForm, setNewgroupChatForm, setProfileForm } from "../features/ui/uiSlice"
+import { selectAddFriendForm, selectFriendRequestForm, selectGroupChatForm, selectMemberForm, selectProfileForm, setAddFriendForm, setFriendRequestForm, setMemberForm, setNewgroupChatForm, setProfileForm } from "../services/redux/slices/uiSlice"
+import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 
 export const RootLayout = () => {
 

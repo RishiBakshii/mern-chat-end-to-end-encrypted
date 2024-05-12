@@ -1,9 +1,9 @@
 import { useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "../app/hooks"
-import { selectSelectedChatId, updateSelectedChatDetails } from "../features/chat/chatSlice"
-import { useLazyGetMessagesByChatIdQuery } from "../features/messages/api"
-import { useGetChatsQuery } from "../features/chat/api"
+import { selectSelectedChatId, updateSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { IMessage } from "../interfaces/messages"
+import { useGetChatsQuery } from "../services/api/chatApi"
+import { useLazyGetMessagesByChatIdQuery } from "../services/api/messageApi"
+import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 
 export const useChatHandling = () : [boolean,Array<IMessage> | undefined] => {
 

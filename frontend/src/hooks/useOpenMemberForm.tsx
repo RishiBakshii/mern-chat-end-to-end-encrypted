@@ -1,5 +1,5 @@
-import { useAppDispatch } from "../app/hooks"
-import { setMemberForm } from "../features/ui/uiSlice"
+import { useAppDispatch  } from "../services/redux/store/hooks"
+import { setMemberForm } from "../services/redux/slices/uiSlice"
 
 export const useOpenMemberForm = () => {
 

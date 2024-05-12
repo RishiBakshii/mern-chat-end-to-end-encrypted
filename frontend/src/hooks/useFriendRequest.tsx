@@ -1,7 +1,7 @@
-import { useAppDispatch } from "../app/hooks"
 import { Events } from "../enums/events"
-import { friendsApi } from "../features/friends/api"
 import type { IFriendRequest } from "../interfaces/friends"
+import { friendsApi } from "../services/api/friendsApi"
+import { useAppDispatch } from "../services/redux/store/hooks"
 import { useSocketEvent } from "./useSocketEvent"
 
 export const useFriendRequest = () => {

@@ -46,7 +46,7 @@ export const chatApi = createApi({
                 }
               },
         }),
-        addMember:builder.mutation<IChat,Pick<IChat, 'members' | '_id'>>({
+        addMember:builder.mutation<IChatWithUnreadMessages,{members:string,_id:string}>({
             query:({_id,members})=>({
                 url:`/chat/${_id}/members`,
                 method:"PATCH",
@@ -66,7 +66,7 @@ export const chatApi = createApi({
                     chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
                         const affectedChat = draft.find(chat=>chat._id===chatId)
                         if(affectedChat){
-                            affectedChat.members=affectedChat.members.filter(member=>member._id!==removedMemberId)
+                            affectedChat.members=affectedChat.members.filter(member=>member._id!==removedMemberId.removedMemberId)
                         }
                     })
                 )

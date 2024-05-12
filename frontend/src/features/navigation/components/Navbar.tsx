@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { useLazyLogoutQuery } from "../../auth/api"
-import { logout, selectLoggedInUser } from "../../auth/authSlice"
-import { useGetUserFriendRequestsQuery } from "../../friends/api"
-import { selectNavMenu, setAddFriendForm, setFriendRequestForm, setNavMenu, setNewgroupChatForm, setProfileForm } from "../../ui/uiSlice"
+import { useLazyLogoutQuery } from "../../../services/api/authApi"
+import { logout, selectLoggedInUser } from "../../../services/redux/slices/authSlice"
+import { useGetUserFriendRequestsQuery } from "../../../services/api/friendsApi"
+import { selectNavMenu, setAddFriendForm, setFriendRequestForm, setNavMenu, setNewgroupChatForm, setProfileForm } from "../../../services/redux/slices/uiSlice"
+import { useAppDispatch, useAppSelector } from "../../../services/redux/store/hooks"
 
 export const Navbar = () => {
 

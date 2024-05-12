@@ -1,7 +1,7 @@
 import { useEffect } from "react"
-import { useAppDispatch } from "../app/hooks"
 import type { IUser } from "../interfaces/auth"
-import { updateLoggedInUser } from "../features/auth/authSlice"
+import { updateLoggedInUser } from "../services/redux/slices/authSlice"
+import { useAppDispatch } from "../services/redux/store/hooks"
 
 export const useUpdateLogin = (isSuccess:boolean,data:IUser | null | undefined) => {
 

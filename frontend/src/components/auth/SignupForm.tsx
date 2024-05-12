@@ -3,10 +3,10 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { useUpdateLogin } from "../../hooks/useUpdateLogin"
 import { useToast } from "../../hooks/useToast"
 import { signupSchema, signupSchemaType } from "../../schemas"
-import { useSignupMutation } from "../../features/auth/api"
 import { FormInput } from "../ui/FormInput"
 import { SubmitButton } from "../ui/SubmitButton"
 import { AuthRedirectLink } from "./AuthRedirectLink"
+import { useSignupMutation } from "../../services/api/authApi"
 
 export const SignupForm = () => {
 

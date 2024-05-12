@@ -1,10 +1,10 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Loader } from './components/shared/Loader';
-import { useCheckAuthQuery } from './features/auth/api';
 import { Protected } from './features/auth/components/Protected';
 import { useUpdateLogin } from './hooks/useUpdateLogin';
 import { RootLayout } from './layouts/RootLayout';
 import { ChatPage, LoginPage, SignupPage } from './pages';
+import { useCheckAuthQuery } from './services/api/authApi';
 
 export const App = () => {
 

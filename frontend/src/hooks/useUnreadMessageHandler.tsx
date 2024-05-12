@@ -1,9 +1,9 @@
-import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 import { getSocket } from "../context/socket"
 import { Events } from "../enums/events"
-import { chatApi, useGetChatsQuery } from "../features/chat/api"
-import { selectSelectedChatId } from "../features/chat/chatSlice"
+import { selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import type { IMessageSeenEventPayloadData, IUnreadMessageEventReceiveData } from "../interfaces/messages"
+import { chatApi, useGetChatsQuery } from "../services/api/chatApi"
 import { useSocketEvent } from "./useSocketEvent"
 
 export const useUnreadMessageHandler = () => {

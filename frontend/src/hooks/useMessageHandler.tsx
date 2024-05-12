@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 import { Events } from "../enums/events"
-import { selectSelectedChatId } from "../features/chat/chatSlice"
-import { messageApi } from "../features/messages/api"
+import { selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import type { IMessage } from "../interfaces/messages"
+import { messageApi } from "../services/api/messageApi"
 import { useSocketEvent } from "./useSocketEvent"
 
 export const useMessageHandler = () => {    

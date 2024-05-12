@@ -1,6 +1,6 @@
-import { useAppSelector } from "../../../app/hooks"
 import { IUser } from "../../../interfaces/auth"
-import { selectLoggedInUser } from "../../auth/authSlice"
+import { selectLoggedInUser } from "../../../services/redux/slices/authSlice"
+import { useAppSelector } from "../../../services/redux/store/hooks"
 
 type PropTypes = {
     user:Pick<IUser , '_id' | 'name' | "username" | 'avatar'>

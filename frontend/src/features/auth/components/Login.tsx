@@ -5,10 +5,10 @@ import { Link } from "react-router-dom"
 import { chatAnimation, githubPng, googlePng } from "../../../assets"
 import type { loginSchemaType, signupSchemaType } from "../../../schemas"
 import { loginSchema } from "../../../schemas"
-import { useLoginMutation } from "../api"
 import { useUpdateLogin } from "../../../hooks/useUpdateLogin"
 import { config } from "../../../config/envConfig"
 import { useToast } from "../../../hooks/useToast"
+import { useLoginMutation } from "../../../services/api/authApi"
 
 export const Login = () => {    
     

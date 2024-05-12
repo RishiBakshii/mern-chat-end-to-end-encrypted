@@ -9,7 +9,7 @@ import { useSocketEvent } from "./useSocketEvent"
 export const useTyping = () => {
 
     const [isTyping,setIsTyping] = useDebounce(false,2000)
-
+    console.log(isTyping,'hook re-rendered');
     const dispatch = useAppDispatch()
     const {data:chats} = useGetChatsQuery()
     

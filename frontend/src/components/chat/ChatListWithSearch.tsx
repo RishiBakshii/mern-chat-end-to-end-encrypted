@@ -8,9 +8,9 @@ type PropTypes = {
 
 export const ChatListWithSearch = ({chats}:PropTypes) => {
   return (
-    <>
+    <div className="flex flex-col gap-y-5">
     <SearchInput/>
     <ChatList chats={chats}/>
-    </>
+    </div>
   )
 }

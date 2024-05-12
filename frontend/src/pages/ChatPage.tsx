@@ -1,4 +1,3 @@
-import { ChatArea } from "../components/chat/ChatArea"
 import { ChatListWithSearch } from "../components/chat/ChatListWithSearch"
 import { MemberListWithNumber } from "../components/chat/MemberListWithNumber"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
@@ -17,9 +16,16 @@ import { useUnreadMessageHandler } from "../hooks/useUnreadMessageHandler"
 import { useUpdateUnreadMessage } from "../hooks/useUpdateUnreadMessage"
 import { useAppSelector } from "../services/redux/store/hooks"
 import { useGetChatsQuery } from "../services/api/chatApi"
+import { ChatHeader } from "../components/chat/ChatHeader"
+import { MessageList } from "../components/messages/MessageList"
+import { MessageForm } from "../components/chat/MessageForm"
+import { useGetChatName } from "../hooks/useGetChatName"
+import { useRef } from "react"
+import { useScrollToBottom } from "../hooks/useScrollToBottom"
 
 export const ChatPage = () => {
 
+   const messageContainerRef = useRef<HTMLDivElement>(null)
 
    const {isError,isFetching,isSuccess,isUninitialized,error,data:chats} = useGetChatsQuery()
    useToast({error,isError,isLoading:isFetching,isSuccess,isUninitialized})
@@ -29,6 +35,8 @@ export const ChatPage = () => {
 
    const [isMessagesFetching,messages] =  useChatHandling()
 
+    useScrollToBottom(messageContainerRef,messages)
+
     useMessageHandler()
     useUnreadMessageHandler()
     useMessageSeen()
@@ -37,43 +45,54 @@ export const ChatPage = () => {
     useOffline()
     useFriendRequest()
     const isTyping = useTyping()
-
-
     useUpdateUnreadMessage()
 
     const openMemberForm = useOpenMemberForm()
 
-  return (
-    <div className="h-full w-full flex ">
+    const chatName = useGetChatName(selectedChatDetails,loggedInUser?._id)
 
-            <div className="flex-[.5] p-6 flex flex-col gap-y-4">
+  return (
+    <div className="h-full w-full flex p-6 gap-x-6">
+
+            <div className="flex-[.5]">
                 {
                     !isFetching && chats && 
-
                     <ChatListWithSearch 
                       chats={chats}
                     />
                 }
             </div>
 
-            <div className="flex-[1.6] p-6 flex flex-col justify-between gap-y-4">
+            <div className="flex-[1.6]">
 
                 {
-                    !isMessagesFetching && messages && selectedChatDetails && loggedInUser && 
+                    !isMessagesFetching && messages && selectedChatDetails && loggedInUser && chatName &&
 
-                    <ChatArea
-                        openMemberForm={openMemberForm}
-                        isTyping={isTyping}
-                        members={selectedChatDetails.members}
-                        isGroupChat={selectedChatDetails?.isGroupChat}
-                        loggedInUserId={loggedInUser?._id}
-                        messages={messages}
-                        chatName={selectedChatDetails.name}
-                    />
+                    <div className="flex flex-col gap-y-3 h-full">
+  
+                        <ChatHeader
+                            chatName={chatName}
+                            openMemberForm={openMemberForm}
+                            totalMembers={selectedChatDetails.members.length}
+                        />
+
+                        <div ref={messageContainerRef}  className="h-full flex px-2 flex-col gap-y-4 overflow-y-scroll">
+
+                            <MessageList
+                                isGroupChat={selectedChatDetails.isGroupChat} 
+                                messages={messages} 
+                                loggedInUserId={loggedInUser._id}
+                            /> 
+
+                        </div>
+
+                        <MessageForm/>  
+
+                    </div>
                 }
             </div>
 
-            <div className="flex-[.8] flex flex-col justify-between p-6">
+            <div className="flex-[.8]">
                 {
                     !isFetching && chats && loggedInUser && selectedChatDetails &&
 

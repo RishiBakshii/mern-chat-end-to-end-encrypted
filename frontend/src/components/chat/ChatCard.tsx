@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks
 type PropTypes = {
   chat:IChatWithUnreadMessages
 }
-export const ChatItem = ({chat}:PropTypes) => {
+export const ChatCard = ({chat}:PropTypes) => {
 
   const dispatch = useAppDispatch()
 

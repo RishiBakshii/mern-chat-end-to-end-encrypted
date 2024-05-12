@@ -9,7 +9,7 @@ type PropTypes = {
   isGroupChat?:boolean
   removeHandler?:(chatId: string, memberId: string) => void
 }
-export const MemberItem = ({member,loggedInUserId,chatAdminId,isRemovable=false,removeHandler,chatId,isGroupChat}:PropTypes) => {
+export const MemberCard = ({member,loggedInUserId,chatAdminId,isRemovable=false,removeHandler,chatId,isGroupChat}:PropTypes) => {
   return (
     <div className="flex gap-x-2 items-center hover:bg-gray-100 relative">
         <img className="aspect-square object-cover w-[4rem] rounded" 

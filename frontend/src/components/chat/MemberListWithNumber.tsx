@@ -9,10 +9,18 @@ type PropTypes = {
 
 export const MemberListWithNumber = ({members,chatAdminId,loggedInUserId}:PropTypes) => {
   return (
-    <div>
+
+    <div className="flex flex-col gap-y-4">
+
         <h6 className="text-xl font-medium">{members.length} Members</h6>
-        <MemberList loggedInUserId={loggedInUserId}  chatAdminId={chatAdminId} 
-        members={members}/>
+
+        <MemberList 
+          loggedInUserId={loggedInUserId}  
+          chatAdminId={chatAdminId} 
+          members={members}
+        />
+
     </div>
+    
   )
 }

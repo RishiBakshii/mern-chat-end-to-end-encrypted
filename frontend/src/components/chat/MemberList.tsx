@@ -1,5 +1,5 @@
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
-import { MemberItem } from "./MemberItem"
+import { MemberCard } from "./MemberCard"
 
 type PropTypes = {
   members:IChatWithUnreadMessages['members'] | undefined
@@ -16,7 +16,7 @@ export const MemberList = ({members,chatAdminId,loggedInUserId,isRemovable=false
     <div className="flex flex-col gap-y-2">
         {
             members?.map(member=>
-                <MemberItem isGroupChat={isGroupChat} chatId={chatId} isRemovable={isRemovable} removeHandler={removeHandler} member={member} chatAdminId={chatAdminId} loggedInUserId={loggedInUserId}/>
+                <MemberCard isGroupChat={isGroupChat} chatId={chatId} isRemovable={isRemovable} removeHandler={removeHandler} member={member} chatAdminId={chatAdminId} loggedInUserId={loggedInUserId}/>
             )
         }
     </div>

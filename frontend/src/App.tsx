@@ -2,7 +2,7 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } 
 import { Loader } from './components/shared/Loader';
 import { Protected } from './features/auth/components/Protected';
 import { useUpdateLogin } from './hooks/useUpdateLogin';
-import { RootLayout } from './layouts/RootLayout';
+import { RootLayout } from './components/layout/RootLayout';
 import { ChatPage, LoginPage, SignupPage } from './pages';
 import { useCheckAuthQuery } from './services/api/authApi';
 

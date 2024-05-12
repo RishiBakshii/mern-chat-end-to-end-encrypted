@@ -1,7 +1,7 @@
-import type { IChatWithUnreadMessages } from "../../../interfaces/chat"
-import { selectLoggedInUser } from "../../../services/redux/slices/authSlice"
-import { updateSelectedChatId } from "../../../services/redux/slices/chatSlice"
-import { useAppDispatch, useAppSelector } from "../../../services/redux/store/hooks"
+import type { IChatWithUnreadMessages } from "../../interfaces/chat"
+import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
+import { updateSelectedChatId } from "../../services/redux/slices/chatSlice"
+import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 
 type PropTypes = {
   chat:IChatWithUnreadMessages

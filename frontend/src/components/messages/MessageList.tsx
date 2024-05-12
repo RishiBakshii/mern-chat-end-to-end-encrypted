@@ -1,5 +1,5 @@
-import type { IUser } from "../../../interfaces/auth"
-import type { IMessage } from "../../../interfaces/messages"
+import type { IUser } from "../../interfaces/auth"
+import type { IMessage } from "../../interfaces/messages"
 import { MessageItem } from "./MessageItem"
 
 type PropTypes = {

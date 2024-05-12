@@ -1,8 +1,8 @@
-import { useToast } from "../../../hooks/useToast"
-import { useGetChatsQuery, useRemoveMemberMutation } from "../../../services/api/chatApi"
-import { selectLoggedInUser } from "../../../services/redux/slices/authSlice"
-import { selectSelectedChatId } from "../../../services/redux/slices/chatSlice"
-import { useAppSelector } from "../../../services/redux/store/hooks"
+import { useToast } from "../../hooks/useToast"
+import { useGetChatsQuery, useRemoveMemberMutation } from "../../services/api/chatApi"
+import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
+import { selectSelectedChatId } from "../../services/redux/slices/chatSlice"
+import { useAppSelector } from "../../services/redux/store/hooks"
 import { MemberList } from "./MemberList"
 
 export const MemberForm = () => {

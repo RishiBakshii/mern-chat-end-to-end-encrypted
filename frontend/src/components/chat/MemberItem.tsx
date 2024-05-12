@@ -1,4 +1,4 @@
-import type { IChatMember } from "../../../interfaces/chat"
+import type { IChatMember } from "../../interfaces/chat"
 
 type PropTypes = {
   member: IChatMember

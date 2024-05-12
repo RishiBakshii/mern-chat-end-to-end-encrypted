@@ -1,5 +1,5 @@
 import { memo } from "react"
-import { IChatWithUnreadMessages } from "../../../interfaces/chat"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { ChatItem } from "./ChatItem"
 
 type PropTypes = {

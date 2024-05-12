@@ -1,4 +1,4 @@
-import { IChatMember } from "../../../interfaces/chat"
+import { IChatMember } from "../../interfaces/chat"
 import { SeenByItem } from "./SeenByItem"
 
 type PropTypes = {

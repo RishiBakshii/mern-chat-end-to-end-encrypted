@@ -1,6 +1,6 @@
 import Lottie from "lottie-react"
-import { typingAnimation } from "../../../assets"
-import { IChatWithUnreadMessages } from "../../../interfaces/chat"
+import { typingAnimation } from "../../assets"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
 
 type PropTypes = {
   isGroupChat:boolean

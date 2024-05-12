@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom"
-import { selectLoggedInUser } from "../../../services/redux/slices/authSlice"
-import { useAppSelector } from "../../../services/redux/store/hooks"
+import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
+import { useAppSelector } from "../../services/redux/store/hooks"
 
 type propTypes = {
     children:React.ReactNode

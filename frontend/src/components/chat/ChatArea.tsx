@@ -1,8 +1,8 @@
-import { ChatHeader } from "../../features/chat/components/ChatHeader"
-import { MessageList } from "../../features/messages/components/MessageList"
+import { MessageList } from "../messages/MessageList"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { IMessage } from "../../interfaces/messages"
 import { MessageForm } from "./MessageForm"
+import { ChatHeader } from "./ChatHeader"
 
 type PropTypes = {
     loggedInUserId:string

@@ -1,4 +1,4 @@
-import { ChatList } from "../../features/chat/components/ChatList"
+import { ChatList } from "./ChatList"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { SearchInput } from "../ui/SearchInput"
 

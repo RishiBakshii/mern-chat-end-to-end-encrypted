@@ -1,4 +1,4 @@
-import { MemberList } from "../../features/chat/components/MemberList"
+import { MemberList } from "./MemberList"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 
 type PropTypes = {

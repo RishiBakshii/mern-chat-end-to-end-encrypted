@@ -1,4 +1,4 @@
-import { IChatWithUnreadMessages } from "../../../interfaces/chat"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { MemberItem } from "./MemberItem"
 
 type PropTypes = {

@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import type { IMessage } from "../../../interfaces/messages";
+import type { IMessage } from "../../interfaces/messages";
 
 type PropTypes = {
     myMessage:boolean;

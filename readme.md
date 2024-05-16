@@ -1,5 +1,7 @@
 # Baatchit 🗨️
 
+### Launching Soon 🚀
+
 Baatchit is a modern real-time chat application designed to facilitate seamless communication between users. With Baatchit, users can engage in conversations, share files, see when others are typing, and more, all in real-time.
 
 ## Features ✨

@@ -17,6 +17,7 @@ export const ChatList = memo(({chats,updateSelectedChatId}:PropTypes) => {
           chats.map(chat=>(
 
             <ChatCard
+              isTyping={chat.userTyping.length>0}
               chatId={chat._id}
               chatName={useGetChatName(chat)!}
               avatar={useGetChatAvatar(chat)!}

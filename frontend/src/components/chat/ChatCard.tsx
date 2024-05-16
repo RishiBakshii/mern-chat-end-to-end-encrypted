@@ -1,3 +1,4 @@
+import { TypingIndicator } from "../ui/TypingIndicator"
 
 type PropTypes = {
   chatId:string
@@ -5,10 +6,11 @@ type PropTypes = {
   avatar:string
   unreadMessageCount:number
   latestUnreadMessage:string
+  isTyping:boolean
   updateSelectedChatId:(chatId:string)=>void
 }
 
-export const ChatCard = ({chatName,avatar,chatId,unreadMessageCount,latestUnreadMessage,updateSelectedChatId}:PropTypes) => {
+export const ChatCard = ({chatName,avatar,chatId,unreadMessageCount,latestUnreadMessage,isTyping,updateSelectedChatId}:PropTypes) => {
 
   return (
     <div onClick={()=>updateSelectedChatId(chatId)} className="flex items-center w-full hover:bg-gray-100 hover:cursor-pointer gap-x-3">
@@ -18,8 +20,11 @@ export const ChatCard = ({chatName,avatar,chatId,unreadMessageCount,latestUnread
         <div className="w-full">
 
             <div className="flex justify-between items-center">
-   
-                <p className="font-medium">{chatName}</p>
+
+                <div className="flex items-center gap-x-2">
+                    <p className="font-medium">{chatName}</p>
+                    {isTyping && <TypingIndicator w={12}/>}
+                </div>
 
                 <div className="flex flex-col">
                     <p  className="text-sm text-gray-500">{1}m</p>

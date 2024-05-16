@@ -1,10 +1,13 @@
 import Lottie from "lottie-react"
 import { typingAnimation } from "../../assets"
 
-export const TypingIndicator = () => {
+type PropTypes = {
+  w:number
+}
+export const TypingIndicator = ({w=28}:PropTypes) => {
 
   return (
-    <div className="w-28">
+    <div className={`w-${w}`}>
         <Lottie animationData={typingAnimation}/>
     </div>
   )

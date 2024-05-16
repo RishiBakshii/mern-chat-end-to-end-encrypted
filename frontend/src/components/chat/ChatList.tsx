@@ -1,8 +1,8 @@
 import { memo } from "react"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { ChatCard } from "./ChatCard"
-import { useGetChatName } from "../../hooks/useGetChatName"
-import { useGetChatAvatar } from "../../hooks/useGetChatAvatar"
+import { useGetChatName } from "../../hooks/useUtils/useGetChatName"
+import { useGetChatAvatar } from "../../hooks/useUtils/useGetChatAvatar"
 
 type PropTypes = {
   chats:Array<IChatWithUnreadMessages>

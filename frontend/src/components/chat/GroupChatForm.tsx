@@ -6,7 +6,7 @@ import { GroupChatSchemaType, groupChatSchema } from "../../schemas/chat"
 import toast from "react-hot-toast"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
 import { IChatMember } from "../../interfaces/chat"
-import { useToast } from "../../hooks/useToast"
+import { useToast } from "../../hooks/useUI/useToast"
 import { useCreateChatMutation, useGetChatsQuery } from "../../services/api/chatApi"
 import { useAppSelector } from "../../services/redux/store/hooks"
 

@@ -1,6 +1,7 @@
 import { useState } from "react"
-import { useMessageSubmit } from "../../hooks/useMessageSubmit"
-import { useUserTyping } from "../../hooks/useUserTyping"
+import { useEmitTypingEvent } from "../../hooks/useChat/useEmitTypingEvent"
+import { useSendMessage } from "../../hooks/useMessages/useSendMessage"
+import { useDebounce } from "../../hooks/useUtils/useDebounce"
 import { MessageInput } from "../ui/MessageInput"
 
 type PropTypes = {
@@ -11,15 +12,17 @@ export const MessageForm = ({toggleGif}:PropTypes) => {
 
     const [messageVal,setMessageVal] = useState<string>('')
 
-    const submitMessage = useMessageSubmit()
+    const isTyping = useDebounce(messageVal)
 
-    useUserTyping(messageVal,250)
+    useEmitTypingEvent(isTyping)
+
+    const sendMessage = useSendMessage()
 
     const handleMessageSubmit = (e:React.FormEvent) => {
         e.stopPropagation()
         e.preventDefault()
         setMessageVal('')
-        submitMessage(messageVal)
+        sendMessage(messageVal,undefined)
     }
     
   return (

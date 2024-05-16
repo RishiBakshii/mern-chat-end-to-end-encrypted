@@ -1,6 +1,6 @@
-import { IChatWithUnreadMessages } from "../interfaces/chat";
-import { selectLoggedInUser } from "../services/redux/slices/authSlice";
-import { useAppSelector } from "../services/redux/store/hooks";
+import { IChatWithUnreadMessages } from "../../interfaces/chat";
+import { selectLoggedInUser } from "../../services/redux/slices/authSlice";
+import { useAppSelector } from "../../services/redux/store/hooks";
 
 export const useGetChatAvatar = (selectedChatDetails:IChatWithUnreadMessages | null) => {
 

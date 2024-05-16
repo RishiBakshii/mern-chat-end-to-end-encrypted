@@ -1,4 +1,4 @@
-import { useToast } from "../../hooks/useToast"
+import { useToast } from "../../hooks/useUI/useToast"
 import { IFriendRequest } from "../../interfaces/friends"
 import { useGetUserFriendRequestsQuery, useHandleFriendRequestMutation } from "../../services/api/friendsApi"
 import { FriendRequestList } from "./FriendRequestList"

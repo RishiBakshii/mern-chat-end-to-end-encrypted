@@ -1,7 +1,7 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Loader } from './components/shared/Loader';
 import { Protected } from './components/auth/Protected';
-import { useUpdateLogin } from './hooks/useUpdateLogin';
+import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
 import { RootLayout } from './components/layout/RootLayout';
 import { ChatPage, LoginPage, SignupPage } from './pages';
 import { useCheckAuthQuery } from './services/api/authApi';

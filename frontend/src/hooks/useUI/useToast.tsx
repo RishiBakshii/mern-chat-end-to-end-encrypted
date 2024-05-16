@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import toast from "react-hot-toast"
-import { isErrorWithMessage } from "../utils/helpers"
+import { isErrorWithMessage } from "../../utils/helpers"
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query"
 import { SerializedError } from "@reduxjs/toolkit"
 

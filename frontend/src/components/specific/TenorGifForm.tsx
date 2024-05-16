@@ -1,13 +1,13 @@
 import GifPicker, { TenorImage } from 'gif-picker-react'
 import { env } from '../../config/envConfig';
-import { useMessageSubmit } from '../../hooks/useMessageSubmit';
+import { useSendMessage } from '../../hooks/useMessages/useSendMessage';
 
 export const TenorGifForm = () => {
-
-    const submitMessage = useMessageSubmit()
     
+    const sendMessage = useSendMessage()
+
     const handleGifClick = (image:TenorImage)=>{
-      submitMessage(undefined,image.url)
+      sendMessage(undefined,image.url)
     }
 
   return (

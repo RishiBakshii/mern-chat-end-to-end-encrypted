@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { UserList } from "./UserList"
-import { useToast } from "../../hooks/useToast"
+import { useToast } from "../../hooks/useUI/useToast"
 import { useSendFriendRequestMutation } from "../../services/api/friendsApi"
 import { useLazySearchUserQuery } from "../../services/api/userApi"
 

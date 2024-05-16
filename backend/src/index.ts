@@ -133,7 +133,16 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
         }
 
         const memberSocketIds = getMemberSockets(members)
-        io.to(memberSocketIds).emit(Events.MESSAGE_SEEN,{user:{_id:socket.user?._id,username:socket.user?.username,avatar:socket.user?.avatar},readAt:areUnreadMessages?.readAt,chat:chatId})
+        io.to(memberSocketIds).emit(Events.MESSAGE_SEEN,{
+
+            user:{
+                _id:socket.user?._id,
+                username:socket.user?.username,
+                avatar:socket.user?.avatar?.secureUrl
+            },
+            chat:chatId,
+            readAt:areUnreadMessages?.readAt,
+        })
 
     })
 

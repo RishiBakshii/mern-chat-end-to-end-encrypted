@@ -1,4 +1,4 @@
-import { useToast } from "../../hooks/useToast"
+import { useToast } from "../../hooks/useUI/useToast"
 import { useGetChatsQuery, useRemoveMemberMutation } from "../../services/api/chatApi"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
 import { selectSelectedChatId } from "../../services/redux/slices/chatSlice"

@@ -29,36 +29,36 @@ import { useTypingListener } from "../hooks/useEventListeners/useTypingListener"
 
 export const ChatPage = () => {
 
-   const messageContainerRef = useRef<HTMLDivElement>(null)
-
-
-   const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
-   const loggedInUser = useAppSelector(selectLoggedInUser)
 
    const {isChatsFetching,chats} = useFetchChats()
+   
+   const loggedInUser = useAppSelector(selectLoggedInUser)
+   const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
+   const messageContainerRef = useRef<HTMLDivElement>(null)
+   
    const {isMessagesFetching,messages} = useFetchMessages(selectedChatDetails?._id)
 
-   useUpdateUnreadChatAsSeen(selectedChatDetails)
+
    
    const updateSelectedChatId = useUpdateChatSelection()
    
    useScrollToBottom(messageContainerRef,[messages,selectedChatDetails],0)
-
-    // listeners
-    useFriendRequestListener()
-    useMessageListener()
-    useMessageSeenListener()
-    useNewGroupListener()
-    useUnreadMessageListener()
-    useOfflineListener()
-    useOnlineListener()
-    useTypingListener()
-
-    const openMemberForm = useOpenMemberForm()
-
-    const toggleGif = useToggleGif()
-
-    const chatName = useGetChatName(selectedChatDetails)
+   
+   // listeners
+   useFriendRequestListener()
+   useMessageListener()
+//    useMessageSeenListener()
+   useNewGroupListener()
+   useUnreadMessageListener()
+   useOfflineListener()
+   useOnlineListener()
+   useTypingListener()
+   
+   useUpdateUnreadChatAsSeen(selectedChatDetails)
+   
+   const openMemberForm = useOpenMemberForm()
+   const toggleGif = useToggleGif()
+   const chatName = useGetChatName(selectedChatDetails)
 
 
   return (

@@ -154,7 +154,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             user:{
                 _id:socket.user?._id.toString(),
                 username:socket.user?.username,
-                avatar:socket.user?.avatar
+                avatar:socket.user?.avatar?.secureUrl
             },
             chatId:chatId
         })

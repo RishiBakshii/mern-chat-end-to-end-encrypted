@@ -25,7 +25,7 @@ const unreadMessageSchema = new Schema<IUnreadMessage>({
     },
     count:{
         type:Number,
-        required:true
+        default:1
     },
     readAt:{
         type:Date,

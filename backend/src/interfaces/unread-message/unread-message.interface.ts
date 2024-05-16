@@ -6,5 +6,18 @@ export interface IUnreadMessage {
     sender:Types.ObjectId
     message:Types.ObjectId
     readAt?:Date
-    count:number
+    count?:number
+}
+
+export interface IUnreadMessageEventPayload {
+    chatId:string,
+    message?:{
+        _id?:string,
+        content?:string
+    },
+    sender:{
+        _id:string,
+        avatar:string,
+        username:string
+    }
 }

@@ -6,7 +6,23 @@ export interface IMessage {
     sender:Types.ObjectId
     chat:Types.ObjectId
     url?:string
-    attachments?:Array<String>
+    attachments?:Array<string>
     createdAt:Date
     updatedAt:Date
+}
+
+export interface IMessageEventPayload {
+
+    _id: string,
+    content?: string,
+    sender: {
+        _id: string,
+        avatar: string,
+        username: string
+    },
+    chat: string,
+    url?:string,
+    attachments?: Array<string>,
+    createdAt: Date,
+    updatedAt:  Date
 }

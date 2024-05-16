@@ -9,7 +9,7 @@ import { errorMiddleware } from './middlewares/error.middleware.js'
 import { connectDB } from './config/db.config.js'
 import { env } from './schemas/env.schema.js'
 import type { AuthenticatedSocket } from './interfaces/auth/auth.interface.js'
-import type { IMessage } from './interfaces/message/message.interface.js'
+import type { IMessage, IMessageEventPayload } from './interfaces/message/message.interface.js'
 import './config/cloudinary.config.js'
 import passport from 'passport'
 import './passport/google.strategy.js'
@@ -27,6 +27,7 @@ import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
 import { IMemberDetails } from './interfaces/chat/chat.interface.js'
 import { getMemberSockets, getOtherMembers } from './utils/socket.util.js'
+import { IUnreadMessageEventPayload } from './interfaces/unread-message/unread-message.interface.js'
 
 
 const app=express()
@@ -69,56 +70,64 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
     socket.on(Events.MESSAGE,async({chat,content,attachments,members,url}:Omit<IMessage , "sender"> & {members : Array<string>})=>{
 
         // save to db
-        const newMessage = await (await Message.create({chat,content,attachments,sender:socket.user?._id,url})).populate<{sender:IMemberDetails}>("sender",['avatar','username'])
+        const newMessage = await new Message({chat,content,attachments,sender:socket.user?._id,url})
+        .populate<{"sender":IMemberDetails}>("sender",['avatar',"username"])
+
+        newMessage.save()
         
         // realtime response
-        const memberSocketIds = getMemberSockets(members)
-        io.to(memberSocketIds).emit(Events.MESSAGE,{
-            
-            _id: newMessage._id,
+        const realtimeMessageResponse:IMessageEventPayload = {
+            _id: newMessage._id.toString(),
             content: newMessage.content,
             sender: {
                 _id: newMessage.sender._id,
                 avatar: newMessage.sender.avatar.secureUrl,
                 username: newMessage.sender.username
             },
-            chat: newMessage.chat.toString(),
+            chat: newMessage.chat?.toString(),
             url:newMessage.url,
             attachments: newMessage.attachments,
             createdAt: newMessage.createdAt,
             updatedAt:  newMessage.updatedAt
-        })
+        }
+
+        io.to(getMemberSockets(members)).emit(Events.MESSAGE,realtimeMessageResponse)
 
         // unread message creation for receivers
         const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
         const otherMemberSockets = getMemberSockets(memberIds)
+
+
         const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
 
             const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:memberId})
 
             if(isExistingUnreadMessage){
-                isExistingUnreadMessage.count++
+                isExistingUnreadMessage.count? isExistingUnreadMessage.count++ : null
                 isExistingUnreadMessage.message = newMessage._id
                 isExistingUnreadMessage.save()
                 return isExistingUnreadMessage
             }
 
-           return UnreadMessage.create({chat,count:1,user:memberId,sender:socket.user?._id,message:newMessage._id})
+           return UnreadMessage.create({chat,user:memberId,sender:socket.user?._id,message:newMessage._id})
 
         })
 
         await Promise.all(updateOrCreateUnreadMessagePromise)
 
-        io.to(otherMemberSockets).emit(Events.UNREAD_MESSAGE,{
-
-            chatId:chat,
+        const unreadMessageData:IUnreadMessageEventPayload = {
+            chatId:chat._id?.toString(),
             message:{
                 _id:newMessage._id.toString(),
                 content:newMessage?.content?.substring(0,30)
             },
-            sender:newMessage.sender
-
-        })
+            sender:{
+                _id:newMessage.sender._id,
+                avatar:newMessage.sender.avatar.secureUrl,
+                username:newMessage.sender.username
+            }
+        }
+        io.to(otherMemberSockets).emit(Events.UNREAD_MESSAGE,unreadMessageData)
 
     })
 

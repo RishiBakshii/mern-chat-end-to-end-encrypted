@@ -7,3 +7,7 @@ export interface IFriendRequest {
     status:RequestStatus
     createdAt:Date
 }
+
+export interface IFriend extends IChatMember {
+    createdAt:Date
+}

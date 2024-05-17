@@ -2,9 +2,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { config } from '../../config/envConfig'
 import { IFriendRequest } from '../../interfaces/friends'
 
-export const friendsApi = createApi({
+export const requestApi = createApi({
 
-    reducerPath:"friendsApi",
+    reducerPath:"requestApi",
     
     baseQuery:fetchBaseQuery({
         baseUrl:`${config.base_url}/request`,
@@ -34,7 +34,7 @@ export const friendsApi = createApi({
                 try {
                   const { data: handledRequestId } = await queryFulfilled
                   dispatch(
-                    friendsApi.util.updateQueryData('getUserFriendRequests', undefined , (draft) => {
+                    requestApi.util.updateQueryData('getUserFriendRequests', undefined , (draft) => {
                       draft.filter(friendRequest=>friendRequest._id!==handledRequestId)
                     })
                   )
@@ -51,4 +51,4 @@ export const {
     useSendFriendRequestMutation,
     useGetUserFriendRequestsQuery,
     useHandleFriendRequestMutation,
-} = friendsApi
+} = requestApi

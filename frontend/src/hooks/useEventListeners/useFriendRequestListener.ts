@@ -1,6 +1,6 @@
 import { Events } from "../../enums/events"
 import type { IFriendRequest } from "../../interfaces/friends"
-import { friendsApi } from "../../services/api/requestApi"
+import { requestApi } from "../../services/api/requestApi"
 import { useAppDispatch } from "../../services/redux/store/hooks"
 import { useSocketEvent } from "../useSocket/useSocketEvent"
 
@@ -10,7 +10,7 @@ export const useFriendRequestListener = () => {
 
     useSocketEvent(Events.NEW_FRIEND_REQUEST,(newRequest:IFriendRequest)=>{
         dispatch(
-          friendsApi.util.updateQueryData("getUserFriendRequests",undefined,(draft)=>{
+          requestApi.util.updateQueryData("getUserFriendRequests",undefined,(draft)=>{
             draft.push(newRequest)
           })
         )

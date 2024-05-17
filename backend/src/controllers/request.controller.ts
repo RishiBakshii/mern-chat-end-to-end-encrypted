@@ -82,6 +82,12 @@ const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
         return next(new CustomError("Request is already sent",400))
     }
 
+    const areAlreadyFriends = await Friend.findOne({user:req.user?._id,friend:receiver})
+
+    if(areAlreadyFriends){
+      return next(new CustomError("You are already friends"))
+    }
+
     const newRequest = await Request.create({receiver,sender:req.user?._id})
 
     const transformedRequest = await Request.aggregate([
@@ -94,9 +100,9 @@ const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
       ...requestPipeline
     ])
 
-    emitEvent(req,Events.NEW_FRIEND_REQUEST,[receiver],transformedRequest)
+    emitEvent(req,Events.NEW_FRIEND_REQUEST,[receiver],transformedRequest[0])
 
-    return res.status(201).json(transformedRequest)
+    return res.status(201).json()
 
 })
 

@@ -10,7 +10,7 @@ export const friendApi = createApi({
     }),
 
     endpoints:(builder)=>({
-        getFriends:builder.query<IFriend,void>({
+        getFriends:builder.query<Array<IFriend>,void>({
             query:()=>"/"
         })
     })

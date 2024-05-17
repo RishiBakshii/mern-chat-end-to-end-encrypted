@@ -1,15 +1,13 @@
-import { useState } from "react"
-import { ACCEPTED_IMAGE_TYPES, DEFAULT_AVATAR } from "../../constants"
-import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { GroupChatSchemaType, groupChatSchema } from "../../schemas/chat"
+import { useState } from "react"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
-import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
-import { IChatMember } from "../../interfaces/chat"
+import { ACCEPTED_IMAGE_TYPES, DEFAULT_AVATAR } from "../../constants"
 import { useToast } from "../../hooks/useUI/useToast"
-import { useCreateChatMutation, useGetChatsQuery } from "../../services/api/chatApi"
-import { useAppSelector } from "../../services/redux/store/hooks"
-
+import { GroupChatSchemaType, groupChatSchema } from "../../schemas/chat"
+import { useCreateChatMutation } from "../../services/api/chatApi"
+import { useGetFriendsQuery } from "../../services/api/friendApi"
+import { SubmitButton } from "../ui/SubmitButton"
 
 
 export const GroupChatForm = () => {
@@ -17,36 +15,12 @@ export const GroupChatForm = () => {
   const [image,setImage] = useState<Blob>()
   const [preview,setPreview] = useState<string>()
   const [selectedMembers,setSelectedMembers] = useState<Array<string>>([])
-  const loggedInUser = useAppSelector(selectLoggedInUser)
 
   const [createChat, {isLoading,isError,isSuccess,error,isUninitialized}] = useCreateChatMutation()
 
+  const {data:friends} = useGetFriendsQuery()
 
   useToast({isLoading,isUninitialized,isSuccess,isError,error})
-
-  const {friends} = useGetChatsQuery(undefined,{
-
-    selectFromResult:({data})=>{
-
-      const allMembers = data?.flatMap(chat=>chat.members)
-      const uniqueMemberIds = Array.from(new Set(allMembers?.map(member=>member._id).filter(memberId=>memberId!==loggedInUser?._id)))
-
-      const friends:IChatMember[] = []
-
-      uniqueMemberIds.map(uniqueId=>{
-        const data = allMembers?.find(member=>member._id===uniqueId)
-
-        if(data){
-          friends.push(data)
-        }
-      })
-
-      return {
-        friends
-      }
-    }
-
-  })
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<GroupChatSchemaType>({
     resolver:zodResolver(groupChatSchema)
@@ -119,8 +93,8 @@ export const GroupChatForm = () => {
               <h4 className="">Select Members</h4>
               <div className="flex flex-wrap gap-3">
                 {
-                  friends?.map(friend=>(
-                    <div onClick={_=>handleAddOrRemoveMember(friend._id)} className={`flex items-center gap-x-2 ${selectedMembers.includes(friend._id)?"bg-violet-500 text-white hover:bg-violet-600 shadow-2xl":"bg-gray-200 text-black hover:bg-gray-300"} p-2 rounded-lg cursor-pointer`}>
+                  friends && friends.map((friend)=>(
+                    <div key={friend._id} onClick={_=>handleAddOrRemoveMember(friend._id)} className={`flex items-center gap-x-2 ${selectedMembers.includes(friend._id)?"bg-violet-500 text-white hover:bg-violet-600 shadow-2xl":"bg-gray-200 text-black hover:bg-gray-300"} p-2 rounded-lg cursor-pointer`}>
                       <img className="h-7 w-7 object-cover rounded-full" src={friend.avatar} alt={`${friend.username} avatar`} />
                       <p className="text-inherit">{friend.username}</p>
                     </div>

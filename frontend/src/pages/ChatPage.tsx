@@ -26,11 +26,15 @@ import { useOfflineListener } from "../hooks/useEventListeners/useOfflineListene
 import { useOnlineListener } from "../hooks/useEventListeners/useOnlineListener"
 import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMessageListener"
 import { useTypingListener } from "../hooks/useEventListeners/useTypingListener"
+import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
 
 export const ChatPage = () => {
 
 
    const {isChatsFetching,chats} = useFetchChats()
+
+   useFetchFriends()
+
    
    const loggedInUser = useAppSelector(selectLoggedInUser)
    const selectedChatDetails = useAppSelector(selectSelectedChatDetails)

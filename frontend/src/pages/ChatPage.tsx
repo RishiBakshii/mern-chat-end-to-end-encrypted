@@ -29,14 +29,14 @@ import { useTypingListener } from "../hooks/useEventListeners/useTypingListener"
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
 import { ChatListSkeleton } from "../components/ui/skeleton/ChatListSkeleton"
 import { SearchInputSkeleton } from "../components/ui/skeleton/SearchInputSkeleton"
+import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 
 export const ChatPage = () => {
 
 
    const {isChatsFetching,chats} = useFetchChats()
-
    useFetchFriends()
-
+   useFetchFriendRequest()
    
    const loggedInUser = useAppSelector(selectLoggedInUser)
    const selectedChatDetails = useAppSelector(selectSelectedChatDetails)

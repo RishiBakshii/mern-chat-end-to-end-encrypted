@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { config } from '../../config/envConfig'
-import { IFriendRequest } from '../../interfaces/friends'
+import { IFriendRequest } from '../../interfaces/request'
 
 export const requestApi = createApi({
 

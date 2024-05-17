@@ -1,5 +1,5 @@
 import { Events } from "../../enums/events"
-import type { IFriendRequest } from "../../interfaces/friends"
+import { IFriendRequest } from "../../interfaces/request"
 import { requestApi } from "../../services/api/requestApi"
 import { useAppDispatch } from "../../services/redux/store/hooks"
 import { useSocketEvent } from "../useSocket/useSocketEvent"

@@ -1,4 +1,4 @@
-import { IFriendRequest } from "../../interfaces/friends"
+import { IFriendRequest } from "../../interfaces/request";
 
 type PropTypes = {
     user:IFriendRequest

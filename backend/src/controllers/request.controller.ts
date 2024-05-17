@@ -82,6 +82,12 @@ const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
         return next(new CustomError("Request is already sent",400))
     }
 
+    const doesRequestExistsFromReceiver = await Request.findOne({receiver:req.user?._id,sender:receiver})
+
+    if(doesRequestExistsFromReceiver){
+      return next(new CustomError("They have already sent you a request",400))
+    }
+
     const areAlreadyFriends = await Friend.findOne({user:req.user?._id,friend:receiver})
 
     if(areAlreadyFriends){

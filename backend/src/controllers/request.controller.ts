@@ -7,7 +7,7 @@ import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
 import { emitEvent } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
-import { populateMembersStage } from "./chat.controller.js";
+import { addUnreadMessagesStage, populateMembersStage } from "./chat.controller.js";
 import { Friend } from "../models/friend.model.js";
 
 
@@ -144,12 +144,13 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
             }
           },
           populateMembersStage,
+          addUnreadMessagesStage
         ])
 
         
         const membersStringIds = [isExistingRequest.sender.toString(),isExistingRequest.receiver.toString()]
 
-        emitEvent(req,Events.NEW_GROUP,membersStringIds,transformedChat)
+        emitEvent(req,Events.NEW_GROUP,membersStringIds,transformedChat[0])
 
         await isExistingRequest.deleteOne()
 

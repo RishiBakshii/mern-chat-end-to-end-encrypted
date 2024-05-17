@@ -4,6 +4,7 @@ import { User } from '../models/user.model.js';
 import { env } from '../schemas/env.schema.js';
 import bcrypt from 'bcryptjs'
 import { config } from '../config/env.config.js';
+import { DEFAULT_AVATAR } from '../constants/file.constant.js';
 
 passport.use(new GoogleStrategy({
     clientID: env.GOOGLE_CLIENT_ID,
@@ -14,20 +15,61 @@ passport.use(new GoogleStrategy({
   async function (accessToken, refreshToken, profile, done){
 
     try {
-      if(profile.emails && profile.photos && profile.displayName){
+
+      if(profile.emails && profile.emails[0].value && profile.displayName){
+
           const isExistingUser = await User.findOne({email:profile.emails[0].value})
 
           if(isExistingUser){
-            done(null,isExistingUser)
+
+            const transformedUser = {
+              _id:isExistingUser._id,
+              username:isExistingUser.username,
+              name:isExistingUser.name,
+              avatar:isExistingUser.avatar?.secureUrl,
+              email:isExistingUser.email,
+              verified:isExistingUser.verified
+            }
+
+            done(null,transformedUser)
           }
+
           else{
-            const newUser = await User.create({username:profile.displayName,name:profile.displayName,avatar:profile.photos[0].value,email:profile.emails[0].value,password:await bcrypt.hash(profile.id,10),verified:true})
-            done(null,newUser)
+
+            let avatarUrl = DEFAULT_AVATAR
+
+            if(profile.photos && profile.photos[0].value){
+              avatarUrl=profile.photos[0].value
+            }
+
+            const newUser = await User.create({
+              username:profile.displayName,
+              name:profile.name?.givenName,
+              avatar:{
+                secureUrl:avatarUrl
+              },
+              email:profile.emails[0].value,
+              password:await bcrypt.hash(profile.id,10),
+              verified:true
+            })
+
+            const transformedUser = {
+              _id:newUser._id,
+              username:newUser.username,
+              name:newUser.name,
+              avatar:newUser.avatar?.secureUrl,
+              email:newUser.email,
+              verified:newUser.verified
+            }
+
+            done(null,transformedUser)
           }
       }
+
       else{
         throw new Error("Some Error occured")
       }
+
     } catch (error) {
       console.log(error);
       done('Some error occured',undefined)

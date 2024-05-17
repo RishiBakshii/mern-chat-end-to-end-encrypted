@@ -27,6 +27,8 @@ import { useOnlineListener } from "../hooks/useEventListeners/useOnlineListener"
 import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMessageListener"
 import { useTypingListener } from "../hooks/useEventListeners/useTypingListener"
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
+import { ChatListSkeleton } from "../components/ui/skeleton/ChatListSkeleton"
+import { SearchInputSkeleton } from "../components/ui/skeleton/SearchInputSkeleton"
 
 export const ChatPage = () => {
 
@@ -70,11 +72,19 @@ export const ChatPage = () => {
 
             <div className="flex-[.5]">
                 {
-                    !isChatsFetching && chats && 
-
                     <div className="flex flex-col gap-y-5">
-                        <SearchInput/>
-                        <ChatList chats={chats} updateSelectedChatId={updateSelectedChatId}/>
+                        {
+                            !isChatsFetching && chats ?
+                            <>
+                                <SearchInput/>
+                                <ChatList chats={chats} updateSelectedChatId={updateSelectedChatId}/>
+                            </>
+                            :
+                            <>
+                                <SearchInputSkeleton/>
+                                <ChatListSkeleton/>
+                            </>
+                        }
                     </div>
                 }
             </div>

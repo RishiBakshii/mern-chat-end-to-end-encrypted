@@ -9,5 +9,6 @@ export interface IFriendRequest {
 }
 
 export interface IFriend extends IChatMember {
+    isActive:boolean
     createdAt:Date
 }

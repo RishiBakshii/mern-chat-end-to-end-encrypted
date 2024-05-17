@@ -1,7 +1,7 @@
 import {configureStore} from '@reduxjs/toolkit'
 
 import { authApi } from '../../api/authApi'
-import { friendsApi } from '../../api/friendsApi'
+import { friendsApi } from '../../api/requestApi'
 import { messageApi } from '../../api/messageApi'
 import { userApi } from '../../api/userApi'
 import { chatApi } from '../../api/chatApi'

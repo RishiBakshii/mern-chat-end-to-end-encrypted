@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { UserList } from "./UserList"
 import { useToast } from "../../hooks/useUI/useToast"
-import { useSendFriendRequestMutation } from "../../services/api/friendsApi"
+import { useSendFriendRequestMutation } from "../../services/api/requestApi"
 import { useLazySearchUserQuery } from "../../services/api/userApi"
 
 export const AddFriendForm = () => {

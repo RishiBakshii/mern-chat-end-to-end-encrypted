@@ -69,7 +69,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     socket.broadcast.emit(Events.ONLINE,socket.user?._id)
 
-    socket.on(Events.MESSAGE,async({chat,content,attachments,members,url}:Omit<IMessage , "sender"> & {members : Array<string>})=>{
+    socket.on(Events.MESSAGE,async({chat,content,attachments,members,url}:Omit<IMessage , "sender" | "chat"> & {chat:string,members : Array<string>})=>{
 
         // save to db
         const newMessage = await new Message({chat,content,attachments,sender:socket.user?._id,url})
@@ -97,8 +97,6 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
         // unread message creation for receivers
         const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
-        const otherMemberSockets = getMemberSockets(memberIds)
-
 
         const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
 
@@ -117,8 +115,9 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
         await Promise.all(updateOrCreateUnreadMessagePromise)
 
-        const unreadMessageData:IUnreadMessageEventPayload = {
-            chatId:chat._id?.toString(),
+        const unreadMessageData:IUnreadMessageEventPayload = 
+        {
+            chatId:chat,
             message:{
                 _id:newMessage._id.toString(),
                 content:newMessage?.content?.substring(0,30)
@@ -129,7 +128,8 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
                 username:newMessage.sender.username
             }
         }
-        io.to(otherMemberSockets).emit(Events.UNREAD_MESSAGE,unreadMessageData)
+
+        io.to(getMemberSockets(memberIds)).emit(Events.UNREAD_MESSAGE,unreadMessageData)
 
     })
 

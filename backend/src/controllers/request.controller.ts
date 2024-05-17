@@ -8,6 +8,7 @@ import { Chat } from "../models/chat.model.js";
 import { emitEvent } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
 import { populateMembersStage } from "./chat.controller.js";
+import { Friend } from "../models/friend.model.js";
 
 
 const requestPipeline = [
@@ -118,6 +119,11 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
 
         const members = [isExistingRequest.sender,isExistingRequest.receiver]
         const newChat = await Chat.create({members})
+
+        const friends = await Friend.insertMany([
+          {user:isExistingRequest.receiver,friend:isExistingRequest.sender},
+          {user:isExistingRequest.sender,friend:isExistingRequest.receiver}
+        ])
 
         const transformedChat =  await Chat.aggregate([
           {

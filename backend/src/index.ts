@@ -20,6 +20,7 @@ import chatRoutes from './routes/chat.router.js'
 import userRoutes from './routes/user.router.js'
 import requestRoutes from './routes/request.router.js'
 import messageRoutes from './routes/message.router.js'
+import friendRoutes from './routes/friend.router.js'
 
 import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
 import { Events } from './enums/event/event.enum.js'
@@ -57,6 +58,7 @@ app.use("/api/v1/chat",chatRoutes)
 app.use("/api/v1/user",userRoutes)
 app.use("/api/v1/request",requestRoutes)
 app.use("/api/v1/message",messageRoutes)
+app.use("/api/v1/friend",friendRoutes)
 
 io.use(socketAuthenticatorMiddleware)
 

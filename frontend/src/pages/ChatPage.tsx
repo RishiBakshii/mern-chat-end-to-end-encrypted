@@ -30,6 +30,7 @@ import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
 import { ChatListSkeleton } from "../components/ui/skeleton/ChatListSkeleton"
 import { SearchInputSkeleton } from "../components/ui/skeleton/SearchInputSkeleton"
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
+import { ChatDetails } from "../components/chat/ChatDetails"
 
 export const ChatPage = () => {
 
@@ -122,15 +123,16 @@ export const ChatPage = () => {
                 }
             </div>
 
-            <div className="flex-[.8]">
+            <div className="flex-[.6]">
                 {
                     !isChatsFetching && chats && loggedInUser && selectedChatDetails &&
-
-                    <MemberListWithNumber 
-                        members={selectedChatDetails.members}
-                        chatAdminId={selectedChatDetails.admin}
-                        loggedInUserId={loggedInUser._id}
-                    />
+                    
+                    <ChatDetails/>
+                    // <MemberListWithNumber 
+                    //     members={selectedChatDetails.members}
+                    //     chatAdminId={selectedChatDetails.admin}
+                    //     loggedInUserId={loggedInUser._id}
+                    // />
                 }
             </div>
     </div>

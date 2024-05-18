@@ -1,8 +1,8 @@
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { Avatar } from "../ui/Avatar"
-import { AddMemberButton } from "./AddMemberButton"
-import { MemberList } from "./MemberList"
+import { AddMemberSection } from "./AddMemberSection"
 import { SharedMedia } from "./SharedMedia"
+import { AvatarList } from "../shared/AvatarList"
 
 type PropTypes = {
     isAdmin:boolean
@@ -14,6 +14,7 @@ type PropTypes = {
 
 export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat}:PropTypes) => {
   return (
+    
     <div className="flex flex-col justify-center items-center gap-y-7">
         
         <h5 className="font-medium text-xl">Chat Details</h5>
@@ -35,13 +36,19 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat}:Pr
             
             <div className="flex flex-col gap-y-4">
 
-                <MemberList
-                  isGroupChat={isGroupChat}
-                  members={members}
-                />
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <AvatarList w={8} h={8} avatars={members.slice(0,4).map(member=>member.avatar)}/>
+                      {
+                        ((members.length-4)!==0) && 
+                        <p className="w-8 h-8 rounded-full bg-gray-200 flex justify-center items-center">+{members.length-4}</p>
+                      }
+                    </div>
+                    {isGroupChat && <p>See all</p>}
+                </div>
 
                 {
-                  isAdmin && isGroupChat && <AddMemberButton/>
+                  isAdmin && isGroupChat && <AddMemberSection/>
                 }
 
             </div>

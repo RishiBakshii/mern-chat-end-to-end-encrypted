@@ -1,6 +1,6 @@
 import { useOpenAddMemberForm } from "../../hooks/useUI/useOpenAddMemberForm"
 
-export const AddMemberButton = () => {
+export const AddMemberSection = () => {
 
   const openAddMemberForm = useOpenAddMemberForm()
 

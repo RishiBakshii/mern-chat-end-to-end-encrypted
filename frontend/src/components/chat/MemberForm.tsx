@@ -3,7 +3,6 @@ import { useGetChatsQuery, useRemoveMemberMutation } from "../../services/api/ch
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
 import { selectSelectedChatId } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
-import { MemberList } from "./MemberList"
 
 export const MemberForm = () => {
 
@@ -35,6 +34,7 @@ export const MemberForm = () => {
     }
 
   return (
-    <MemberList isGroupChat={chats?.find(chat=>chat._id===selectedChatId)?.isGroupChat} chatId={chats?.find(chat=>chat._id===selectedChatId)?._id} isRemovable={true} removeHandler={removeHandler}  loggedInUserId={loggedInUser?._id!} chatAdminId={chats?.find(chat=>chat._id===selectedChatId)?.admin} members={chats?.find(chat=>chat._id===selectedChatId)?.members}/>
+    ''
+    // <MemberList isGroupChat={chats?.find(chat=>chat._id===selectedChatId)?.isGroupChat} chatId={chats?.find(chat=>chat._id===selectedChatId)?._id} isRemovable={true} removeHandler={removeHandler}  loggedInUserId={loggedInUser?._id!} chatAdminId={chats?.find(chat=>chat._id===selectedChatId)?.admin} members={chats?.find(chat=>chat._id===selectedChatId)?.members}/>
   )
 }

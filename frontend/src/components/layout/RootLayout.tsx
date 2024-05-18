@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { Navbar } from "../shared/Navbar"
+import { Navbar } from "../navbar/Navbar"
 import { Modal } from "../shared/Modal"
 import { GroupChatForm } from "../chat/GroupChatForm"
 import { AddFriendForm } from "../friends/AddFriendForm"

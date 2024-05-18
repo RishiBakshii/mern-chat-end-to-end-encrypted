@@ -9,7 +9,7 @@ export const AvatarList = ({avatars}:PropTypes) => {
     <div className="flex">
       {
         avatars.map((avatar,index)=>(
-          <Avatar key={index} imgUrl={avatar} alt="f" height={2} width={2}/>
+          <Avatar key={index} imgUrl={avatar} alt="user" height={16} width={16}/>
         ))
       }
     </div>

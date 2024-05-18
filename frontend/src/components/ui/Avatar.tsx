@@ -5,10 +5,12 @@ type PropTypes = {
     height:number
     mr?:number
     ml?:number
+    cursor?:"pointer" | "auto"
+    onClick?:()=>void
 }
 
-export const Avatar = ({imgUrl,alt,width,height,ml=0,mr=0}:PropTypes) => {
+export const Avatar = ({imgUrl,alt,width,height,ml=0,mr=0,cursor='auto',onClick}:PropTypes) => {
   return (
-    <img className={`w-${width} h-${height} ml-${ml} mr-${mr} rounded-full object-cover`} src={imgUrl} alt={alt} />
+    <img onClick={onClick} className={`w-${width} h-${height} ml-${ml} mr-${mr} cursor-${cursor} rounded-full object-cover`} src={imgUrl} alt={alt} />
   )
 }

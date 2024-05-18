@@ -9,11 +9,11 @@ import { store } from './services/redux/store/store.ts'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <SocketProvider>
-        <Provider store={store}>
-            <Toaster/>
-            <App />
-        </Provider>
-    </SocketProvider>
+    <Provider store={store}>
+      <SocketProvider>
+          <Toaster/>
+          <App />
+      </SocketProvider>
+    </Provider>
   </React.StrictMode>,
 )

@@ -17,7 +17,12 @@ const messageSchema = new Schema<IMessage>({
         required:true
     },
     attachments:{
-        type:[String],
+        type:[
+            {
+                secureUrl:String,
+                publicId:String
+            }
+        ],
     },
     url:{
         type:String

@@ -21,6 +21,7 @@ import userRoutes from './routes/user.router.js'
 import requestRoutes from './routes/request.router.js'
 import messageRoutes from './routes/message.router.js'
 import friendRoutes from './routes/friend.router.js'
+import attachmentRoutes from './routes/attachment.router.js'
 
 import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
 import { Events } from './enums/event/event.enum.js'
@@ -59,6 +60,7 @@ app.use("/api/v1/user",userRoutes)
 app.use("/api/v1/request",requestRoutes)
 app.use("/api/v1/message",messageRoutes)
 app.use("/api/v1/friend",friendRoutes)
+app.use("/api/v1/attachment",attachmentRoutes)
 
 io.use(socketAuthenticatorMiddleware)
 
@@ -69,10 +71,10 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     socket.broadcast.emit(Events.ONLINE,socket.user?._id)
 
-    socket.on(Events.MESSAGE,async({chat,content,attachments,members,url}:Omit<IMessage , "sender" | "chat"> & {chat:string,members : Array<string>})=>{
+    socket.on(Events.MESSAGE,async({chat,content,members,url}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string,members : Array<string>})=>{
 
         // save to db
-        const newMessage = await new Message({chat,content,attachments,sender:socket.user?._id,url})
+        const newMessage = await new Message({chat,content,sender:socket.user?._id,url})
         .populate<{"sender":IMemberDetails}>("sender",['avatar',"username"])
 
         newMessage.save()
@@ -88,7 +90,6 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             },
             chat: newMessage.chat?.toString(),
             url:newMessage.url,
-            attachments: newMessage.attachments,
             createdAt: newMessage.createdAt,
             updatedAt:  newMessage.updatedAt
         }

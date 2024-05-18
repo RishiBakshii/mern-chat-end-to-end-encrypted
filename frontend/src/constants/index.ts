@@ -1,5 +1,6 @@
 const DEFAULT_AVATAR = "https://res.cloudinary.com/dh5fjdce9/image/upload/v1714856134/defaultAvatar_opz0dl.png"
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"]
+const ACCEPTED_FILE_MIME_TYPES = ["application/pdf","application/msword",...ACCEPTED_IMAGE_TYPES]
 
 const AVATARS = [
     "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600",
@@ -11,5 +12,6 @@ const AVATARS = [
 export {
     DEFAULT_AVATAR,
     ACCEPTED_IMAGE_TYPES,
-    AVATARS
+    AVATARS,
+    ACCEPTED_FILE_MIME_TYPES,
 }

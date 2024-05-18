@@ -2,6 +2,8 @@ import { memo, useState } from "react";
 import type { IMessage } from "../../interfaces/messages";
 
 type PropTypes = {
+    isAttachment:boolean
+    attachments?:Array<string>
     myMessage:boolean;
     isTextMessage:boolean
     message:IMessage,
@@ -9,7 +11,7 @@ type PropTypes = {
     url:string
 }
 
-export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMessage,url}:PropTypes) => {
+export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMessage,url,isAttachment,attachments}:PropTypes) => {
 
 
     const [readMore,SetReadMore] = useState<boolean>(message?.content?.length>500?true:false)
@@ -41,8 +43,14 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMess
             }
             
             <p className="justify-self-center w-full text-wrap break-words">
+                
 
                 {
+                    isAttachment ?
+                    attachments?.map(attachment=>(
+                        <img src={attachment} alt="" />
+                    ))
+                    :
                     isTextMessage ? (
 
                         readMore?

@@ -13,6 +13,8 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat}:PropTypes) => 
     <>
       {messages.map(message => (
         <MessageCard
+          isAttachment={message.attachments?.length>0}
+          attachments={message.attachments}
           url={message.url}
           isTextMessage={!message?.url?.length}
           isGroupChat={isGroupChat} 

@@ -42,6 +42,11 @@ const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFu
                 },
             },
         },
+        {
+            $addFields: {
+                "attachments":"$attachments.secureUrl"
+            },
+        },
     ])
 
     return res.status(200).json(messages)

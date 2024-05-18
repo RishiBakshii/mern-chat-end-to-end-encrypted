@@ -2,16 +2,15 @@ import { NextFunction, Request, Response } from "express";
 import { CustomError } from "../utils/error.utils.js";
 import { ZodError } from "zod";
 import jwt from 'jsonwebtoken'
+import { MulterError } from "multer";
 
-export const errorMiddleware = (err:CustomError | ZodError | Error | jwt.TokenExpiredError | jwt.JsonWebTokenError ,req:Request,res:Response,next:NextFunction) => {
-
+export const errorMiddleware = (err:CustomError | ZodError | Error | jwt.TokenExpiredError | jwt.JsonWebTokenError | MulterError ,req:Request,res:Response,next:NextFunction) => {
+    console.log(err);
     let message;
     let statusCode=500;
 
     if(err instanceof ZodError){
-        console.log('zod error');
         message=(err.issues.map(issue=>issue.message)).join(", ")
-        console.log(message);
         statusCode=400
     }
 
@@ -32,6 +31,14 @@ export const errorMiddleware = (err:CustomError | ZodError | Error | jwt.TokenEx
             statusCode=401
             message="Invalid Token, please login again"
         } 
+
+        if(err instanceof MulterError){
+
+            if(err.code === 'LIMIT_UNEXPECTED_FILE'){
+                statusCode=400
+                message='Too many files uploaded. Maximum 5 files allowed.'
+            }
+        }
     }
 
     else {

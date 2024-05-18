@@ -10,6 +10,7 @@ import { friendApi } from '../../api/friendApi'
 import uiSlice from '../slices/uiSlice'
 import chatSlice from '../slices/chatSlice'
 import authSlice from '../slices/authSlice'
+import { attachmentApi } from '../../api/attachmentApi'
 
 export const store = configureStore({
     reducer:{
@@ -24,6 +25,7 @@ export const store = configureStore({
         [userApi.reducerPath]:userApi.reducer,
         [requestApi.reducerPath]:requestApi.reducer,
         [friendApi.reducerPath]:friendApi.reducer,
+        [attachmentApi.reducerPath]:attachmentApi.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware()
     .concat(authApi.middleware)
@@ -32,6 +34,7 @@ export const store = configureStore({
     .concat(userApi.middleware)
     .concat(requestApi.middleware)
     .concat(friendApi.middleware)
+    .concat(attachmentApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

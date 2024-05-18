@@ -1,23 +1,26 @@
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
-import { MemberCard } from "./MemberCard"
+import { Avatar } from "../ui/Avatar"
 
 type PropTypes = {
-  members:IChatWithUnreadMessages['members'] | undefined
-  loggedInUserId:string
-  chatAdminId?:string
-  isRemovable?:boolean
-  chatId?:string
-  isGroupChat?:boolean
-  removeHandler?:(chatId: string, memberId: string) => void
+    isGroupChat:boolean
+    members:IChatWithUnreadMessages['members']
 }
-export const MemberList = ({members,chatAdminId,loggedInUserId,isRemovable=false,removeHandler,chatId,isGroupChat}:PropTypes) => {
-  
+
+export const MemberList = ({members,isGroupChat}:PropTypes) => {
   return (
-    <div className="flex flex-col gap-y-2">
+    <div className="flex items-center justify-between">
+
+        <div className="flex items-center">
+            {
+                members.slice().map(({avatar,username,_id})=>(
+                    <Avatar key={_id} imgUrl={avatar} width={7} height={7} alt={username}/>
+                ))
+            }
+        </div>
+        
         {
-            members?.map(member=>
-                <MemberCard isGroupChat={isGroupChat} chatId={chatId} isRemovable={isRemovable} removeHandler={removeHandler} member={member} chatAdminId={chatAdminId} loggedInUserId={loggedInUserId}/>
-            )
+            isGroupChat && 
+            <button>See all</button>
         }
     </div>
   )

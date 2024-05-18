@@ -1,36 +1,35 @@
 import { useRef } from "react"
+import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
 import { ChatList } from "../components/chat/ChatList"
-import { MemberListWithNumber } from "../components/chat/MemberListWithNumber"
 import { MessageForm } from "../components/chat/MessageForm"
 import { SeenByList } from "../components/chat/SeenByList"
 import { TypingIndicatorWithUserList } from "../components/chat/TypingIndicatorWithUserList"
 import { MessageList } from "../components/messages/MessageList"
 import { SearchInput } from "../components/ui/SearchInput"
+import { ChatListSkeleton } from "../components/ui/skeleton/ChatListSkeleton"
+import { SearchInputSkeleton } from "../components/ui/skeleton/SearchInputSkeleton"
 import { useFetchChats } from "../hooks/useChat/useFetchChats"
 import { useUpdateChatSelection } from "../hooks/useChat/useUpdateChatSelection"
-import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
-import { useOpenMemberForm } from "../hooks/useUI/useOpenMemberForm"
-import { useToggleGif } from "../hooks/useUI/useToggleGif"
-import { useGetChatName } from "../hooks/useUtils/useGetChatName"
-import { useScrollToBottom } from "../hooks/useUtils/useScrollToBottom"
-import { selectLoggedInUser } from "../services/redux/slices/authSlice"
-import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
-import { useAppSelector } from "../services/redux/store/hooks"
 import { useUpdateUnreadChatAsSeen } from "../hooks/useChat/useUpdateUnreadChatAsSeen"
 import { useFriendRequestListener } from "../hooks/useEventListeners/useFriendRequestListener"
 import { useMessageListener } from "../hooks/useEventListeners/useMessageListener"
-import { useMessageSeenListener } from "../hooks/useEventListeners/useMessageSeenListener"
 import { useNewGroupListener } from "../hooks/useEventListeners/useNewGroupListener"
 import { useOfflineListener } from "../hooks/useEventListeners/useOfflineListener"
 import { useOnlineListener } from "../hooks/useEventListeners/useOnlineListener"
-import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMessageListener"
 import { useTypingListener } from "../hooks/useEventListeners/useTypingListener"
+import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMessageListener"
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
-import { ChatListSkeleton } from "../components/ui/skeleton/ChatListSkeleton"
-import { SearchInputSkeleton } from "../components/ui/skeleton/SearchInputSkeleton"
+import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
+import { useOpenMemberForm } from "../hooks/useUI/useOpenMemberForm"
+import { useToggleGif } from "../hooks/useUI/useToggleGif"
+import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
+import { useGetChatName } from "../hooks/useUtils/useGetChatName"
+import { useScrollToBottom } from "../hooks/useUtils/useScrollToBottom"
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
-import { ChatDetails } from "../components/chat/ChatDetails"
+import { selectLoggedInUser } from "../services/redux/slices/authSlice"
+import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
+import { useAppSelector } from "../services/redux/store/hooks"
 
 export const ChatPage = () => {
 
@@ -65,7 +64,9 @@ export const ChatPage = () => {
    
    const openMemberForm = useOpenMemberForm()
    const toggleGif = useToggleGif()
-   const chatName = useGetChatName(selectedChatDetails)
+
+   const chatName = useGetChatName(selectedChatDetails,loggedInUser?._id)
+   const chatAvatar= useGetChatAvatar(selectedChatDetails,loggedInUser?._id)
 
 
   return (
@@ -125,14 +126,14 @@ export const ChatPage = () => {
 
             <div className="flex-[.6]">
                 {
-                    !isChatsFetching && chats && loggedInUser && selectedChatDetails &&
-                    
-                    <ChatDetails/>
-                    // <MemberListWithNumber 
-                    //     members={selectedChatDetails.members}
-                    //     chatAdminId={selectedChatDetails.admin}
-                    //     loggedInUserId={loggedInUser._id}
-                    // />
+                    !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar &&
+
+                    <ChatDetails
+                      isGroupChat={selectedChatDetails.isGroupChat}
+                      chatName={chatName}
+                      chatAvatar={chatAvatar}
+                      members={selectedChatDetails.members}
+                    />
                 }
             </div>
     </div>

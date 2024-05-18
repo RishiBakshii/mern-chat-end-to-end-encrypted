@@ -1,15 +1,13 @@
+import { IUser } from "../../interfaces/auth"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
-import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
-import { useAppSelector } from "../../services/redux/store/hooks"
 
 
-export const useGetChatName = (selectedChatDetails:IChatWithUnreadMessages | null) => {
+export const useGetChatName = (selectedChatDetails:IChatWithUnreadMessages | null,loggedInUserId:IUser['_id'] | undefined | null) => {
 
-    const loggedInUserId = useAppSelector(selectLoggedInUser)
 
     const name = selectedChatDetails?.isGroupChat?
                  selectedChatDetails?.name:
-                 selectedChatDetails?.members.filter(member=>member._id!==loggedInUserId?._id)[0].username
+                 selectedChatDetails?.members.filter(member=>member._id!==loggedInUserId)[0].username
 
     return name
 }

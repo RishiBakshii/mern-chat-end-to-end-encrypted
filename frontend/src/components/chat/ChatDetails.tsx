@@ -5,13 +5,14 @@ import { MemberList } from "./MemberList"
 import { SharedMedia } from "./SharedMedia"
 
 type PropTypes = {
+    isAdmin:boolean
     isGroupChat:boolean
     chatAvatar:string
     chatName:string
     members:IChatWithUnreadMessages['members']
 }
 
-export const ChatDetails = ({chatName,chatAvatar,members,isGroupChat}:PropTypes) => {
+export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat}:PropTypes) => {
   return (
     <div className="flex flex-col justify-center items-center gap-y-7">
         
@@ -40,7 +41,7 @@ export const ChatDetails = ({chatName,chatAvatar,members,isGroupChat}:PropTypes)
                 />
 
                 {
-                    isGroupChat && <AddMemberButton/>
+                  isAdmin && isGroupChat && <AddMemberButton/>
                 }
 
             </div>

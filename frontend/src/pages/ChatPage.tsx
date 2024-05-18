@@ -135,6 +135,7 @@ export const ChatPage = () => {
                     !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar &&
 
                     <ChatDetails
+                      isAdmin={selectedChatDetails.admin===loggedInUser._id}
                       isGroupChat={selectedChatDetails.isGroupChat}
                       chatName={chatName}
                       chatAvatar={chatAvatar}

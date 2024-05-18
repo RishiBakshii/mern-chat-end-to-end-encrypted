@@ -40,7 +40,7 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat}:Pr
                     <div className="flex items-center">
                       <AvatarList w={8} h={8} avatars={members.slice(0,4).map(member=>member.avatar)}/>
                       {
-                        ((members.length-4)!==0) && 
+                        ((members.length-4)>0) && 
                         <p className="w-8 h-8 rounded-full bg-gray-200 flex justify-center items-center">+{members.length-4}</p>
                       }
                     </div>

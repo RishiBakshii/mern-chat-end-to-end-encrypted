@@ -17,3 +17,4 @@ export const AuthRedirectLink = ({to,pageName,text}:PropTypes) => {
     </p>
   )
 }
+

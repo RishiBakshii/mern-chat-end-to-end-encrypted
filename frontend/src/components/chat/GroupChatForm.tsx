@@ -7,7 +7,6 @@ import { useToast } from "../../hooks/useUI/useToast"
 import { GroupChatSchemaType, groupChatSchema } from "../../schemas/chat"
 import { useCreateChatMutation } from "../../services/api/chatApi"
 import { useGetFriendsQuery } from "../../services/api/friendApi"
-import { SubmitButton } from "../ui/SubmitButton"
 
 
 export const GroupChatForm = () => {

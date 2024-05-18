@@ -1,4 +1,4 @@
-import { AppBranding } from "../components/auth/AppBranding"
+import { AppBranding } from "../components/shared/AppBranding"
 import { SignupForm } from "../components/auth/SignupForm"
 import { SocialLogin } from "../components/auth/SocialLogin"
 import { config } from "../config/envConfig"

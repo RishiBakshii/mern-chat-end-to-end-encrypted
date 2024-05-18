@@ -9,7 +9,7 @@ type PropTypes = {
     url:string
 }
 
-export const MessageItem = memo(({message,myMessage=false,isGroupChat,isTextMessage,url}:PropTypes) => {
+export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMessage,url}:PropTypes) => {
 
 
     const [readMore,SetReadMore] = useState<boolean>(message?.content?.length>500?true:false)

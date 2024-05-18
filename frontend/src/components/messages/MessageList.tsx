@@ -1,6 +1,6 @@
 import type { IUser } from "../../interfaces/auth"
 import type { IMessage } from "../../interfaces/messages"
-import { MessageItem } from "./MessageItem"
+import { MessageCard } from "./MessageCard"
 
 type PropTypes = {
   messages:Array<IMessage>
@@ -12,7 +12,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat}:PropTypes) => 
   return (
     <>
       {messages.map(message => (
-        <MessageItem
+        <MessageCard
           url={message.url}
           isTextMessage={!message?.url?.length}
           isGroupChat={isGroupChat} 

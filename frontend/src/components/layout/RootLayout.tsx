@@ -8,7 +8,7 @@ import { ProfileForm } from "../user/ProfileForm"
 import { MemberForm } from "../chat/MemberForm"
 import { selectAddFriendForm, selectFriendRequestForm, selectGifForm, selectGroupChatForm, selectMemberForm, selectProfileForm, setAddFriendForm, setFriendRequestForm, setGifForm, setMemberForm, setNewgroupChatForm, setProfileForm } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
-import { TenorGifForm } from "../specific/TenorGifForm"
+import { TenorGifForm } from "../chat/TenorGifForm"
 
 export const RootLayout = () => {
 

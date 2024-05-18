@@ -3,8 +3,8 @@ type PropTypes = {
     imgUrl:string
     width:number
     height:number
-    mr:number
-    ml:number
+    mr?:number
+    ml?:number
 }
 
 export const Avatar = ({imgUrl,alt,width,height,ml=0,mr=0}:PropTypes) => {

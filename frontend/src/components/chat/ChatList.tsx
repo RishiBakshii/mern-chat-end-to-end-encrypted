@@ -6,9 +6,10 @@ import { useGetChatAvatar } from "../../hooks/useUtils/useGetChatAvatar"
 
 type PropTypes = {
   chats:Array<IChatWithUnreadMessages>
+  loggedInUserId:string
   updateSelectedChatId:(chatId: string) => void
 }
-export const ChatList = memo(({chats,updateSelectedChatId}:PropTypes) => {
+export const ChatList = memo(({chats,loggedInUserId,updateSelectedChatId}:PropTypes) => {
 
   return (
     <>
@@ -19,8 +20,8 @@ export const ChatList = memo(({chats,updateSelectedChatId}:PropTypes) => {
             <ChatCard
               isTyping={chat.userTyping.length>0}
               chatId={chat._id}
-              chatName={useGetChatName(chat)!}
-              avatar={useGetChatAvatar(chat)!}
+              chatName={useGetChatName(chat,loggedInUserId)!}
+              avatar={useGetChatAvatar(chat,loggedInUserId)!}
               unreadMessageCount={chat.unreadMessages.count}
               latestUnreadMessage={chat.unreadMessages?.message?.content}
               updateSelectedChatId={updateSelectedChatId}

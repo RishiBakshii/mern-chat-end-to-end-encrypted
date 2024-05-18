@@ -78,10 +78,14 @@ export const ChatPage = () => {
                 {
                     <div className="flex flex-col gap-y-5">
                         {
-                            !isChatsFetching && chats ?
+                            !isChatsFetching && chats && loggedInUser ?
                             <>
                                 <SearchInput/>
-                                <ChatList chats={chats} updateSelectedChatId={updateSelectedChatId}/>
+                                <ChatList 
+                                  chats={chats} 
+                                  updateSelectedChatId={updateSelectedChatId}
+                                  loggedInUserId={loggedInUser._id}
+                                />
                             </>
                             :
                             <>

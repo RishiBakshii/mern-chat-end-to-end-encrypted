@@ -27,3 +27,8 @@ export interface IUserTypingEventReceiveData {
     chatId:string
     user:IChatMember
 }
+
+export interface INewMemberAddedEventPayloadData {
+    chatId:string,
+    members:Array<IChatMember>
+}

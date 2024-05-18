@@ -1,6 +1,6 @@
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { Avatar } from "../ui/Avatar"
-import { AddMember } from "./AddMember"
+import { AddMemberButton } from "./AddMemberButton"
 import { MemberList } from "./MemberList"
 import { SharedMedia } from "./SharedMedia"
 
@@ -40,7 +40,7 @@ export const ChatDetails = ({chatName,chatAvatar,members,isGroupChat}:PropTypes)
                 />
 
                 {
-                    isGroupChat && <AddMember/>
+                    isGroupChat && <AddMemberButton/>
                 }
 
             </div>

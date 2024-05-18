@@ -34,6 +34,12 @@ const chatSlice = createSlice({
             }
             
         },
+        updateSelectedChatMembers:(state,action:PayloadAction<Array<IChatMember>>)=>{
+            
+            if(state.selectedChatDetails && state.selectedChatDetails.members.length){
+                state.selectedChatDetails.members.push(...action.payload)
+            }
+        }
 
     },
 })
@@ -50,6 +56,7 @@ export const {
     resetSeenByList,
     updateUserTyping,
     removeUserTyping,
+    updateSelectedChatMembers,
 } = chatSlice.actions
 
 export default chatSlice

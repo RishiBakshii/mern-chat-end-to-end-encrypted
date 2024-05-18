@@ -1,6 +1,5 @@
 import { NextFunction, Response } from "express";
 import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
-import type { IUser } from "../interfaces/auth/auth.interface.js";
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType } from "../schemas/chat.schema.js";
@@ -11,6 +10,8 @@ import { Events } from "../enums/event/event.enum.js";
 import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 import { UploadApiResponse } from "cloudinary";
+import { Types } from "mongoose";
+import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 
 
 export const addUnreadMessagesStage = {
@@ -51,6 +52,12 @@ export const populateMembersStage = {
         },
       },
     ],
+  },
+}
+
+export const updateAvatarFeild = {
+  $addFields: {
+    avatar: "$avatar.secureUrl",
   },
 }
 
@@ -101,11 +108,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
               _id: newGroupChat._id,
             },
           },
-          {
-            $addFields: {
-              avatar: "$avatar.secureUrl",
-            },
-          },
+          updateAvatarFeild,
           populateMembersStage,
           addUnreadMessagesStage
         ])
@@ -176,12 +179,7 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
           },
         },
 
-        {
-            $addFields: {
-                avatar: "$avatar.secureUrl"
-            } 
-        },
-
+        updateAvatarFeild,
         populateMembersStage,
         {
           $lookup: {
@@ -289,19 +287,55 @@ const addMemberToChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Res
         return next(new CustomError("You are not allowed to add members as you are not the admin of this chat",400))
     }
 
-    const isValidMemberIdsPromise = members.map(memberId=>User.findById(memberId,'_id'))
-    const validMembers = await Promise.all(isValidMemberIdsPromise) as Array<Pick<IUser, '_id'>>
+    const validMembers =  await User.aggregate([
+      {
+        $match:{
+          _id:{$in:members.map(member=>new Types.ObjectId(member))}
+        }
+      },
+      updateAvatarFeild,
+      {
+        $project:{
+          username:1,
+          avatar:1
+        }
+      }
+    ]) as Array<IMemberDetails>
 
-    const existingMemberIds = validMembers.filter(({_id})=>isExistingChat.members.includes(_id))
 
-    if(existingMemberIds.length>0){
-        return next(new CustomError(`[${existingMemberIds.map(id=>id._id)}], ${existingMemberIds.length==1?"this id":"these ids"} already exists in members of this chat`))
+    const existingMembers = validMembers.filter(validMember=>isExistingChat.members.includes(new Types.ObjectId(validMember._id)))
+
+    if(existingMembers.length){
+        return next(new CustomError(`${existingMembers.map(member=>`${member.username}`)} already exists in members of this chat`,400))
     }
     
-    isExistingChat.members.push(...validMembers.map(id=>id._id))
+    isExistingChat.members.push(...validMembers.map(member=>new Types.ObjectId(member._id)))
     await isExistingChat.save()
 
-    res.status(200).json(isExistingChat)
+    // Extract old members
+    const newMemberIdsSet = new Set(members);
+    const oldMembers = isExistingChat.members.filter(member => !newMemberIdsSet.has(member.toString()));
+
+    emitEvent(req,Events.NEW_MEMBER_ADDED,oldMembers.map(member=>member._id.toString()),{
+      chatId:isExistingChat._id,
+      members:validMembers
+    })
+
+    const transformedChat = await Chat.aggregate([
+      {
+        $match:{
+          _id:isExistingChat._id
+        }
+      },
+      updateAvatarFeild,
+      populateMembersStage,
+      addUnreadMessagesStage
+
+    ])
+
+    emitEvent(req,Events.NEW_GROUP,members,transformedChat[0])
+
+    res.status(200).json(validMembers)
 
 })
 

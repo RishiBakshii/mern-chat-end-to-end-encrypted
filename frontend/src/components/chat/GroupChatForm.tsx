@@ -7,6 +7,7 @@ import { useToast } from "../../hooks/useUI/useToast"
 import { GroupChatSchemaType, groupChatSchema } from "../../schemas/chat"
 import { useCreateChatMutation } from "../../services/api/chatApi"
 import { useGetFriendsQuery } from "../../services/api/friendApi"
+import { FriendList } from "./FriendList"
 
 
 export const GroupChatForm = () => {
@@ -90,16 +91,17 @@ export const GroupChatForm = () => {
             {/* member selection */}
             <div className="flex flex-col gap-y-3">
               <h4 className="">Select Members</h4>
-              <div className="flex flex-wrap gap-3">
-                {
-                  friends && friends.map((friend)=>(
-                    <div key={friend._id} onClick={_=>handleAddOrRemoveMember(friend._id)} className={`flex items-center gap-x-2 ${selectedMembers.includes(friend._id)?"bg-violet-500 text-white hover:bg-violet-600 shadow-2xl":"bg-gray-200 text-black hover:bg-gray-300"} p-2 rounded-lg cursor-pointer`}>
-                      <img className="h-7 w-7 object-cover rounded-full" src={friend.avatar} alt={`${friend.username} avatar`} />
-                      <p className="text-inherit">{friend.username}</p>
-                    </div>
-                  ))
-                }
-              </div>
+
+              {
+                friends?.length && 
+
+                <FriendList
+                  friends={friends}
+                  handleAddOrRemoveMember={handleAddOrRemoveMember}
+                  selectedMembers={selectedMembers}
+                />
+                
+              }
             </div>
         </div>
 

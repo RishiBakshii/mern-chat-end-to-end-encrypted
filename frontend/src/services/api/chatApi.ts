@@ -46,11 +46,11 @@ export const chatApi = createApi({
                 }
               },
         }),
-        addMember:builder.mutation<IChatWithUnreadMessages,{members:string,_id:string}>({
+        addMember:builder.mutation<IChatWithUnreadMessages,{members:Array<string>,_id:string}>({
             query:({_id,members})=>({
                 url:`/chat/${_id}/members`,
                 method:"PATCH",
-                body:members
+                body:{members}
             })
         }),
         removeMember:builder.mutation<{removedMemberId:string},{chatId:string,memberId:string}>({

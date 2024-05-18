@@ -30,6 +30,7 @@ import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendReques
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
+import { useNewMemberAddedListener } from "../hooks/useEventListeners/useNewMemberAddedListener"
 
 export const ChatPage = () => {
 
@@ -59,6 +60,7 @@ export const ChatPage = () => {
    useOfflineListener()
    useOnlineListener()
    useTypingListener()
+   useNewMemberAddedListener()
    
    useUpdateUnreadChatAsSeen(selectedChatDetails)
    

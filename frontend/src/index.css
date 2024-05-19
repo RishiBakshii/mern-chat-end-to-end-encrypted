@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.light {
+    --primary:139,92,246;
+    --primary-dark:124,58,237;
+    --secondary:243,244,246;
+    --secondary-dark:229,231,235;
+    --secondary-darker:107,114,128;
+    --background:255,255,255;
+    --text:0,0,0;
+}
+
+.dark {
+    --primary:5,119,253;
+    --primary-dark:5,117,250;
+    --secondary-dark:35,37,47;
+    --secondary-darker:107,114,128;
+    --background:0,0,0;
+    --text:255,255,255;
+}
+
+* {
+    @apply transition-colors duration-75 ease-in-out
+}

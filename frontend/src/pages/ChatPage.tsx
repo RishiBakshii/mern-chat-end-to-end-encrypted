@@ -72,7 +72,7 @@ export const ChatPage = () => {
 
 
   return (
-    <div className="h-full w-full flex p-6 gap-x-6">
+    <div className="h-full w-full flex p-6 gap-x-6 bg-background">
 
             <div className="flex-[.5]">
                 {

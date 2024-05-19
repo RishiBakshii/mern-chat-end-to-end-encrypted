@@ -9,7 +9,7 @@ type PropTypes = {
 
 export const MessageInput = ({ messageVal, setMessageVal, toggleGif, handleFileChange }: PropTypes) => {
   return (
-    <div className="flex bg-gray-200 rounded-xl">
+    <div className="flex bg-secondary rounded-xl text-text">
        
       <div className="px-3 py-4 justify-center items-center flex relative ">
           <input onChange={handleFileChange} accept={ACCEPTED_FILE_MIME_TYPES.join(",")} multiple type="file" className="absolute w-full h-full opacity-0 cursor-pointer"/>
@@ -19,7 +19,7 @@ export const MessageInput = ({ messageVal, setMessageVal, toggleGif, handleFileC
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 text-gray-500"
+            className="w-6 h-6 text-secondary-darker"
           >
             <path
               strokeLinecap="round"
@@ -49,7 +49,7 @@ export const MessageInput = ({ messageVal, setMessageVal, toggleGif, handleFileC
       <input
         value={messageVal}
         onChange={(e) => setMessageVal(e.target.value)}
-        className="px-3 py-5 outline-none bg-gray-200 rounded-sm w-full"
+        className="px-3 py-5 outline-none bg-secondary rounded-sm w-full"
         type="text"
         placeholder="Your message"
       />
@@ -61,7 +61,7 @@ export const MessageInput = ({ messageVal, setMessageVal, toggleGif, handleFileC
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-6 h-6 text-gray-500"
+          className="w-6 h-6 text-secondary-darker"
         >
           <path
             strokeLinecap="round"
@@ -79,7 +79,7 @@ export const MessageInput = ({ messageVal, setMessageVal, toggleGif, handleFileC
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 text-gray-500"
+            className="w-6 h-6 text-secondary-darker"
           >
             <path
               strokeLinecap="round"

@@ -51,11 +51,15 @@ export const AddFriendForm = () => {
   return (
     <div className="flex flex-col gap-y-4">
 
-        <input value={inputVal} onChange={e=>setInputVal(e.target.value)} className="p-3 rounded w-full outline outline-1 outline-gray-200" type="text" placeholder="Search username"/>
+        <input value={inputVal} onChange={e=>setInputVal(e.target.value)} className="p-3 rounded text-text bg-background w-full outline outline-1 outline-secondary-darker" type="text" placeholder="Search username"/>
         
         <div>
             {
-                !isFetching && users && <UserList users={users} sendFriendRequest={sendFriendRequest}/>
+                !isFetching && users && 
+                <UserList 
+                 users={users} 
+                 sendFriendRequest={sendFriendRequest}
+                />
             }
             {
                 !inputVal?.trim() && !users &&

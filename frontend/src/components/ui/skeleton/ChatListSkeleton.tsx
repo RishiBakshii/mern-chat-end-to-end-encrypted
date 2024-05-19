@@ -6,7 +6,7 @@ export const ChatListSkeleton = () => {
         {
           new Array(12).fill(0).map((_,index)=>(
 
-            <div key={index} className="flex items-center w-full hover:bg-gray-100 hover:cursor-pointer gap-x-3">
+            <div key={index} className="flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3">
 
             <div className="aspect-square w-16 rounded-full object-cover animate-pulse bg-gray-300"/>
             
@@ -19,11 +19,11 @@ export const ChatListSkeleton = () => {
                     </div>
     
                     <div className="flex flex-col">
-                        <div className="text-sm bg-gray-200  h-6 w-6 mr-2 "></div>
+                        <div className="text-sm bg-secondary  h-6 w-6 mr-2 "></div>
                     </div>
                 </div>
                 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-secondary-darker">
                   <div className="animate-pulse bg-gray-300 w-20 h-2 rounded-xl mt-2"></div>
                 </p>
     

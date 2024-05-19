@@ -64,21 +64,21 @@ export const ProfileForm = () => {
                     <div className="flex flex-col items-center gap-y-1">
                         
                         <div className="w-40 h-40 rounded-full relative overflow-hidden">
-                            <input accept={ACCEPTED_IMAGE_TYPES.join(", ")}  onChange={handleImageChange} className="absolute h-full w-full cursor-pointer opacity-0" type="file" name="" id="" />
+                            <input accept={ACCEPTED_IMAGE_TYPES.join(", ")}  onChange={handleImageChange} className="absolute h-full w-full cursor-pointer opacity-0" type="file"/>
                             <img className="w-full h-full object-cover rounded-full" src={preview} alt={`${loggedInUser?.name} avatar`} />
                         </div>
 
-                        <h4 className="font-medium text-xl">{loggedInUser?.username}</h4>
+                        <h4 className="font-medium text-xl">{loggedInUser.username}</h4>
                         <p>{loggedInUser?.email}</p>
                     </div>
     
                     <div className="flex flex-col justify-center items-center">
-                        <p>Joined at {new Date(loggedInUser?.createdAt).toDateString()}</p>
-                        <p>Last Updated {new Date(loggedInUser?.updatedAt).toDateString()}</p>
+                        <p>Joined at {new Date(loggedInUser.createdAt).toDateString()}</p>
+                        <p>Last Updated {new Date(loggedInUser.updatedAt).toDateString()}</p>
                     </div>
                     {
                         editActive && 
-                        <button onClick={handleUpdateProfile} className="px-6 mt-2 py-2 bg-violet-500 hover:bg-violet-600 text-white rounded shadow-lg">Update profile</button>
+                        <button onClick={handleUpdateProfile} className="px-6 mt-2 py-2 bg-primary hover:bg-primary-dark rounded shadow-lg text-white">Update profile</button>
                     }
                 </div>
             :

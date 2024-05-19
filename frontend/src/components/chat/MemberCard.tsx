@@ -11,7 +11,7 @@ type PropTypes = {
 }
 export const MemberCard = ({member,loggedInUserId,chatAdminId,isRemovable=false,removeHandler,chatId,isGroupChat}:PropTypes) => {
   return (
-    <div className="flex gap-x-2 items-center hover:bg-gray-100 relative">
+    <div className="flex gap-x-2 items-center hover:bg-secondary-dark relative">
         <img className="aspect-square object-cover w-[4rem] rounded" 
         src={member.avatar} 
         alt={`${member.username} avatar`} />
@@ -23,7 +23,7 @@ export const MemberCard = ({member,loggedInUserId,chatAdminId,isRemovable=false,
             </p>
             {
               chatAdminId === member._id ? 
-              <p className="bg-violet-500 opacity-70 text-white px-2 rounded">Admin</p>
+              <p className="bg-primary opacity-70 text-white px-2 rounded">Admin</p>
               : null
             }
         </div>

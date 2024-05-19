@@ -9,7 +9,7 @@ export const TypingCard = ({username,avatar}:PropTypes) => {
   return (
     <div className="flex item-center gap-x-1">
         <Avatar height={7} width={7} imgUrl={avatar} alt={username}/>
-        <p className="text-gray-500">{username}</p> 
+        <p className="text-secondary-darker">{username}</p> 
     </div>
   )
 }

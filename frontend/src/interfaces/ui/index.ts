@@ -1,4 +1,5 @@
 export interface IUi {
+    isDarkMode:boolean
     navMenu:boolean,
     newgroupChatForm:boolean
     addMemberForm:boolean

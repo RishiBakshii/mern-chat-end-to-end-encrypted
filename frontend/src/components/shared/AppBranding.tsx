@@ -7,7 +7,7 @@ export const AppBranding = () => {
 
   return (
 
-        <div className="text-black flex flex-col gap-y-2">
+        <div className="text-inherit bg-inherit flex flex-col gap-y-2">
 
             <div className="flex flex-col gap-y-1">
                 <div className="flex items-center gap-x-4">

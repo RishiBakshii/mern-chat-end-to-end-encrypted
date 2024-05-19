@@ -84,7 +84,7 @@ export const GroupChatForm = () => {
             
             {/* name input */}
             <div className="w-full flex flex-col gap-y-1">
-              <input {...register("name")} className="p-3 rounded w-full outline outline-1 outline-gray-200" placeholder="Group name"/>
+              <input {...register("name")} className="p-3 rounded w-full outline outline-1 outline-secondary-darker text-text bg-background" placeholder="Group name"/>
               {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
             </div>
             
@@ -105,7 +105,7 @@ export const GroupChatForm = () => {
             </div>
         </div>
 
-        <button type="submit" className="px-6 py-2 bg-violet-500 text-white rounded shadow-lg">Create group</button>
+        <button type="submit" className="px-6 py-2 bg-primary text-white rounded shadow-lg">Create group</button>
       </form>
 
     </div>

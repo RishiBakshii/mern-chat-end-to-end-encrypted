@@ -13,7 +13,7 @@ export const ChatList = memo(({chats,loggedInUserId,updateSelectedChatId}:PropTy
 
   return (
     <>
-    <div className="flex flex-col gap-y-4 overflow-y-scroll scroll-smooth">
+    <div className="flex flex-col gap-y-4 overflow-y-scroll scroll-smooth px-2">
         {
           chats.map(chat=>(
 

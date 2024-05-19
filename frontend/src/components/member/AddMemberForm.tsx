@@ -49,12 +49,12 @@ export const AddMemberForm = () => {
 
       <h4 className="text-xl">Add members to {selectedChatDetails?.name} </h4>
 
-      <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 rounded w-full outline outline-1 outline-gray-200" placeholder="Search Friends"/>
+      <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 rounded w-full text-text bg-background outline outline-1 outline-secondary-darker" placeholder="Search Friends"/>
 
       <div className="flex flex-col gap-y-2">
         {
           filteredFriends?.map(friend=>(
-            <div onClick={()=>handleAddOrRemoveMember(friend._id)} key={friend._id} className={`flex items-center gap-x-2 rounded-md cursor-pointer ${selectedMembers.includes(friend._id)?"bg-violet-500 text-white hover:bg-violet-600":''} hover:bg-gray-200 p-2 shadow-sm`}>
+            <div onClick={()=>handleAddOrRemoveMember(friend._id)} key={friend._id} className={`flex items-center gap-x-2 rounded-md cursor-pointer ${selectedMembers.includes(friend._id)?"bg-primary hover:bg-primary-dark":'hover:bg-secondary-darker'} p-2 shadow-sm`}>
               <Avatar imgUrl={friend.avatar} height={7} width={7} alt={friend.username}/>
               <p>{friend.username}</p>
             </div>
@@ -63,7 +63,7 @@ export const AddMemberForm = () => {
       </div>
 
 
-      <button onClick={handleAddMember} disabled={selectedMembers.length===0} className="bg-violet-500 text-white py-2 rounded-sm disabled:bg-gray-400">Add</button>
+      <button onClick={handleAddMember} disabled={selectedMembers.length===0} className="bg-primary text-white py-2 rounded-sm disabled:bg-gray-400">Add</button>
 
     </div>
   )

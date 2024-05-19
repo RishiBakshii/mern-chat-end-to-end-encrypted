@@ -4,6 +4,7 @@ import { RootState } from "../store/store";
 
 
 const initialState:IUi = {
+    isDarkMode:false,
     navMenu:false,
     newgroupChatForm:false,
     addMemberForm:false,
@@ -40,6 +41,9 @@ const uiSlice = createSlice({
         },
         setGifForm:(state,action:PayloadAction<boolean>)=>{
             state.gifForm=action.payload
+        },
+        setDarkMode:(state,action:PayloadAction<boolean>)=>{
+            state.isDarkMode=action.payload
         }
     }
 })
@@ -53,6 +57,7 @@ export const selectFriendRequestForm = (state:RootState)=>state.uiSlice.friendRe
 export const selectProfileForm = (state:RootState)=>state.uiSlice.profileForm
 export const selectMemberForm = (state:RootState)=>state.uiSlice.memberForm
 export const selectGifForm = (state:RootState)=>state.uiSlice.gifForm
+export const selectisDarkMode = (state:RootState)=>state.uiSlice.isDarkMode
 
 // exporting actions
 export const {
@@ -64,6 +69,7 @@ export const {
     setProfileForm,
     setMemberForm,
     setGifForm,
+    setDarkMode,
 } = uiSlice.actions
 
 export default uiSlice

@@ -7,7 +7,7 @@ type PropTypes = {
 export const FriendRequestItem = ({user,friendRequestHandler}:PropTypes) => {
 
   return (
-    <div className="bg-gray-100 hover:bg-gray-200 flex justify-between p-2">
+    <div className="bg-secondary-dark hover:bg-secondary flex justify-between p-2">
 
         <div className="flex gap-x-3">
             <img className="h-16 w-16 rounded-full object-cover" src={user.sender.avatar} alt={`${user.sender.username} avatar`} />

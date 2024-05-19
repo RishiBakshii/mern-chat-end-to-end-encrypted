@@ -11,7 +11,7 @@ export const ChatHeaderOptions = ({openMemberForm}:PropTypes) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 text-gray-500"
+        className="w-6 h-6 text-secondary-darker"
       >
         <path
           strokeLinecap="round"
@@ -25,7 +25,7 @@ export const ChatHeaderOptions = ({openMemberForm}:PropTypes) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 text-gray-500"
+        className="w-6 h-6 text-secondary-darker"
       >
         <path
           strokeLinecap="round"
@@ -40,7 +40,7 @@ export const ChatHeaderOptions = ({openMemberForm}:PropTypes) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 cursor-pointer hover:text-gray-600 text-gray-500"
+        className="w-6 h-6 cursor-pointer hover:text-gray-600 text-secondary-darker"
       >
         <path
           strokeLinecap="round"

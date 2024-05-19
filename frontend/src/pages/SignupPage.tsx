@@ -5,7 +5,7 @@ import { config } from "../config/envConfig"
 
 export const SignupPage = () => {
   return (
-    <div className="flex w-screen h-screen">
+    <div className="flex w-screen h-screen bg-background text-text">
 
         <div className="flex-auto flex justify-center items-center p-4">
             <AppBranding/>

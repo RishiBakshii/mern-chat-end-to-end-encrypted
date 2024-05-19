@@ -22,7 +22,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMess
     }
 
   return (
-    <div className={`flex gap-x-2 ${myMessage?"self-end":""}`}>
+    <div className={`flex gap-x-2 ${myMessage?"self-end":""} text-text`}>
 
         {
             // only shows avatar image on other's message
@@ -34,7 +34,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMess
             />
         }
         
-        <div className={`${myMessage?"bg-violet-500 text-white":"bg-gray-100"} max-w-96 min-w-16 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
+        <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} max-w-96 min-w-16 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
             
             {
                 // only shows username on message when on group chat and message is of other user
@@ -42,7 +42,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMess
                 <p className="text-violet-500 font-medium">{message.sender.username}</p>
             }
             
-            <p className="justify-self-center w-full text-wrap break-words">
+            <p className={`justify-self-center w-full text-wrap break-words`}>
                 
 
                 {

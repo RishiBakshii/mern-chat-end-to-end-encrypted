@@ -13,7 +13,7 @@ type PropTypes = {
 export const ChatCard = ({chatName,avatar,chatId,unreadMessageCount,latestUnreadMessage,isTyping,updateSelectedChatId}:PropTypes) => {
 
   return (
-    <div onClick={()=>updateSelectedChatId(chatId)} className="flex items-center w-full hover:bg-gray-100 hover:cursor-pointer gap-x-3">
+    <div onClick={()=>updateSelectedChatId(chatId)} className="text-text flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3">
 
         <img className="aspect-square w-16 rounded-full object-cover" src={avatar} />
         
@@ -27,16 +27,16 @@ export const ChatCard = ({chatName,avatar,chatId,unreadMessageCount,latestUnread
                 </div>
 
                 <div className="flex flex-col">
-                    <p  className="text-sm text-gray-500">{1}m</p>
+                    <p  className="text-sm text-secondary-darker">{1}m</p>
                     { unreadMessageCount > 0 && 
-                      <p className="bg-violet-500 flex items-center justify-center text-white rounded-full w-6 h-6">
+                      <p className="bg-primary flex items-center justify-center text-white rounded-full w-6 h-6">
                         { unreadMessageCount }
                       </p>
                     }
                 </div>
             </div>
             
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-secondary-darker">
               {
                 latestUnreadMessage && 
                `${latestUnreadMessage.substring(0,25)}...`

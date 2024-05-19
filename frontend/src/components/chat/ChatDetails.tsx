@@ -15,7 +15,7 @@ type PropTypes = {
 export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat}:PropTypes) => {
   return (
     
-    <div className="flex flex-col justify-center items-center gap-y-7">
+    <div className="flex flex-col justify-center items-center gap-y-7 text-text">
         
         <h5 className="font-medium text-xl">Chat Details</h5>
         
@@ -28,7 +28,7 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat}:Pr
             />
             <div className="flex flex-col gap-y-0 items-center">
                 <h4 className="text-lg font-medium">{chatName}</h4>
-                <p className="text-gray-500">{members?.length} members</p>
+                <p className="text-secondary-darker">{members?.length} members</p>
             </div>
         </div>
 
@@ -41,7 +41,7 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat}:Pr
                       <AvatarList w={8} h={8} avatars={members.slice(0,4).map(member=>member.avatar)}/>
                       {
                         ((members.length-4)>0) && 
-                        <p className="w-8 h-8 rounded-full bg-gray-200 flex justify-center items-center">+{members.length-4}</p>
+                        <p className="w-8 h-8 rounded-full bg-secondary flex justify-center items-center">+{members.length-4}</p>
                       }
                     </div>
                     {isGroupChat && <p>See all</p>}

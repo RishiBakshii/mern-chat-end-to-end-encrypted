@@ -31,6 +31,7 @@ import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
 import { useNewMemberAddedListener } from "../hooks/useEventListeners/useNewMemberAddedListener"
+import { useMessageEditListener } from "../hooks/useEventListeners/useMessageEditListener"
 
 export const ChatPage = () => {
 
@@ -61,6 +62,7 @@ export const ChatPage = () => {
    useOnlineListener()
    useTypingListener()
    useNewMemberAddedListener()
+   useMessageEditListener()
    
    useUpdateUnreadChatAsSeen(selectedChatDetails)
    

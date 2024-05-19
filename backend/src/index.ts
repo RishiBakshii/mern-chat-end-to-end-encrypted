@@ -28,8 +28,9 @@ import { Events } from './enums/event/event.enum.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
 import { IMemberDetails } from './interfaces/chat/chat.interface.js'
-import { getMemberSockets, getOtherMembers } from './utils/socket.util.js'
+import { emitEvent, getMemberSockets, getOtherMembers } from './utils/socket.util.js'
 import { IUnreadMessageEventPayload } from './interfaces/unread-message/unread-message.interface.js'
+import { Types } from 'mongoose'
 
 
 const app=express()
@@ -156,6 +157,13 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             readAt:areUnreadMessages?.readAt,
         })
 
+    })
+
+    socket.on(Events.MESSAGE_EDIT,async({messageId,updatedContent,memberIds}:{messageId:string,updatedContent:string,memberIds:Array<string>})=>{
+        
+        const updatedMessage = await Message.findByIdAndUpdate(messageId,{isEdited:true,content:updatedContent},{new:true,projection:['chat','content','isEdited']})
+        console.log(updatedMessage);
+        io.to(getMemberSockets(memberIds)).emit(Events.MESSAGE_EDIT,updatedMessage)
     })
 
     socket.on(Events.USER_TYPING,({chatId,members}:{chatId:string,members:Array<string>})=>{

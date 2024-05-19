@@ -1,7 +1,14 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import type { IMessage } from "../../interfaces/messages";
+import { ContextMenu } from "../shared/ContextMenu";
+import { EditMessageForm } from "./EditMessageForm";
 
 type PropTypes = {
+    editMessageId:string,
+    isContextMenuOpen:boolean,
+    onContextMenuOpen:(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string) => void
+    setEditMessageId: React.Dispatch<React.SetStateAction<string>>
+    setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string>>
     isAttachment:boolean
     attachments?:Array<string>
     myMessage:boolean;
@@ -9,20 +16,34 @@ type PropTypes = {
     message:IMessage,
     isGroupChat:boolean,
     url:string
+    isEdited:boolean | undefined
 }
 
-export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMessage,url,isAttachment,attachments}:PropTypes) => {
+export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessageId,isEdited,setOpenContextMenuMessageId,setEditMessageId,isTextMessage,url,isAttachment,attachments,isContextMenuOpen,onContextMenuOpen}:PropTypes) => {
 
 
     const [readMore,SetReadMore] = useState<boolean>(message?.content?.length>500?true:false)
     const [isMessageBig] = useState<boolean>(message?.content?.length>500)
+
+    useEffect(()=>{
+     setOpenContextMenuMessageId("")
+    },[editMessageId,message._id])
 
     const handleReadMoreOrLess = () => {
         SetReadMore(!readMore)
     }
 
   return (
-    <div className={`flex gap-x-2 ${myMessage?"self-end":""} text-text`}>
+    <div className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative`} onContextMenu={(e)=>onContextMenuOpen(e,message._id)}>
+
+        {
+            isContextMenuOpen &&
+            <ContextMenu 
+                options={[
+                    {name:"Edit message",handlerFunc:()=>setEditMessageId(message._id)}
+                ]}
+            />
+        }
 
         {
             // only shows avatar image on other's message
@@ -52,7 +73,14 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMess
                     ))
                     :
                     isTextMessage ? (
-
+                        
+                        editMessageId === message._id ? 
+                        <EditMessageForm 
+                          setEditMessageId={setEditMessageId}
+                          prevContentValue={message.content}
+                          messageId={message._id}
+                        />
+                        :
                         readMore?
                         message.content.substring(0,500):
                         message.content
@@ -69,6 +97,10 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,isTextMess
                     </span>
                 }
             </p>
+            {
+                isEdited && 
+                <p className="text-primary-dark self-end font-semibold text-sm">Edited</p>
+            }
         </div>
     </div>
   )

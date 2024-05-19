@@ -10,6 +10,7 @@ export interface IMessage {
     }
     chat:string
     url:string
+    isEdited?:boolean
     attachments:Array<string> | []
     createdAt:Date
     updatedAt:Date
@@ -46,6 +47,19 @@ export interface IUnreadMessageEventReceiveData {
     chatId:string
     message:IUnreadMessage['message']
     sender:IChatMember
+}
+
+export interface IEditMessageEventPayloadData {
+    messageId:string,
+    updatedContent:string,
+    memberIds:Array<string>
+}
+
+export interface IEditMessageEventReceiveData {
+    _id: string
+    chat: string
+    content: string
+    isEdited: boolean
 }
 
 export interface IUserTypingEventPayloadData extends IMessageSeenEventPayloadData {}

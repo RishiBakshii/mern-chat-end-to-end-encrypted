@@ -26,6 +26,9 @@ const messageSchema = new Schema<IMessage>({
     },
     url:{
         type:String
+    },
+    isEdited:{
+        type:Boolean
     }
 },{versionKey:false,timestamps:true})
 

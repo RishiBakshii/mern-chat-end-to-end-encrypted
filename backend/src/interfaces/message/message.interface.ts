@@ -12,6 +12,7 @@ export interface IMessage {
     chat:Types.ObjectId
     url?:string
     attachments?:Array<IAttachment>
+    isEdited?:boolean
     createdAt:Date
     updatedAt:Date
 }

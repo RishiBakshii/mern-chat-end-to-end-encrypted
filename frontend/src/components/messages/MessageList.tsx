@@ -10,10 +10,10 @@ type PropTypes = {
 }
 export const MessageList = ({messages,loggedInUserId,isGroupChat}:PropTypes) => {
 
-  const [openContextMenuMessageId, setOpenContextMenuMessageId] = useState<string>("")
-  const [editMessageId,setEditMessageId] = useState<string>("")
+  const [openContextMenuMessageId, setOpenContextMenuMessageId] = useState<string>()
+  const [editMessageId,setEditMessageId] = useState<string>()
 
-  const handleContextMenuOpen=(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string)=>{
+  const handleSetOpenContextMenuMessageId=(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string)=>{
     e.stopPropagation()
     e.preventDefault()
     setOpenContextMenuMessageId(messageId)
@@ -24,16 +24,11 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat}:PropTypes) => 
     <>
       {messages.map(message => (
         <MessageCard
-          isEdited={message?.isEdited}
           setOpenContextMenuMessageId={setOpenContextMenuMessageId}
           setEditMessageId={setEditMessageId}
           editMessageId={editMessageId}
-          onContextMenuOpen={handleContextMenuOpen}
+          onContextMenuOpen={handleSetOpenContextMenuMessageId}
           isContextMenuOpen={openContextMenuMessageId===message._id}
-          isAttachment={message.attachments?.length>0}
-          attachments={message.attachments}
-          url={message.url}
-          isTextMessage={!message?.url?.length}
           isGroupChat={isGroupChat} 
           key={message._id} 
           message={message} 

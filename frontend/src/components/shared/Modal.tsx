@@ -17,7 +17,7 @@ export const Modal = ({isOpen=false,onClose,children,height}:PropTypes) => {
   return (
     isOpen ? 
     createPortal(
-    <div onClick={onClose} className="bg-black bg-opacity-15 w-screen h-screen absolute flex items-center justify-center text-text bg-background">
+    <div onClick={onClose} className="z-50 bg-black bg-opacity-15 w-screen h-screen absolute flex items-center justify-center text-text bg-background">
         <div onClick={e=>e.stopPropagation()} className={`min-w-[30rem] h-[${height}rem] rounded-lg p-4 shadow-xl ${isDarkMode?"bg-secondary-dark":"bg-secondary"}`}>
             {children}
         </div>

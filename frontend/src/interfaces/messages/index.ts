@@ -2,16 +2,16 @@ import { IChatMember } from "../chat"
 
 export interface IMessage {
     _id:string
-    content:string
+    content?:string
     sender:{
         _id:string
         username:string
         avatar:string
     }
     chat:string
-    url:string
+    url?:string
     isEdited?:boolean
-    attachments:Array<string> | []
+    attachments?:Array<string> | []
     createdAt:Date
     updatedAt:Date
 }

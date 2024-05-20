@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { User } from "../models/user.model.js";
-import { deleteFileFromCloudinary, getSecureUserInfo, uploadFilesToCloudinary } from "../utils/auth.util.js";
+import { deleteFilesFromCloudinary, getSecureUserInfo, uploadFilesToCloudinary } from "../utils/auth.util.js";
 import type { IUser } from "../interfaces/auth/auth.interface.js";
 
 const getUserDetails = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
@@ -57,7 +57,7 @@ const udpateUser  = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respons
         else if(existingPublicId){
 
             const avatarPromise = [
-                deleteFileFromCloudinary(existingPublicId),
+                deleteFilesFromCloudinary([existingPublicId]),
                 uploadFilesToCloudinary([req.file])
             ]
 

@@ -7,7 +7,7 @@ import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { Message } from "../models/message.model.js";
 import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
-import { uploadFilesToCloudinary } from "../utils/auth.util.js";
+import { deleteFilesFromCloudinary, uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 import { UploadApiResponse } from "cloudinary";
 import { Types } from "mongoose";
@@ -369,10 +369,28 @@ const removeMemberFromChat = asyncErrorHandler(async(req:AuthenticatedRequest,re
 
     if(isExistingChat.members.length===3){
 
-        const chatDeletePromise = [
+        const publicIdsToBeDestroyed:Array<string> = []
+
+        if(isExistingChat.avatar?.publicId){
+          publicIdsToBeDestroyed.push(isExistingChat.avatar.publicId)
+        }
+
+        const messageWithAttachements = await Message.find({chat:isExistingChat._id,attachments:{$ne:[]}})
+        
+        messageWithAttachements.forEach(message=>{
+
+         if(message.attachments?.length){
+           const attachmentsPublicId = message.attachments.map(attachment=>attachment.publicId)
+           publicIdsToBeDestroyed.push(...attachmentsPublicId)
+         }
+
+        })
+
+        const chatDeletePromise:Array<Promise<any>> = [
           isExistingChat.deleteOne(),
           Message.deleteMany({chat:isExistingChat._id}),
           UnreadMessage.deleteMany({chat:isExistingChat._id}),
+          deleteFilesFromCloudinary(publicIdsToBeDestroyed)
         ]
 
         await Promise.all(chatDeletePromise)

@@ -42,8 +42,10 @@ export const uploadFilesToCloudinary = async(files:Array<Express.Multer.File>)=>
     return result
 }
 
-export const deleteFileFromCloudinary = async(public_id:string)=>{
-    await cloudinary.uploader.destroy(public_id)
+export const deleteFilesFromCloudinary = async(publicIds:Array<string>)=>{
+    const deletePromises = publicIds.map(publicId=>cloudinary.uploader.destroy(publicId))
+    const uploadResult = await Promise.all(deletePromises)
+    return uploadResult
 }
 
 export const getSecureUserInfo = (user:IUser)=>{

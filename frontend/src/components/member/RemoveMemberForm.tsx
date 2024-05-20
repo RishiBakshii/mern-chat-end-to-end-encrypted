@@ -1,17 +1,21 @@
 import { useState } from "react"
+import { useRemoveMember } from "../../hooks/useMember/useRemoveMember"
+import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
-import { useAppSelector } from "../../services/redux/store/hooks"
+import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 import { MemberList } from "./MemberList"
-import { useRemoveMemberMutation } from "../../services/api/chatApi"
-import { useToast } from "../../hooks/useUI/useToast"
+import { setRemoveMemberForm } from "../../services/redux/slices/uiSlice"
 
 export const RemoveMemberForm = () => {
 
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
-    const [removeMember,{isError,isLoading,isSuccess,isUninitialized,error}] = useRemoveMemberMutation()
-    useToast({error,isError,isLoading,isSuccess,isUninitialized,loaderToast:true,successToast:true,successMessage:"Dont forget to call them and say, you are removed 💀"})
+    const loggedInUser = useAppSelector(selectLoggedInUser)
+    const dispatch  = useAppDispatch()
+
+    const {removeMember} = useRemoveMember()
 
     const [selectedMembers,setSelectedMembers] = useState<Array<string>>([])
+    
 
     const toggleSelection = (memberId:string)=>{
         if(selectedMembers.includes(memberId)){
@@ -27,6 +31,18 @@ export const RemoveMemberForm = () => {
         if(selectedChatDetails){
             removeMember({chatId:selectedChatDetails?._id,memberIds:selectedMembers})
         }
+
+        dispatch(setRemoveMemberForm(false))
+
+    }
+
+    const handleLeaveGroup = ()=>{
+
+        if(selectedChatDetails && loggedInUser){
+            removeMember({chatId:selectedChatDetails._id,memberIds:[loggedInUser._id]})
+        }
+
+        dispatch(setRemoveMemberForm(false))
     }
 
   return (
@@ -39,15 +55,18 @@ export const RemoveMemberForm = () => {
             {
                 selectedChatDetails &&
                 <MemberList
-                    members={selectedChatDetails.members}
+                    members={selectedChatDetails.members.filter(member=>member._id!==loggedInUser?._id)}
                     selectedMembers={selectedMembers}
                     toggleSelection={toggleSelection}
                 />
             }
         </div>
+        
+        <div className="flex flex-col gap-y-2">
+            <button onClick={handleRemoveMember} disabled={selectedMembers.length===0} className="bg-primary text-white py-2 rounded-sm disabled:bg-gray-400">Remove</button>
+            <button onClick={handleLeaveGroup} className="bg-red-500 py-2 rounded-sm text-white">Leave Group</button>
+        </div>
 
-        <button onClick={handleRemoveMember} disabled={selectedMembers.length===0} className="bg-primary text-white py-2 rounded-sm disabled:bg-gray-400">Remove</button>
-    
     </div>
   )
 }

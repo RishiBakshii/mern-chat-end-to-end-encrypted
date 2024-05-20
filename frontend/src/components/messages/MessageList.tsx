@@ -14,7 +14,6 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat}:PropTypes) => 
   const [editMessageId,setEditMessageId] = useState<string>()
 
   const handleSetOpenContextMenuMessageId=(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string)=>{
-    alert(messageId)
     e.stopPropagation()
     e.preventDefault()
     setOpenContextMenuMessageId(messageId)

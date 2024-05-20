@@ -15,8 +15,6 @@ export const useMemberRemovedListener = () => {
         
         const isMemberRemovedFromSelectedChatId = selectedChatDetails?._id === chatId
 
-        console.log({chatId,membersId:membersId[0]});
-
         dispatch(
             chatApi.util.updateQueryData("getChats",undefined,(draft)=>{
 

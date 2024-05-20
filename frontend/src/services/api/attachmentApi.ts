@@ -16,8 +16,6 @@ export const attachmentApi = createApi({
 
                 const formData = new FormData()
 
-                console.log(attachments);
-
                 formData.append("chatId",chatId)
 
                 for (const member of members) {

@@ -111,6 +111,7 @@ export const ChatPage = () => {
                     <div className="flex flex-col gap-y-3 h-full">
   
                         <ChatHeader
+                            isGroupChat={selectedChatDetails.isGroupChat}
                             chatName={chatName}
                             openRemoveMemberForm={openRemoveMemberForm}
                             totalMembers={selectedChatDetails.members.length}

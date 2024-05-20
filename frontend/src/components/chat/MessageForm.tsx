@@ -50,8 +50,6 @@ export const MessageForm = ({toggleGif}:PropTypes) => {
 
         const files = e.target.files
 
-        console.log('triggered');
-
         if(files){
 
           if(files.length>5){

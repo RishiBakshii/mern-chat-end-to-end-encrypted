@@ -32,3 +32,10 @@ export interface INewMemberAddedEventPayloadData {
     chatId:string,
     members:Array<IChatMember>
 }
+
+export interface IDeleteChatEventReceiveData {
+    chatId:string
+}
+export interface IMemberRemovedEventReceiveData extends IDeleteChatEventReceiveData {
+    membersId:Array<string>
+}

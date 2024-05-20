@@ -1,8 +1,8 @@
 type PropTypes = {
-    openMemberForm:()=>void
+    openRemoveMemberForm:()=>void
 }
 
-export const ChatHeaderOptions = ({openMemberForm}:PropTypes) => {
+export const ChatHeaderOptions = ({openRemoveMemberForm}:PropTypes) => {
   return (
     <div className="items-center flex gap-x-5">
       <svg
@@ -34,7 +34,7 @@ export const ChatHeaderOptions = ({openMemberForm}:PropTypes) => {
         />
       </svg>
       <svg
-        onClick={openMemberForm}
+        onClick={openRemoveMemberForm}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"

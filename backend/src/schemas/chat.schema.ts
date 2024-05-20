@@ -10,11 +10,11 @@ export const createChatSchema = z.object({
 
 
 export const addMemberToChatSchema = z.object({
-    members:z.string({required_error:"Atlest one member is required to add to chat"}).array()
+    members:z.string({required_error:"Atleast one member is required to add to chat"}).array()
 })
 
 export const removeMemberfromChat = z.object({
-    member:z.string({required_error:"Member is required to remove from the chat"})
+    members:z.string({required_error:"Atleast one member is required to remove from chat"}).array()
 })
 
 

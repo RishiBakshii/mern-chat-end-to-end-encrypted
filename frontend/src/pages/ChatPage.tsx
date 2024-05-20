@@ -21,7 +21,6 @@ import { useTypingListener } from "../hooks/useEventListeners/useTypingListener"
 import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMessageListener"
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
 import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
-import { useOpenMemberForm } from "../hooks/useUI/useOpenMemberForm"
 import { useToggleGif } from "../hooks/useUI/useToggleGif"
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
@@ -32,6 +31,9 @@ import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
 import { useNewMemberAddedListener } from "../hooks/useEventListeners/useNewMemberAddedListener"
 import { useMessageEditListener } from "../hooks/useEventListeners/useMessageEditListener"
+import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
+import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
+import { useMemberRemovedListener } from "../hooks/useEventListeners/useMemberRemovedListener"
 
 export const ChatPage = () => {
 
@@ -63,11 +65,13 @@ export const ChatPage = () => {
    useTypingListener()
    useNewMemberAddedListener()
    useMessageEditListener()
+   useDeleteChatListener()
+   useMemberRemovedListener()
    
    useUpdateUnreadChatAsSeen(selectedChatDetails)
    
-   const openMemberForm = useOpenMemberForm()
    const toggleGif = useToggleGif()
+   const openRemoveMemberForm = useOpenRemoveMemberForm()
 
    const chatName = useGetChatName(selectedChatDetails,loggedInUser?._id)
    const chatAvatar= useGetChatAvatar(selectedChatDetails,loggedInUser?._id)
@@ -108,7 +112,7 @@ export const ChatPage = () => {
   
                         <ChatHeader
                             chatName={chatName}
-                            openMemberForm={openMemberForm}
+                            openRemoveMemberForm={openRemoveMemberForm}
                             totalMembers={selectedChatDetails.members.length}
                         />
 

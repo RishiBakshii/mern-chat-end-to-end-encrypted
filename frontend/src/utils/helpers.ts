@@ -12,8 +12,13 @@ const isErrorWithMessage=(error: unknown):error is { status:number ,data: {messa
       typeof (error as any).data.message === 'string'
     )
   }
+
+const printDraft = (data:unknown)=>{
+  console.log(JSON.parse(JSON.stringify(data)));
+}
   
 export {
     isFetchBaseQueryError,
-    isErrorWithMessage
+    isErrorWithMessage,
+    printDraft
 }

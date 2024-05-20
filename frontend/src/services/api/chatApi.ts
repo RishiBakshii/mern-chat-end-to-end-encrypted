@@ -53,24 +53,12 @@ export const chatApi = createApi({
                 body:{members}
             })
         }),
-        removeMember:builder.mutation<{removedMemberId:string},{chatId:string,memberId:string}>({
-            query:({chatId,memberId})=>({
+        removeMember:builder.mutation<void,{chatId:string,memberIds:Array<string>}>({
+            query:({chatId,memberIds})=>({
                 url:`/chat/${chatId}/members`,
                 method:"DELETE",
-                body:{member:memberId}
-            }),
-            async onQueryStarted({chatId},{dispatch,queryFulfilled}){
-                const {data:removedMemberId} = await queryFulfilled
-
-                dispatch(
-                    chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
-                        const affectedChat = draft.find(chat=>chat._id===chatId)
-                        if(affectedChat){
-                            affectedChat.members=affectedChat.members.filter(member=>member._id!==removedMemberId.removedMemberId)
-                        }
-                    })
-                )
-            }
+                body:{members:memberIds}
+            })
         })
     })
 })

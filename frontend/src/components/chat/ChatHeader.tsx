@@ -3,10 +3,10 @@ import { ChatHeaderOptions } from "./ChatHeaderOptions"
 type PropTypes = {
   totalMembers:number
   chatName:string
-  openMemberForm: () => void
+  openRemoveMemberForm: () => void
 }
 
-export const ChatHeader = ({totalMembers,openMemberForm,chatName}:PropTypes) => {
+export const ChatHeader = ({totalMembers,openRemoveMemberForm,chatName}:PropTypes) => {
 
   return (
     <div className="flex items-center justify-between text-text bg-background">
@@ -16,7 +16,7 @@ export const ChatHeader = ({totalMembers,openMemberForm,chatName}:PropTypes) => 
             <p className="text-secondary-darker">{totalMembers} Members</p>
         </div>
 
-        <ChatHeaderOptions openMemberForm={openMemberForm}/>
+        <ChatHeaderOptions openRemoveMemberForm={openRemoveMemberForm}/>
     </div>
 
   )

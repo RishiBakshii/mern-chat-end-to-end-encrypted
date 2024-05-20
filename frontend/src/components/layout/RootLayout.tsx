@@ -5,11 +5,11 @@ import { GroupChatForm } from "../chat/GroupChatForm"
 import { AddFriendForm } from "../friends/AddFriendForm"
 import { FriendRequestForm } from "../friends/FriendRequestForm"
 import { ProfileForm } from "../user/ProfileForm"
-import { MemberForm } from "../chat/MemberForm"
-import { selectAddFriendForm, selectAddMemberForm, selectFriendRequestForm, selectGifForm, selectGroupChatForm, selectMemberForm, selectProfileForm, setAddFriendForm, setAddMemberForm, setFriendRequestForm, setGifForm, setMemberForm, setNewgroupChatForm, setProfileForm } from "../../services/redux/slices/uiSlice"
+import { selectAddFriendForm, selectAddMemberForm, selectFriendRequestForm, selectGifForm, selectGroupChatForm, selectProfileForm, selectRemoveMemberForm, setAddFriendForm, setAddMemberForm, setFriendRequestForm, setGifForm, setNewgroupChatForm, setProfileForm, setRemoveMemberForm } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 import { TenorGifForm } from "../chat/TenorGifForm"
 import { AddMemberForm } from "../member/AddMemberForm"
+import { RemoveMemberForm } from "../member/RemoveMemberForm"
 
 export const RootLayout = () => {
 
@@ -44,11 +44,11 @@ export const RootLayout = () => {
       <Modal isOpen={useAppSelector(selectProfileForm)} onClose={()=>dispatch(setProfileForm(false))}>
         <ProfileForm/>
       </Modal>
-      
-      <Modal isOpen={useAppSelector(selectMemberForm)} onClose={()=>dispatch(setMemberForm(false))}>
-        <MemberForm/>
-      </Modal>
 
+      <Modal isOpen={useAppSelector(selectRemoveMemberForm)} onClose={()=>dispatch(setRemoveMemberForm(false))}>
+        <RemoveMemberForm/>
+      </Modal>
+      
       <Modal isOpen={useAppSelector(selectGifForm)} onClose={()=>dispatch(setGifForm(false))}>
         <TenorGifForm/>
       </Modal>

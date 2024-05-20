@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
+import type { AuthenticatedRequest, IUser } from "../interfaces/auth/auth.interface.js";
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType } from "../schemas/chat.schema.js";
@@ -12,6 +12,7 @@ import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 import { UploadApiResponse } from "cloudinary";
 import { Types } from "mongoose";
 import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
+import { UnreadMessage } from "../models/unread-message.model.js";
 
 
 export const addUnreadMessagesStage = {
@@ -340,8 +341,9 @@ const addMemberToChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Res
 })
 
 const removeMemberFromChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
     const {id}=req.params
-    const {member}:removeMemberfromChatType = req.body
+    const {members}:removeMemberfromChatType = req.body
 
     const isExistingChat = await Chat.findById(id)
 
@@ -350,46 +352,49 @@ const removeMemberFromChat = asyncErrorHandler(async(req:AuthenticatedRequest,re
     }
 
     if(!isExistingChat.isGroupChat){
-        return next(new CustomError("This is not a group chat, you cannot add members",400))
+        return next(new CustomError("This is not a group chat, you cannot remove members",400))
     }
 
     if(req.user?._id.toString() !== isExistingChat.admin?._id.toString()){
         return next(new CustomError("You are not allowed to remove members as you are not the admin of this chat",400))
     }
-    
-    const isValidMemberId = await User.findById(member,'_id')
 
-    if(!isValidMemberId){
-        return next(new CustomError("Member id not valid",404))
+    const existingChatMemberIds = isExistingChat.members.map(member=>member._id.toString())
+    const invalidMemberIds = members.filter(member=>!existingChatMemberIds.includes(member))
+
+    if(invalidMemberIds.length){
+      return next(new CustomError("Please provide valid members to remove",400))
     }
 
-    const isGroupMember = isExistingChat.members.findIndex(chatMember => chatMember._id.toString() === member.toString())
-
-    if(isGroupMember === -1){
-        return next(new CustomError("Member is not a part of the group"))
-    }
 
     if(isExistingChat.members.length===3){
-        await isExistingChat.deleteOne()
-        await Message.deleteMany({chat:isExistingChat._id})
-        return res.status(200).json({_id:isExistingChat._id})
+
+        const chatDeletePromise = [
+          isExistingChat.deleteOne(),
+          Message.deleteMany({chat:isExistingChat._id}),
+          UnreadMessage.deleteMany({chat:isExistingChat._id}),
+        ]
+
+        await Promise.all(chatDeletePromise)
+
+        emitEvent(req,Events.DELETE_CHAT,existingChatMemberIds,{chatId:isExistingChat._id})
+
+        return res.status(200).json()
     }
 
-
-    if(member.toString() === isExistingChat.admin?._id.toString()){
-
-        const adminIdIndex = isExistingChat.members.findIndex(chatMember=>chatMember._id.toString() === member)
-        isExistingChat.members.splice(adminIdIndex,1)
-
+    const isAdminLeavingIndex = members.findIndex(member=>isExistingChat.admin?._id.toString()===member)
+    
+    if(isAdminLeavingIndex!==-1){
         isExistingChat.admin = isExistingChat.members[0]
-        await isExistingChat.save()
-        return res.status(200).json(isExistingChat)
     }
 
-    const memberToBeRemovedIndex = isExistingChat.members.findIndex(chatMember => chatMember._id.toString() === member)
-    isExistingChat.members.splice(memberToBeRemovedIndex,1)
+    isExistingChat.members = isExistingChat.members.filter(existingMember=>!members.includes(existingMember._id.toString()))
     await isExistingChat.save()
-    return res.status(200).json(member)
+
+    emitEvent(req,Events.DELETE_CHAT,members,{chatId:isExistingChat._id})
+    emitEvent(req,Events.MEMBER_REMOVED,existingChatMemberIds.filter(id=>!members.includes(id)),{chatId:isExistingChat._id,membersId:members})
+
+    return res.status(200).json()
 
 })
 

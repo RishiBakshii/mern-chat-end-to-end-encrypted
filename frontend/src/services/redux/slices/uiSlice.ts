@@ -11,7 +11,7 @@ const initialState:IUi = {
     addFriendForm:false,
     friendRequestForm:false,
     profileForm:false,
-    memberForm:false,
+    removeMemberForm:false,
     gifForm:false
 }
 const uiSlice = createSlice({
@@ -36,8 +36,8 @@ const uiSlice = createSlice({
         setProfileForm:(state,action:PayloadAction<boolean>)=>{
             state.profileForm=action.payload
         },
-        setMemberForm:(state,action:PayloadAction<boolean>)=>{
-            state.memberForm=action.payload
+        setRemoveMemberForm:(state,action:PayloadAction<boolean>)=>{
+            state.removeMemberForm=action.payload
         },
         setGifForm:(state,action:PayloadAction<boolean>)=>{
             state.gifForm=action.payload
@@ -55,7 +55,7 @@ export const selectAddMemberForm = (state:RootState)=>state.uiSlice.addMemberFor
 export const selectAddFriendForm = (state:RootState)=>state.uiSlice.addFriendForm
 export const selectFriendRequestForm = (state:RootState)=>state.uiSlice.friendRequestForm
 export const selectProfileForm = (state:RootState)=>state.uiSlice.profileForm
-export const selectMemberForm = (state:RootState)=>state.uiSlice.memberForm
+export const selectRemoveMemberForm = (state:RootState)=>state.uiSlice.removeMemberForm
 export const selectGifForm = (state:RootState)=>state.uiSlice.gifForm
 export const selectisDarkMode = (state:RootState)=>state.uiSlice.isDarkMode
 
@@ -67,7 +67,7 @@ export const {
     setAddFriendForm,
     setFriendRequestForm,
     setProfileForm,
-    setMemberForm,
+    setRemoveMemberForm,
     setGifForm,
     setDarkMode,
 } = uiSlice.actions

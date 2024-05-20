@@ -13,7 +13,7 @@ const chatSlice = createSlice({
         updateSelectedChatId:(state,action:PayloadAction<IChatIntitalState['selectedChatId']>)=>{
             state.selectedChatId=action.payload
         },
-        updateSelectedChatDetails:(state,action:PayloadAction<IChatWithUnreadMessages>)=>{
+        updateSelectedChatDetails:(state,action:PayloadAction<IChatWithUnreadMessages | null>)=>{
             state.selectedChatDetails=action.payload
         },
         updateSeenByList:(state,action:PayloadAction<IChatMember>)=>{
@@ -39,6 +39,14 @@ const chatSlice = createSlice({
             if(state.selectedChatDetails && state.selectedChatDetails.members.length){
                 state.selectedChatDetails.members.push(...action.payload)
             }
+        },
+        removeSelectedChatMembers:(state,action:PayloadAction<Array<string>>)=>{
+
+                        
+            if(state.selectedChatDetails && state.selectedChatDetails.members.length){
+                state.selectedChatDetails.members = state.selectedChatDetails.members.filter(member=>!action.payload.includes(member._id))
+            }
+
         }
 
     },
@@ -57,6 +65,7 @@ export const {
     updateUserTyping,
     removeUserTyping,
     updateSelectedChatMembers,
+    removeSelectedChatMembers
 } = chatSlice.actions
 
 export default chatSlice

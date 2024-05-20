@@ -14,7 +14,9 @@ export const useUpdateChatSelection = () => {
 
         const chatDetails = chats?.find(chat=>chat._id===chatId)
 
-        if(chatDetails) dispatch(updateSelectedChatDetails(chatDetails))
+        if(chatDetails) {
+            dispatch(updateSelectedChatDetails(chatDetails))
+        }
 
     }
 

@@ -317,7 +317,9 @@ const addMemberToChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Res
     const newMemberIdsSet = new Set(members);
     const oldMembers = isExistingChat.members.filter(member => !newMemberIdsSet.has(member.toString()));
 
-    emitEvent(req,Events.NEW_MEMBER_ADDED,oldMembers.map(member=>member._id.toString()),{
+    const oldMemberIds = oldMembers.map(member=>member._id.toString())
+
+    emitEvent(req,Events.NEW_MEMBER_ADDED,oldMemberIds,{
       chatId:isExistingChat._id,
       members:validMembers
     })

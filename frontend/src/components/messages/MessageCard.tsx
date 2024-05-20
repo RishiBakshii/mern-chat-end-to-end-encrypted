@@ -1,9 +1,9 @@
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import type { IMessage } from "../../interfaces/messages";
 import { ContextMenu } from "../shared/ContextMenu";
-import { EditMessageForm } from "./EditMessageForm";
-import { AttachmentList } from "./AttachmentList";
 import { Gif } from "../ui/Gif";
+import { AttachmentList } from "./AttachmentList";
+import { EditMessageForm } from "./EditMessageForm";
 import { Message } from "./Message";
 
 type PropTypes = {
@@ -26,8 +26,18 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessag
         }
     ]
 
+    const handleContextMenuClick = (e:React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
+        
+        e.preventDefault()
+        e.stopPropagation()
+        
+        if(myMessage){
+            onContextMenuOpen(e,message._id)
+        }
+    }
+
   return (
-    <div className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative`} onContextMenu={e=>onContextMenuOpen(e,message._id)}>
+    <div className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative`} onContextMenu={e=>handleContextMenuClick(e)}>
 
         {
             isContextMenuOpen &&

@@ -34,6 +34,7 @@ import { useMessageEditListener } from "../hooks/useEventListeners/useMessageEdi
 import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
 import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
 import { useMemberRemovedListener } from "../hooks/useEventListeners/useMemberRemovedListener"
+import { useMessageSeenListener } from "../hooks/useEventListeners/useMessageSeenListener"
 
 export const ChatPage = () => {
 
@@ -57,7 +58,7 @@ export const ChatPage = () => {
    // listeners
    useFriendRequestListener()
    useMessageListener()
-//    useMessageSeenListener()
+   useMessageSeenListener()
    useNewGroupListener()
    useUnreadMessageListener()
    useOfflineListener()

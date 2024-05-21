@@ -43,7 +43,10 @@ export const LoginForm = () => {
                 <SubmitButton btnText="Login"/>
             </div>
             
-            <AuthRedirectLink pageName="Signup" text="Already a member?" to="auth/signup"/>
+            <div className="flex justify-between items-center">
+                <AuthRedirectLink pageName="Signup" text="Already a member?" to="auth/signup"/>
+                <AuthRedirectLink pageName="forgot password" text="Need Help?" to="auth/forgot-password"/>
+            </div>
         
         </div>
     </form>

@@ -8,4 +8,5 @@ export interface IUi {
     profileForm:boolean
     removeMemberForm:boolean
     gifForm:boolean
+    attachments:Array<string>
 }

@@ -12,7 +12,8 @@ const initialState:IUi = {
     friendRequestForm:false,
     profileForm:false,
     removeMemberForm:false,
-    gifForm:false
+    gifForm:false,
+    attachments:[]
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -44,6 +45,12 @@ const uiSlice = createSlice({
         },
         setDarkMode:(state,action:PayloadAction<boolean>)=>{
             state.isDarkMode=action.payload
+        },
+        setAttachments:(state,action:PayloadAction<Array<string>>)=>{
+            state.attachments.push(...action.payload)
+        },
+        resetAttachments:(state)=>{
+            state.attachments=[]
         }
     }
 })
@@ -58,6 +65,7 @@ export const selectProfileForm = (state:RootState)=>state.uiSlice.profileForm
 export const selectRemoveMemberForm = (state:RootState)=>state.uiSlice.removeMemberForm
 export const selectGifForm = (state:RootState)=>state.uiSlice.gifForm
 export const selectisDarkMode = (state:RootState)=>state.uiSlice.isDarkMode
+export const selectAttachments = (state:RootState)=>state.uiSlice.attachments
 
 // exporting actions
 export const {
@@ -70,6 +78,8 @@ export const {
     setRemoveMemberForm,
     setGifForm,
     setDarkMode,
+    setAttachments,
+    resetAttachments,
 } = uiSlice.actions
 
 export default uiSlice

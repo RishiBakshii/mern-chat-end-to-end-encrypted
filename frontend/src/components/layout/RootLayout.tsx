@@ -1,15 +1,16 @@
 import { Outlet } from "react-router-dom"
-import { Navbar } from "../navbar/Navbar"
-import { Modal } from "../shared/Modal"
+import { resetAttachments, selectAddFriendForm, selectAddMemberForm, selectAttachments, selectFriendRequestForm, selectGifForm, selectGroupChatForm, selectProfileForm, selectRemoveMemberForm, setAddFriendForm, setAddMemberForm, setFriendRequestForm, setGifForm, setNewgroupChatForm, setProfileForm, setRemoveMemberForm } from "../../services/redux/slices/uiSlice"
+import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 import { GroupChatForm } from "../chat/GroupChatForm"
+import { TenorGifForm } from "../chat/TenorGifForm"
 import { AddFriendForm } from "../friends/AddFriendForm"
 import { FriendRequestForm } from "../friends/FriendRequestForm"
-import { ProfileForm } from "../user/ProfileForm"
-import { selectAddFriendForm, selectAddMemberForm, selectFriendRequestForm, selectGifForm, selectGroupChatForm, selectProfileForm, selectRemoveMemberForm, setAddFriendForm, setAddMemberForm, setFriendRequestForm, setGifForm, setNewgroupChatForm, setProfileForm, setRemoveMemberForm } from "../../services/redux/slices/uiSlice"
-import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
-import { TenorGifForm } from "../chat/TenorGifForm"
 import { AddMemberForm } from "../member/AddMemberForm"
 import { RemoveMemberForm } from "../member/RemoveMemberForm"
+import { Navbar } from "../navbar/Navbar"
+import { Modal } from "../shared/Modal"
+import { AttachmentPreview } from "../ui/AttachmentPreview"
+import { ProfileForm } from "../user/ProfileForm"
 
 export const RootLayout = () => {
 
@@ -51,6 +52,10 @@ export const RootLayout = () => {
       
       <Modal isOpen={useAppSelector(selectGifForm)} onClose={()=>dispatch(setGifForm(false))}>
         <TenorGifForm/>
+      </Modal>
+
+      <Modal isOpen={useAppSelector(selectAttachments).length>0} onClose={()=>dispatch(resetAttachments())}>
+        <AttachmentPreview/>
       </Modal>
     </>
   )

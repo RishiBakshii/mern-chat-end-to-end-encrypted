@@ -4,7 +4,7 @@ type PropTypes = {
     sharedMedia?:Array<string>
 }
 
-export const SharedMedia = ({sharedMedia}:PropTypes) => {
+export const SharedMedia = ({}:PropTypes) => {
 
     const [seeAll,setSeeAll] = useState<boolean>(false)
 

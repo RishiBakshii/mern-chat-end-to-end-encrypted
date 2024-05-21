@@ -14,7 +14,7 @@ export const SeenByList = ({members}:PropTypes) => {
             imgUrl={member.avatar} 
             height={7} 
             width={7} 
-            username={member.username}
+            alt={member.username}
            />
         ))
       }

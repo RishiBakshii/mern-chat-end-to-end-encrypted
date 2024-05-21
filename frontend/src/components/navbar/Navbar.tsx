@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { useLogout } from "../../hooks/useAuth/useLogout"
 import { useOpenAddFriendForm } from "../../hooks/useUI/useOpenAddFriendForm"
 import { useOpenFriendRequestForm } from "../../hooks/useUI/useOpenFriendRequestForm"

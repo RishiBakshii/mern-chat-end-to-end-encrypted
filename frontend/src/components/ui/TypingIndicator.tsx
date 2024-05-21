@@ -2,7 +2,7 @@ import Lottie from "lottie-react"
 import { typingAnimation } from "../../assets"
 
 type PropTypes = {
-  w:number
+  w?:number
 }
 export const TypingIndicator = ({w=28}:PropTypes) => {
 

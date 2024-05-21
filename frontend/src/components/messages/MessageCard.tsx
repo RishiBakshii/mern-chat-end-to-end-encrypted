@@ -31,7 +31,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessag
         e.preventDefault()
         e.stopPropagation()
         
-        if(myMessage){
+        if(myMessage && message.content){
             onContextMenuOpen(e,message._id)
         }
     }

@@ -22,13 +22,20 @@ const forgotPasswordSchema = z.object({
     email:emailValidation
 })
 
+const resetPasswordSchema = z.object({
+    newPassword:passwordValidation,
+    confirmPassword:z.string({required_error:"Confirm password is required"})
+}).refine(({newPassword,confirmPassword})=>newPassword===confirmPassword,{message:"Passwords dosen't match",path:['confirmPassword']})
+
 
 export {
     loginSchema,
     signupSchema,
-    forgotPasswordSchema
+    forgotPasswordSchema,
+    resetPasswordSchema,
 }
 
 export type signupSchemaType = z.infer<typeof signupSchema>
 export type loginSchemaType = z.infer<typeof loginSchema>
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>
+export type resetPasswordSchemaType = z.infer<typeof resetPasswordSchema>

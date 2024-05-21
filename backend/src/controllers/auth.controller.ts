@@ -75,7 +75,7 @@ const forgotPassword = asyncErrorHandler(async(req:Request,res:Response,next:Nex
     const hashedToken = await bcrypt.hash(token,10)
 
     await ResetPassword.create({user:isValidUser._id,hashedToken})
-    const resetUrl = `${config.clientUrl}?token=${token}&user=${isValidUser._id.toString()}`
+    const resetUrl = `${config.clientUrl}/auth/reset-password?token=${token}&user=${isValidUser._id.toString()}`
 
     await sendMail(email,isValidUser.username,"resetPassword",resetUrl,undefined)
 

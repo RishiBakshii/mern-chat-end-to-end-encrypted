@@ -2,7 +2,7 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } 
 import { Protected } from './components/auth/Protected';
 import { RootLayout } from './components/layout/RootLayout';
 import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
-import { ChatPage, ForgotPasswordPage, LoginPage, SignupPage } from './pages';
+import { ChatPage, ForgotPasswordPage, LoginPage, ResetPasswordPage, SignupPage } from './pages';
 import { useCheckAuthQuery } from './services/api/authApi';
 import { useSetTheme } from './hooks/useUtils/useSetTheme';
 import { AuthLayout } from './components/layout/AuthLayout';
@@ -22,6 +22,7 @@ export const App = () => {
         <Route path='signup' element={<SignupPage/>}/>
         <Route path='login' element={<LoginPage/>}/>
         <Route path='forgot-password' element={<ForgotPasswordPage/>}/>
+        <Route path='reset-password' element={<ResetPasswordPage/>}/>
     </Route>
 
     <Route path='/' element={<Protected><RootLayout/></Protected>}>

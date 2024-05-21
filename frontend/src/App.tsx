@@ -2,10 +2,12 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } 
 import { Protected } from './components/auth/Protected';
 import { RootLayout } from './components/layout/RootLayout';
 import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
-import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, ResetPasswordPage, SignupPage } from './pages';
+import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, ResetPasswordPage, SignupPage, VerificationPage } from './pages';
 import { useCheckAuthQuery } from './services/api/authApi';
 import { useSetTheme } from './hooks/useUtils/useSetTheme';
 import { AuthLayout } from './components/layout/AuthLayout';
+import { useAppSelector } from './services/redux/store/hooks';
+import { selectLoggedInUser } from './services/redux/slices/authSlice';
 
 export const App = () => {
 
@@ -14,29 +16,67 @@ export const App = () => {
   useSetTheme()
   
   useUpdateLogin(isSuccess,data)
+  const loggedInUser = useAppSelector(selectLoggedInUser)
 
   const router = createBrowserRouter(createRoutesFromElements(
 
     <>
-    <Route path='/auth' element={<Protected authorized={false}><AuthLayout/></Protected>}>
-        <Route path='signup' element={<SignupPage/>}/>
-        <Route path='login' element={<LoginPage/>}/>
-        <Route path='forgot-password' element={<ForgotPasswordPage/>}/>
-        <Route path='reset-password' element={<ResetPasswordPage/>}/>
-    </Route>
 
-    <Route path='/' element={<Protected><RootLayout/></Protected>}>
+    
+    <Route path='/' element={
+        <Protected 
+          loggedInUser={loggedInUser}>
+          <RootLayout/>
+        </Protected>
+      }
+    >
         <Route index element={<ChatPage/>}/>
     </Route>
 
-    <Route path='*' element={<NotFoundPage/>}/>
+    <Route path='/auth' element={<AuthLayout />}>
+
+      <Route path='signup' element={
+        <Protected loggedInUser={loggedInUser} authorized={false}>
+          <SignupPage />
+        </Protected>
+      } />
+
+      <Route path='login' element={
+        <Protected loggedInUser={loggedInUser} authorized={false}>
+          <LoginPage />
+        </Protected>
+      } />
+
+      <Route path='forgot-password' element={
+        <Protected loggedInUser={loggedInUser} authorized={false}>
+          <ForgotPasswordPage />
+        </Protected>
+      } />
+
+      <Route path='reset-password' element={
+        <Protected loggedInUser={loggedInUser} authorized={false}>
+          <ResetPasswordPage />
+        </Protected>
+      } />
+
+      <Route path='verification' element={
+        <Protected loggedInUser={loggedInUser} authorized={true}>
+          <VerificationPage/>
+        </Protected>
+      } />
+
+    </Route>
+
+
+    {/* Catch-all route for 404 page */}
+    <Route path='*' element={<NotFoundPage />} />
 
     </>
 
   ));
 
   return (
-    isFetching? null:
+    isFetching? <div></div>:
     <RouterProvider router={router}/>
   )
 };

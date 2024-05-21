@@ -27,15 +27,20 @@ const resetPasswordSchema = z.object({
     confirmPassword:z.string({required_error:"Confirm password is required"})
 }).refine(({newPassword,confirmPassword})=>newPassword===confirmPassword,{message:"Passwords dosen't match",path:['confirmPassword']})
 
+const otpVerificationSchema = z.object({
+    otp:z.string({required_error:"Otp is required"}).min(4,{message:"OTP must be a minimum of 4 digits"})
+})
 
 export {
     loginSchema,
     signupSchema,
     forgotPasswordSchema,
     resetPasswordSchema,
+    otpVerificationSchema
 }
 
 export type signupSchemaType = z.infer<typeof signupSchema>
 export type loginSchemaType = z.infer<typeof loginSchema>
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>
 export type resetPasswordSchemaType = z.infer<typeof resetPasswordSchema>
+export type otpVerificationSchemaType = z.infer<typeof otpVerificationSchema>

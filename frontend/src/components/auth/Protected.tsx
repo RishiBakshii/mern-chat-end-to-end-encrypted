@@ -1,29 +1,41 @@
-import { Navigate } from "react-router-dom"
-import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
-import { useAppSelector } from "../../services/redux/store/hooks"
+import { Navigate, useLocation } from "react-router-dom"
+import { IUser } from "../../interfaces/auth"
 
 type propTypes = {
+    loggedInUser:IUser | null
     children:React.ReactNode
     authorized?:boolean
 }
-export const Protected = ({children,authorized=true}:propTypes) => {
+export const Protected = ({loggedInUser,children,authorized=true}:propTypes) => {
 
-    const loggedInUser = useAppSelector(selectLoggedInUser)
-    
+    const location  = useLocation()
+
     if(authorized){
-        if(loggedInUser){
+
+        if(loggedInUser && loggedInUser.verified){
             return children
         }
-        else{
-            return <Navigate to="/auth/login" />
+
+        else if(loggedInUser && !loggedInUser.verified){
+
+            if (location.pathname === "/auth/verification") {
+                return children
+            } 
+            else {
+                return <Navigate to="/auth/verification" />;
+            }
         }
+        
+        return <Navigate to="/auth/login" />
+        
     }
     else if(!authorized){
+
         if(!loggedInUser){
             return children
         }
-        else{
-            return <Navigate to="/" />
-        }
+        
+        return <Navigate to="/" />
+        
     }
 }

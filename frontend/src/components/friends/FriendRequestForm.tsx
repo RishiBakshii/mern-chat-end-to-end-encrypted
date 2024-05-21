@@ -1,6 +1,6 @@
-import { useToast } from "../../hooks/useUI/useToast"
+import { useAcceptOrRejectFriendRequest } from "../../hooks/userRequest/useAcceptOrRejectFriendRequest"
 import { IFriendRequest } from "../../interfaces/request"
-import { useGetUserFriendRequestsQuery, useHandleFriendRequestMutation } from "../../services/api/requestApi"
+import { useGetUserFriendRequestsQuery } from "../../services/api/requestApi"
 import { FriendRequestList } from "./FriendRequestList"
 
 
@@ -8,28 +8,10 @@ export const FriendRequestForm = () => {
 
     const {data:friendRequests} = useGetUserFriendRequestsQuery()
 
-    const [
-      handleFriendRequestTrigger,{
-      error,
-      isError,
-      isLoading,
-      isSuccess,
-      isUninitialized,
-    }] = useHandleFriendRequestMutation()
-
-    useToast({
-      error,
-      isError,
-      isLoading,
-      isSuccess,
-      isUninitialized,
-      successMessage:"Friend request accepted",
-      loaderToast:true,
-      successToast:true
-    })
+    const {handleFriendRequest} = useAcceptOrRejectFriendRequest()
 
     const friendRequestHandler = (requestId:IFriendRequest['_id'],action:"accept" | "reject") =>{
-      handleFriendRequestTrigger({requestId,action})
+      handleFriendRequest({requestId,action})
     }
 
   return (

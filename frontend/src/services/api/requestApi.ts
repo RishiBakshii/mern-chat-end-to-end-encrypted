@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { config } from '../../config/envConfig'
 import { IFriendRequest } from '../../interfaces/request'
+import { setFriendRequestForm } from '../redux/slices/uiSlice'
 
 export const requestApi = createApi({
 
@@ -35,7 +36,16 @@ export const requestApi = createApi({
                   const { data: handledRequestId } = await queryFulfilled
                   dispatch(
                     requestApi.util.updateQueryData('getUserFriendRequests', undefined , (draft) => {
-                      draft.filter(friendRequest=>friendRequest._id!==handledRequestId)
+
+                      const friendRequestIndexToBeRemoved = draft.findIndex(draft=>draft._id===handledRequestId)
+                    
+                      if(draft.length===1){
+                        dispatch(setFriendRequestForm(false))
+                      }
+
+                      if(friendRequestIndexToBeRemoved!==-1){
+                          draft.splice(friendRequestIndexToBeRemoved,1)
+                      }
                     })
                   )
                 } catch(error) {

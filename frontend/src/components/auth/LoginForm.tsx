@@ -43,7 +43,7 @@ export const LoginForm = () => {
                 <SubmitButton btnText="Login"/>
             </div>
             
-            <AuthRedirectLink pageName="Signup" text="Already a member?" to="signup"/>
+            <AuthRedirectLink pageName="Signup" text="Already a member?" to="auth/signup"/>
         
         </div>
     </form>

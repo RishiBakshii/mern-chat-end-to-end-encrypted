@@ -5,6 +5,7 @@ import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
 import { ChatPage, LoginPage, SignupPage } from './pages';
 import { useCheckAuthQuery } from './services/api/authApi';
 import { useSetTheme } from './hooks/useUtils/useSetTheme';
+import { AuthLayout } from './components/layout/AuthLayout';
 
 export const App = () => {
 
@@ -17,11 +18,14 @@ export const App = () => {
   const router = createBrowserRouter(createRoutesFromElements(
 
     <>
+    <Route path='/auth' element={<Protected authorized={false}><AuthLayout/></Protected>}>
+        <Route path='signup' element={<SignupPage/>}/>
+        <Route path='login' element={<LoginPage/>}/>
+    </Route>
+
     <Route path='/' element={<Protected><RootLayout/></Protected>}>
         <Route index element={<ChatPage/>}/>
     </Route>
-    <Route path='/signup' element={<Protected authorized={false}><SignupPage/></Protected>}/>
-    <Route path='/login' element={<Protected authorized={false}><LoginPage/></Protected>}/>
     </>
 
   ));

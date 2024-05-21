@@ -15,7 +15,7 @@ export const Protected = ({children,authorized=true}:propTypes) => {
             return children
         }
         else{
-            return <Navigate to="/login" />
+            return <Navigate to="/auth/login" />
         }
     }
     else if(!authorized){

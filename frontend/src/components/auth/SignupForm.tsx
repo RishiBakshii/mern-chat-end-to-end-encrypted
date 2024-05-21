@@ -58,7 +58,7 @@ export const SignupForm = () => {
                 <p className="text-gray-400 font-light">By creating this account, you agree that you have read and accepted our Terms of Use and Privacy Policy.</p>
             </div>
             
-            <AuthRedirectLink pageName="Login" text="Already a member?" to="login"/>
+            <AuthRedirectLink pageName="Login" text="Already a member?" to="auth/login"/>
         
         </div>
     </form>

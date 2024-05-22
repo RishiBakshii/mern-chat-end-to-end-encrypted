@@ -14,8 +14,8 @@ const signupSchema = z.object({
 }).refine(({password,confirmPassword})=>password===confirmPassword,{message:"Passwords doesn't match",path:['confirmPassword']})
 
 const loginSchema = z.object({
-    email:z.string({required_error:"Email is required"}),
-    password:z.string({required_error:"Password is required"})
+    email:z.string({required_error:"Email is required"}).email({message:"Please enter a valid email"}),
+    password:z.string().min(8,'Password cannot be shorter than 8 characters').max(40,'Password cannot be longer than 30 characters')
 })
 
 const forgotPasswordSchema = z.object({

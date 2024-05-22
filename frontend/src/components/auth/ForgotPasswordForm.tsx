@@ -9,7 +9,7 @@ export const ForgotPasswordForm = () => {
 
     const { register, handleSubmit,formState: { errors } ,setValue} = useForm<forgotPasswordSchemaType>({resolver:zodResolver(forgotPasswordSchema)})
 
-    const {forgotPassword,isLoading} = useForgotPassword()
+    const {forgotPassword} = useForgotPassword()
 
     const onSubmit: SubmitHandler<forgotPasswordSchemaType> = ({email})=>{
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Chat Page -->
+  <url>
+    <loc>https://baatchit.online/</loc>
+    <lastmod>2024-05-25</lastmod>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Authentication Pages -->
+  <url>
+    <loc>https://baatchit.online/auth/signup</loc>
+    <lastmod>2024-05-25</lastmod>
+  </url>
+
+  <url>
+    <loc>https://baatchit.online/auth/login</loc>
+    <lastmod>2024-05-25</lastmod>
+  </url>
+  <url>
+    <loc>https://baatchit.online/auth/forgot-password</loc>
+    <lastmod>2024-05-25</lastmod>
+  </url>
+  <url>
+    <loc>https://baatchit.online/auth/verification</loc>
+    <lastmod>2024-05-25</lastmod>
+  </url>
+
+</urlset>

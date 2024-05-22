@@ -1,15 +1,21 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ResetPasswordForm } from "../components/auth/ResetPasswordForm"
+import { useEffect } from "react";
 
 export const ResetPasswordPage = () => {
 
+    const navigate = useNavigate()
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get('token');
     const user = queryParams.get('user');
 
-    console.log(token);
-    console.log(user);
+    useEffect(()=>{
+        if(!token || !user){
+            navigate("/auth/login")
+        }
+    },[token,user])
+
   return (
 
     <div className="flex flex-col  gap-y-6">

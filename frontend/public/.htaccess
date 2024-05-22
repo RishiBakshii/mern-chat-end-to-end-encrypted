@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*/)?(favicon\.ico|robots\.txt|manifest\.json|apple-touch-icon\.png|[^.]+\.(css|js|jpg|png|gif|svg))$ - [L]
+RewriteRule . /index.html [L]

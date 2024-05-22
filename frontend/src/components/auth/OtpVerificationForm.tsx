@@ -23,7 +23,7 @@ export const OtpVerificationForm = () => {
             register={{...register("otp")}}
             error={errors.otp?.message}
             maxLength={4}
-            placeholder="OTP"
+            placeholder="Enter your OTP"
             />
 
         </div>

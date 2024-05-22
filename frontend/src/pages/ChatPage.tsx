@@ -35,6 +35,7 @@ import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
 import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
 import { useMemberRemovedListener } from "../hooks/useEventListeners/useMemberRemovedListener"
 import { useMessageSeenListener } from "../hooks/useEventListeners/useMessageSeenListener"
+import { Helmet } from "react-helmet-async"
 
 export const ChatPage = () => {
 
@@ -79,6 +80,13 @@ export const ChatPage = () => {
 
 
   return (
+    <>
+    <Helmet>
+        <title>Chat - Baatchit</title>
+        <meta name="description" content="Real-time messaging, group chats, file sharing, GIFs, and typing indicators. Stay connected with friends, see who's online, and enjoy seamless communication!" />
+        <link rel="canonical" href={`${window.location.origin}`} />
+    </Helmet>
+    
     <div className="h-full w-full flex p-6 gap-x-6 bg-background">
 
             <div className="flex-[.5]">
@@ -152,5 +160,6 @@ export const ChatPage = () => {
                 }
             </div>
     </div>
+    </>
   )
 }

@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { ResetPasswordForm } from "../components/auth/ResetPasswordForm"
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 
 export const ResetPasswordPage = () => {
 
@@ -17,6 +18,12 @@ export const ResetPasswordPage = () => {
     },[token,user])
 
   return (
+    <>
+     <Helmet>
+        <title>Reset Password - Baatchit</title>
+        <meta name="description" content="Reset your password to regain access to your Baatchit account. Enter your new password to continue enjoying seamless communication." />
+        <link rel="canonical" href={`${window.location.origin}/auth/reset-password?token=${token}&user=${user}`} />
+    </Helmet>
 
     <div className="flex flex-col  gap-y-6">
 
@@ -36,5 +43,6 @@ export const ResetPasswordPage = () => {
         </div>
 
     </div>
+    </>
   )
 }

@@ -1,7 +1,14 @@
+import { Helmet } from "react-helmet-async"
 import { NavLink } from "react-router-dom"
 
 export const NotFoundPage = () => {
   return (
+    <>
+    <Helmet>
+        <title>Page Not Found - Baatchit</title>
+        <meta name="description" content="Oops! The page you're looking for doesn't exist. Return to Baatchit for real-time messaging and seamless communication." />
+        <link rel="canonical" href={`${window.location.origin}${location.pathname}`} />
+    </Helmet>
     <div className="bg-background w-screen h-screen p-4 flex justify-center">
 
         <div className="h-fit justify-center flex mt-36 flex-col gap-y-10 rounded-sm items-center">
@@ -16,5 +23,6 @@ export const NotFoundPage = () => {
         </div>
 
     </div>
+    </>
   )
 }

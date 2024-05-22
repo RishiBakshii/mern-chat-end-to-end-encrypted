@@ -11,12 +11,12 @@ export const AppBranding = () => {
 
             <div className="flex flex-col gap-y-1">
                 <div className="flex items-center gap-x-4">
-                    <h2 className="text-7xl font-bold">Baatchit</h2>
+                    <h1 className="text-7xl font-bold">Baatchit</h1>
                     <div className="w-20 h-20">
                         <Lottie loop={false} animationData={chatAnimation}/>
                     </div>
                 </div>
-                <h4 className="text-2xl font-semibold">Discover your next conversation</h4>
+                <h2 className="text-2xl font-semibold">Discover your next conversation</h2>
             </div>
 
             <p className="text-white-500 text-lg">Join our vibrant community of more than 1lakh+ people and build connections that last forever</p>

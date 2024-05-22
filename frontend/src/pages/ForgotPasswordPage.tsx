@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async"
 import { AuthRedirectLink } from "../components/auth/AuthRedirectLink"
 import { ForgotPasswordForm } from "../components/auth/ForgotPasswordForm"
+import { PreReleaseHeader } from "../components/shared/PreReleaseHeader"
 
 
 export const ForgotPasswordPage = () => {
@@ -13,11 +14,11 @@ export const ForgotPasswordPage = () => {
     </Helmet>
 
     <div className="flex flex-col gap-y-6">
-
-        <div className="flex flex-col gap-y-3">
+        <PreReleaseHeader/>
+        {/* <div className="flex flex-col gap-y-3">
             <h3 className="text-4xl text-fluid-h3 font-bold">Let us help you</h3>
             <p className="text-lg text-fluid-p">You'll receive a password reset link if your email is registered with us</p>
-        </div>
+        </div> */}
 
         <div>
             <ForgotPasswordForm/>

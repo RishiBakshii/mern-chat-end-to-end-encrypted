@@ -43,17 +43,17 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessag
             isContextMenuOpen &&
             <ContextMenu options={contextOptions}/>
         }
-
+ 
         {
             !myMessage && 
             <img 
-              className="aspect-square object-cover w-12 self-start rounded-full" 
+              className="aspect-square object-cover w-12 self-end rounded-full max-lg:w-10 max-sm:w-8" 
               src={message.sender.avatar} 
               alt={`${message.sender.username}`} 
             />
         }
         
-        <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} max-w-96 min-w-16 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
+        <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} max-w-96 min-w-10 max-md:max-w-80 max-sm:max-w-64 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
             
             {
                 isGroupChat && !myMessage &&

@@ -16,7 +16,7 @@ export const Message = ({content,isEdited}:PropTypes) => {
 
   return (
     <>
-    <p className="break-words">
+    <span className="break-words">
         {
             readMore?content:content.substring(0,400)
         }
@@ -28,7 +28,7 @@ export const Message = ({content,isEdited}:PropTypes) => {
                 }...
             </span>
         }
-    </p>
+    </span>
     {
         isEdited && 
         <p className="text-secondary self-end font-medium text-sm">Edited</p>

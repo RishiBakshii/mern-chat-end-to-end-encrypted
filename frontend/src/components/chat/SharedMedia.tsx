@@ -21,31 +21,12 @@ export const SharedMedia = ({}:PropTypes) => {
             <button onClick={toggleSeeALL}>{seeAll?"See less":"See all"}</button>
         </div>
 
-        <div className="flex items-center flex-wrap gap-3 justify-center h-96 overflow-y-scroll scroll-smooth">
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/userupload/10173826/file/original-42da690103715dc7008f252a546a62a2.jpg?resize=1660x1261" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/1560823/screenshots/20027650/media/3628198b090695fff4cf4b5e1fba50b5.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/6015481/screenshots/17010524/media/0fe7e273cafb9aaebd7cb8e303632e78.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/2073941/screenshots/18972654/media/7be66ee9656b924727f7885cf073f38b.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/userupload/10173826/file/original-42da690103715dc7008f252a546a62a2.jpg?resize=1660x1261" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/1560823/screenshots/20027650/media/3628198b090695fff4cf4b5e1fba50b5.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/6015481/screenshots/17010524/media/0fe7e273cafb9aaebd7cb8e303632e78.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/2073941/screenshots/18972654/media/7be66ee9656b924727f7885cf073f38b.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/userupload/10173826/file/original-42da690103715dc7008f252a546a62a2.jpg?resize=1660x1261" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/1560823/screenshots/20027650/media/3628198b090695fff4cf4b5e1fba50b5.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/6015481/screenshots/17010524/media/0fe7e273cafb9aaebd7cb8e303632e78.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/2073941/screenshots/18972654/media/7be66ee9656b924727f7885cf073f38b.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/userupload/10173826/file/original-42da690103715dc7008f252a546a62a2.jpg?resize=1660x1261" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/1560823/screenshots/20027650/media/3628198b090695fff4cf4b5e1fba50b5.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/6015481/screenshots/17010524/media/0fe7e273cafb9aaebd7cb8e303632e78.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/2073941/screenshots/18972654/media/7be66ee9656b924727f7885cf073f38b.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/userupload/10173826/file/original-42da690103715dc7008f252a546a62a2.jpg?resize=1660x1261" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/1560823/screenshots/20027650/media/3628198b090695fff4cf4b5e1fba50b5.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/6015481/screenshots/17010524/media/0fe7e273cafb9aaebd7cb8e303632e78.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/2073941/screenshots/18972654/media/7be66ee9656b924727f7885cf073f38b.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/userupload/10173826/file/original-42da690103715dc7008f252a546a62a2.jpg?resize=1660x1261" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/1560823/screenshots/20027650/media/3628198b090695fff4cf4b5e1fba50b5.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/6015481/screenshots/17010524/media/0fe7e273cafb9aaebd7cb8e303632e78.png?resize=450x338&vertical=center" alt="" />
-            <img className="aspect-video object-cover h-16" src="https://cdn.dribbble.com/users/2073941/screenshots/18972654/media/7be66ee9656b924727f7885cf073f38b.png?resize=450x338&vertical=center" alt="" />
+        <div className="grid grid-cols-2 gap-4 place-items-center h-[30rem] overflow-y-scroll">
+            {
+                new Array(40).fill(0).map((_,index)=>(
+                    <img className="w-40 h-40 object-cover" src={`https://source.unsplash.com/random/?wild&${index}`} alt={`${index}`} />
+                ))
+            }
         </div>
 
     </div>

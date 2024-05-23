@@ -9,4 +9,6 @@ export interface IUi {
     removeMemberForm:boolean
     gifForm:boolean
     attachments:Array<string>
+    chatBar:boolean
+    chatDetailsBar:boolean
 }

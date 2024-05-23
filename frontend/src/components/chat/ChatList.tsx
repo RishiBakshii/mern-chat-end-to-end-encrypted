@@ -1,30 +1,31 @@
 import { memo } from "react"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { ChatCard } from "./ChatCard"
-import { useGetChatName } from "../../hooks/useUtils/useGetChatName"
-import { useGetChatAvatar } from "../../hooks/useUtils/useGetChatAvatar"
 
 type PropTypes = {
   chats:Array<IChatWithUnreadMessages>
   loggedInUserId:string
   updateSelectedChatId:(chatId: string) => void
+  toggleChatBar:()=>void
+  getChatName: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
+  getChatAvatar: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
 }
-export const ChatList = memo(({chats,loggedInUserId,updateSelectedChatId}:PropTypes) => {
+export const ChatList = memo(({chats,loggedInUserId,updateSelectedChatId,toggleChatBar,getChatAvatar,getChatName}:PropTypes) => {
 
   return (
     <>
-    <div className="flex flex-col gap-y-4 overflow-y-scroll scroll-smooth px-2">
+    <div className="flex flex-col gap-y-4">
         {
           chats.map(chat=>(
 
             <ChatCard
               isTyping={chat.userTyping.length>0}
               chatId={chat._id}
-              chatName={useGetChatName(chat,loggedInUserId)!}
-              avatar={useGetChatAvatar(chat,loggedInUserId)!}
-              unreadMessageCount={chat.unreadMessages.count}
-              latestUnreadMessage={chat.unreadMessages?.message?.content}
+              chatName={getChatName(chat,loggedInUserId)!}
+              avatar={getChatAvatar(chat,loggedInUserId)!}
+              unreadMessage={chat.unreadMessages}
               updateSelectedChatId={updateSelectedChatId}
+              toggleChatBar={toggleChatBar}
             />
 
           ))

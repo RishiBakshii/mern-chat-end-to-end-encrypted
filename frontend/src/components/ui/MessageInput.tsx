@@ -48,7 +48,7 @@ export const MessageInput = ({ messageVal, setMessageVal, toggleGif, handleFileC
 
       <input
         value={messageVal}
-        onChange={(e) => setMessageVal(e.target.value)}
+        onChange={(e) => {setMessageVal(e.target.value)}}
         className="px-3 py-5 outline-none bg-secondary rounded-sm w-full"
         type="text"
         placeholder="Your message"

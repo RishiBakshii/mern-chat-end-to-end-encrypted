@@ -13,7 +13,9 @@ const initialState:IUi = {
     profileForm:false,
     removeMemberForm:false,
     gifForm:false,
-    attachments:[]
+    attachments:[],
+    chatBar:true,
+    chatDetailsBar:false
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -51,7 +53,13 @@ const uiSlice = createSlice({
         },
         resetAttachments:(state)=>{
             state.attachments=[]
-        }
+        },
+        setChatBar:(state,action:PayloadAction<boolean>)=>{
+            state.chatBar=action.payload
+        },
+        setChatDetailsBar:(state,action:PayloadAction<boolean>)=>{
+            state.chatDetailsBar=action.payload
+        },
     }
 })
 
@@ -66,6 +74,8 @@ export const selectRemoveMemberForm = (state:RootState)=>state.uiSlice.removeMem
 export const selectGifForm = (state:RootState)=>state.uiSlice.gifForm
 export const selectisDarkMode = (state:RootState)=>state.uiSlice.isDarkMode
 export const selectAttachments = (state:RootState)=>state.uiSlice.attachments
+export const selectChatBar = (state:RootState)=>state.uiSlice.chatBar
+export const selectChatDetailsBar = (state:RootState)=>state.uiSlice.chatDetailsBar
 
 // exporting actions
 export const {
@@ -80,6 +90,8 @@ export const {
     setDarkMode,
     setAttachments,
     resetAttachments,
+    setChatBar,
+    setChatDetailsBar,
 } = uiSlice.actions
 
 export default uiSlice

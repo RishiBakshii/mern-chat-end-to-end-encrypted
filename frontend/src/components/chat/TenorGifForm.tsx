@@ -14,6 +14,8 @@ export const TenorGifForm = () => {
     }
 
   return (
-    <GifPicker onGifClick={handleGifClick} theme={isDarkMode?Theme.DARK:Theme.LIGHT} tenorApiKey={env.VITE_TENOR_API_KEY} country="IN" width={'35rem'} height={'35rem'} categoryHeight={'10rem'}/>
+    <div className='w-[35rem] h-[35rem] max-xl:w-[30rem] max-sm:w-[100%] max-sm:h-[30rem]'>
+      <GifPicker onGifClick={handleGifClick} theme={isDarkMode?Theme.DARK:Theme.LIGHT} tenorApiKey={env.VITE_TENOR_API_KEY} width={'100%'} height={'100%'} country="IN" categoryHeight={'8rem'}/>
+    </div>
   )
 }

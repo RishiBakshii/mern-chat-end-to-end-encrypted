@@ -4,7 +4,7 @@ export const ChatListSkeleton = () => {
     <div className="flex flex-col gap-y-4 overflow-y-scroll scroll-smooth">
 
         {
-          new Array(12).fill(0).map((_,index)=>(
+          new Array(40).fill(0).map((_,index)=>(
 
             <div key={index} className="flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3">
 

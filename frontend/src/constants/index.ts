@@ -1,4 +1,4 @@
-const DEFAULT_AVATAR = "https://res.cloudinary.com/dh5fjdce9/image/upload/v1714856134/defaultAvatar_opz0dl.png"
+const DEFAULT_AVATAR = "https://res.cloudinary.com/dh5fjdce9/image/upload/v1716487648/defaultAvatar_bceofr.png"
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"]
 const ACCEPTED_FILE_MIME_TYPES = ["application/pdf","application/msword",...ACCEPTED_IMAGE_TYPES]
 

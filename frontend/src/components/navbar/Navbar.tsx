@@ -3,12 +3,14 @@ import { useOpenAddFriendForm } from "../../hooks/useUI/useOpenAddFriendForm"
 import { useOpenFriendRequestForm } from "../../hooks/useUI/useOpenFriendRequestForm"
 import { useOpenNewGroupChatForm } from "../../hooks/useUI/useOpenNewGroupChatForm"
 import { useOpenProfileForm } from "../../hooks/useUI/useOpenProfileForm"
+import { useToggleChatBar } from "../../hooks/useUI/useToggleChatBar"
 import { useToggleNavMenu } from "../../hooks/useUI/useToggleNavMenu"
 import { useUpdateTheme } from "../../hooks/useUtils/useUpdateTheme"
 import { useGetUserFriendRequestsQuery } from "../../services/api/requestApi"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
 import { selectNavMenu, selectisDarkMode } from "../../services/redux/slices/uiSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
+import { ChatBarHamburger } from "../chat/ChatBarHamburger"
 import { Avatar } from "../ui/Avatar"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
@@ -28,6 +30,7 @@ export const Navbar = () => {
   const openFriendRequestForm = useOpenFriendRequestForm()
   const openProfileForm = useOpenProfileForm()
   const logoutUser = useLogout()
+  const toggleChatBar = useToggleChatBar()
 
   const loggedInUser = useAppSelector(selectLoggedInUser)
 
@@ -35,6 +38,11 @@ export const Navbar = () => {
 
   return (
     <nav className="flex items-center h-14 justify-around shadow bg-background text-text">
+
+      <ChatBarHamburger
+        toggleChatBar={toggleChatBar}
+      />
+
 
       <h4 className="text-3xl font-bold">Baatchit</h4>
 
@@ -68,7 +76,7 @@ export const Navbar = () => {
               
 
 
-              <div className="relative">
+              <div className="relative ">
 
                   <Avatar
                    cursor="pointer"
@@ -82,7 +90,7 @@ export const Navbar = () => {
                   {
                     isNavMenuOpen && 
 
-                    <div className="bg-secondary  w-[15rem] absolute rounded-lg  shadow-2xl p-4 z-50">
+                    <div className="bg-secondary-dark w-[15rem] max-lg:md:right-28 max-md:right-1 self-end fixed rounded-lg shadow-2xl p-4 z-50">
 
                       <NavMenu 
                        openProfileForm={openProfileForm}

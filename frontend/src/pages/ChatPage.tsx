@@ -1,26 +1,32 @@
 import { useRef } from "react"
+import { Helmet } from "react-helmet-async"
 import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
-import { ChatList } from "../components/chat/ChatList"
+import { ChatListWithSearch } from "../components/chat/ChatListWithSearch"
 import { MessageForm } from "../components/chat/MessageForm"
 import { SeenByList } from "../components/chat/SeenByList"
 import { TypingIndicatorWithUserList } from "../components/chat/TypingIndicatorWithUserList"
 import { MessageList } from "../components/messages/MessageList"
-import { SearchInput } from "../components/ui/SearchInput"
-import { ChatListSkeleton } from "../components/ui/skeleton/ChatListSkeleton"
-import { SearchInputSkeleton } from "../components/ui/skeleton/SearchInputSkeleton"
+import { ChatListWithSearchSkeleton } from "../components/ui/skeleton/ChatListWithSearchSkeleton"
 import { useFetchChats } from "../hooks/useChat/useFetchChats"
 import { useUpdateChatSelection } from "../hooks/useChat/useUpdateChatSelection"
 import { useUpdateUnreadChatAsSeen } from "../hooks/useChat/useUpdateUnreadChatAsSeen"
+import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
 import { useFriendRequestListener } from "../hooks/useEventListeners/useFriendRequestListener"
+import { useMemberRemovedListener } from "../hooks/useEventListeners/useMemberRemovedListener"
+import { useMessageEditListener } from "../hooks/useEventListeners/useMessageEditListener"
 import { useMessageListener } from "../hooks/useEventListeners/useMessageListener"
+import { useMessageSeenListener } from "../hooks/useEventListeners/useMessageSeenListener"
 import { useNewGroupListener } from "../hooks/useEventListeners/useNewGroupListener"
+import { useNewMemberAddedListener } from "../hooks/useEventListeners/useNewMemberAddedListener"
 import { useOfflineListener } from "../hooks/useEventListeners/useOfflineListener"
 import { useOnlineListener } from "../hooks/useEventListeners/useOnlineListener"
 import { useTypingListener } from "../hooks/useEventListeners/useTypingListener"
 import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMessageListener"
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
 import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
+import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
+import { useToggleChatBar } from "../hooks/useUI/useToggleChatBar"
 import { useToggleGif } from "../hooks/useUI/useToggleGif"
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
@@ -28,14 +34,9 @@ import { useScrollToBottom } from "../hooks/useUtils/useScrollToBottom"
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
+import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
-import { useNewMemberAddedListener } from "../hooks/useEventListeners/useNewMemberAddedListener"
-import { useMessageEditListener } from "../hooks/useEventListeners/useMessageEditListener"
-import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
-import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
-import { useMemberRemovedListener } from "../hooks/useEventListeners/useMemberRemovedListener"
-import { useMessageSeenListener } from "../hooks/useEventListeners/useMessageSeenListener"
-import { Helmet } from "react-helmet-async"
+import { useToggleChatDetailsBar } from "../hooks/useUI/useToggleChatDetailsBar"
 
 export const ChatPage = () => {
 
@@ -45,6 +46,8 @@ export const ChatPage = () => {
    useFetchFriendRequest()
    
    const loggedInUser = useAppSelector(selectLoggedInUser)
+   const chatBar = useAppSelector(selectChatBar)
+   const chatDetailsBar = useAppSelector(selectChatDetailsBar)
    const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
    const messageContainerRef = useRef<HTMLDivElement>(null)
    
@@ -53,6 +56,8 @@ export const ChatPage = () => {
 
    
    const updateSelectedChatId = useUpdateChatSelection()
+   const toggleChatBar = useToggleChatBar()
+   const toggleChatDetailsBar = useToggleChatDetailsBar()
    
    useScrollToBottom(messageContainerRef,[messages,selectedChatDetails],0)
    
@@ -75,8 +80,11 @@ export const ChatPage = () => {
    const toggleGif = useToggleGif()
    const openRemoveMemberForm = useOpenRemoveMemberForm()
 
-   const chatName = useGetChatName(selectedChatDetails,loggedInUser?._id)
-   const chatAvatar= useGetChatAvatar(selectedChatDetails,loggedInUser?._id)
+   const getChatName=useGetChatName()
+   const getChatAvatar = useGetChatAvatar()
+   
+   const chatName = getChatName(selectedChatDetails,loggedInUser?._id)
+   const chatAvatar= getChatAvatar(selectedChatDetails,loggedInUser?._id)
 
 
   return (
@@ -87,29 +95,25 @@ export const ChatPage = () => {
         <link rel="canonical" href={`${window.location.origin}`} />
     </Helmet>
     
-    <div className="h-full w-full flex p-6 gap-x-6 bg-background">
+    <div className="h-full w-full flex p-4 gap-x-6 bg-background">
 
-            <div className="flex-[.5]">
+            <div className={`flex-[.5] p-2 min-w-[15rem] bg-background max-md:fixed ${chatBar?"max-sm:right-0 left-0":"-left-72"} overflow-y-scroll  h-full z-10`}>
+                
                 {
-                    <div className="flex flex-col gap-y-5">
-                        {
-                            !isChatsFetching && chats && loggedInUser ?
-                            <>
-                                <SearchInput/>
-                                <ChatList 
-                                  chats={chats} 
-                                  updateSelectedChatId={updateSelectedChatId}
-                                  loggedInUserId={loggedInUser._id}
-                                />
-                            </>
-                            :
-                            <>
-                                <SearchInputSkeleton/>
-                                <ChatListSkeleton/>
-                            </>
-                        }
-                    </div>
+                    !isChatsFetching && chats && loggedInUser ?
+
+                    <ChatListWithSearch
+                        chats={chats}
+                        loggedInUserId={loggedInUser._id}
+                        toggleChatBar={toggleChatBar}
+                        updateSelectedChatId={updateSelectedChatId}
+                        getChatAvatar={getChatAvatar}
+                        getChatName={getChatName}
+                    />
+                    :
+                    <ChatListWithSearchSkeleton/>
                 }
+                
             </div>
 
             <div className="flex-[1.6]">
@@ -122,11 +126,12 @@ export const ChatPage = () => {
                         <ChatHeader
                             isGroupChat={selectedChatDetails.isGroupChat}
                             chatName={chatName}
-                            openRemoveMemberForm={openRemoveMemberForm}
                             totalMembers={selectedChatDetails.members.length}
+                            openRemoveMemberForm={openRemoveMemberForm}
+                            toggleChatDetailsBar={toggleChatDetailsBar}
                         />
 
-                        <div ref={messageContainerRef}  className="h-full flex px-2 flex-col gap-y-4 overflow-y-scroll">
+                        <div ref={messageContainerRef}  className="h-full flex flex-col gap-y-4 max-xl:gap-y-2 overflow-y-scroll">
 
                             <MessageList
                                 isGroupChat={selectedChatDetails.isGroupChat} 
@@ -136,7 +141,10 @@ export const ChatPage = () => {
                             
                             <SeenByList members={selectedChatDetails.seenBy}/>
 
-                            <TypingIndicatorWithUserList users={selectedChatDetails.userTyping}/>
+                            <TypingIndicatorWithUserList 
+                             isGroupChat={selectedChatDetails.isGroupChat}
+                             users={selectedChatDetails.userTyping}
+                            />
 
                         </div>
 
@@ -146,7 +154,7 @@ export const ChatPage = () => {
                 }
             </div>
 
-            <div className="flex-[.6]">
+            <div className={`flex-[.6] bg-background max-sm:w-full max-2xl:fixed ${!chatDetailsBar?"max-2xl:-right-[32rem]":""} ${chatDetailsBar?"max-2xl:right-0":""}  max-2xl:px-4 max-2xl:w-[25rem]`}>
                 {
                     !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar &&
 
@@ -156,6 +164,7 @@ export const ChatPage = () => {
                       chatName={chatName}
                       chatAvatar={chatAvatar}
                       members={selectedChatDetails.members}
+                      toggleChatDetailsBar={toggleChatDetailsBar}
                     />
                 }
             </div>

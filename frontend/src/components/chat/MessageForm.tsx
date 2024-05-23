@@ -43,7 +43,10 @@ export const MessageForm = ({toggleGif}:PropTypes) => {
         e.stopPropagation()
         e.preventDefault()
         setMessageVal('')
-        sendMessage(messageVal,undefined)
+
+        if(messageVal.trim().length){
+          sendMessage(messageVal,undefined)
+        }
     }
 
     const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>)=>{

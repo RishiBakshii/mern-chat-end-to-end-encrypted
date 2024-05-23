@@ -32,7 +32,7 @@ export const RemoveMemberForm = () => {
             removeMember({chatId:selectedChatDetails?._id,memberIds:selectedMembers})
         }
 
-        dispatch(setRemoveMemberForm(false))
+        // dispatch(setRemoveMemberForm(false))
 
     }
 

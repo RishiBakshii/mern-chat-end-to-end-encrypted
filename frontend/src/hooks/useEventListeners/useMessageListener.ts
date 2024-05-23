@@ -11,7 +11,7 @@ export const useMessageListener = () => {
     const dispatch = useAppDispatch()
 
     useSocketEvent(Events.MESSAGE,(newMessage:IMessage)=>{
-        if(selectedChatId){
+        if(selectedChatId && newMessage.chat===selectedChatId){
           dispatch(
             messageApi.util.updateQueryData('getMessagesByChatId',selectedChatId,(draft)=>{
               draft.push(newMessage)

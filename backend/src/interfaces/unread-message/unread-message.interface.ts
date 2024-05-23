@@ -9,11 +9,13 @@ export interface IUnreadMessage {
     count?:number
 }
 
+
 export interface IUnreadMessageEventPayload {
     chatId:string,
     message?:{
-        _id?:string,
         content?:string
+        url?:boolean
+        attachments?:boolean
     },
     sender:{
         _id:string,

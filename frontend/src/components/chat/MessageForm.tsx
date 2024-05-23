@@ -124,7 +124,7 @@ export const MessageForm = ({toggleGif}:PropTypes) => {
 
             </div>
 
-            <button type="button" onClick={handleUploadAttachments} className="px-4 py-2 bg-primary text-white rounded-sm shadow-xl">Send</button>
+            <button type="button" onClick={handleUploadAttachments} className="px-4 py-2 bg-primary text-white rounded-sm shadow-xl">Send attachments</button>
 
 
           </div>

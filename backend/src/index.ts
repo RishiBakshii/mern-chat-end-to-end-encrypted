@@ -116,19 +116,26 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
         await Promise.all(updateOrCreateUnreadMessagePromise)
 
+        const messageData:IUnreadMessageEventPayload['message'] = {}
+
+        if(newMessage.url){
+            messageData.url=true
+        }
+
+        if(newMessage.content?.length){
+            messageData.content=newMessage.content.substring(0,25)
+        }
         const unreadMessageData:IUnreadMessageEventPayload = 
         {
             chatId:chat,
-            message:{
-                _id:newMessage._id.toString(),
-                content:newMessage?.content?.substring(0,30)
-            },
+            message:messageData,
             sender:{
                 _id:newMessage.sender._id,
                 avatar:newMessage.sender.avatar.secureUrl,
                 username:newMessage.sender.username
             }
         }
+
 
         io.to(getMemberSockets(memberIds)).emit(Events.UNREAD_MESSAGE,unreadMessageData)
 

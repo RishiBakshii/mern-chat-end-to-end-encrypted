@@ -19,8 +19,9 @@ export interface IMessage {
 export interface IUnreadMessage {
     count:number
     message:{
-        _id:string,
-        content:string
+        content?:string
+        url?:boolean
+        attachments?:boolean
     },
     sender:IChatMember
 }

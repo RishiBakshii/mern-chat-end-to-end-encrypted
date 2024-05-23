@@ -5,10 +5,12 @@ import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { ACCEPTED_FILE_MIME_TYPES } from "../constants/file.constant.js";
 import { Message } from "../models/message.model.js";
 import { uploadAttachmentSchemaType } from "../schemas/message.schema.js";
-import { emitEvent } from "../utils/socket.util.js";
+import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
 import { IMessageEventPayload } from "../interfaces/message/message.interface.js";
 import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
+import { UnreadMessage } from "../models/unread-message.model.js";
+import { IUnreadMessageEventPayload } from "../interfaces/unread-message/unread-message.interface.js";
 
 const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
@@ -66,6 +68,40 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
     }
 
     emitEvent(req,Events.MESSAGE,memberIds,realtimeMessageResponse)
+
+    const otherMembers = getOtherMembers({members:memberIds,user:req.user?._id.toString()!})
+
+    const updateOrCreateUnreadMessagePromise = otherMembers.map(async(memberId)=>{
+
+        const isExistingUnreadMessage = await UnreadMessage.findOne({chat:chatId,user:memberId})
+
+        if(isExistingUnreadMessage){
+            isExistingUnreadMessage.count? isExistingUnreadMessage.count++ : null
+            isExistingUnreadMessage.message = message._id
+            isExistingUnreadMessage.save()
+            return isExistingUnreadMessage
+        }
+
+       return UnreadMessage.create({chat:chatId,user:memberId,sender:req.user?._id,message:message._id})
+
+    })
+
+    await Promise.all(updateOrCreateUnreadMessagePromise)
+
+    const unreadMessageData:IUnreadMessageEventPayload = 
+    {
+        chatId:chatId,
+        message:{
+            attachments:message.attachments?true:false
+        },
+        sender:{
+            _id:message.sender._id,
+            avatar:message.sender.avatar.secureUrl,
+            username:message.sender.username
+        }
+    }
+
+    emitEvent(req,Events.UNREAD_MESSAGE,memberIds,unreadMessageData)
 
     return res.sendStatus(201).json()
 

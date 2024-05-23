@@ -37,12 +37,19 @@ export const ChatCard = ({chatName,avatar,chatId,unreadMessage,isTyping,updateSe
             </div>
 
             <div className="flex justify-between items-center">
-                {
-                  unreadMessage?.message?.content && 
+                
                   <p className="text-sm text-secondary-darker">
-                    {unreadMessage.message.content.substring(0,25)}...
+                    {
+                      unreadMessage?.message?.url ? 
+                      "Sent a gif"
+                      :
+                      unreadMessage?.message?.attachments ? 
+                      "Sent an attachment"
+                      :
+                      unreadMessage?.message?.content ?
+                      `${unreadMessage.message.content}...`:""
+                    }
                   </p>
-                }
                 { 
                   unreadMessage.count > 0 && 
                   <p className="bg-primary flex items-center justify-center text-white rounded-full h-5 w-5 p-2">

@@ -13,9 +13,9 @@ export const useUnreadMessageListener = () => {
 
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
 
-    useSocketEvent(Events.UNREAD_MESSAGE,(data:IUnreadMessageEventReceiveData)=>{
+    useSocketEvent(Events.UNREAD_MESSAGE,({chatId,message,sender}:IUnreadMessageEventReceiveData)=>{
 
-        if(data.chatId === selectedChatDetails?._id){
+        if(chatId === selectedChatDetails?._id){
     
           const payload:IMessageSeenEventPayloadData =  
           {
@@ -29,12 +29,24 @@ export const useUnreadMessageListener = () => {
           dispatch(
             chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
       
-              const chat = draft.find(draft=>draft._id===data.chatId)
+              const chat = draft.find(draft=>draft._id===chatId)
       
               if(chat){
+
+                chat.unreadMessages.message.url=false
+                chat.unreadMessages.message.attachments = false
+
                 chat.unreadMessages.count++
-                chat.unreadMessages.message = data.message
-                chat.unreadMessages.sender = data.sender
+                
+                if(message.content?.length){
+                  chat.unreadMessages.message.content = message.content
+                }
+                else if(message.attachments){
+                  chat.unreadMessages.message.attachments = true
+                }
+                else if(message.url){
+                  chat.unreadMessages.message.url=true
+                }
               }
               
             })

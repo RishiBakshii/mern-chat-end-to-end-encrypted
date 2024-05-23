@@ -17,7 +17,7 @@ export interface IChatWithUnreadMessages {
     isGroupChat:boolean
     members:Array<IChatMember>
     avatar?:string
-    admin:string,
+    admin:string
     unreadMessages:IUnreadMessage
     seenBy:Array<IChatMember>
     userTyping:Array<IChatMember>

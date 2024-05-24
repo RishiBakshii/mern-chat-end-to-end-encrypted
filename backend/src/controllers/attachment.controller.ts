@@ -11,6 +11,12 @@ import { IMessageEventPayload } from "../interfaces/message/message.interface.js
 import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 import { UnreadMessage } from "../models/unread-message.model.js";
 import { IUnreadMessageEventPayload } from "../interfaces/unread-message/unread-message.interface.js";
+import { Types } from "mongoose";
+
+interface IAttachment {
+    _id:string
+    attachments:Array<string>
+}
 
 const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
@@ -107,4 +113,45 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
 
 })
 
-export {uploadAttachment}
+const fetchAttachments = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const {id} = req.params
+    const { page = 1, limit = 6 } = req.query;
+
+    const pipelineResults = await Message.aggregate([
+        {
+           $match:{
+            chat:new Types.ObjectId(id),
+            attachments:{$ne:[]}
+           } 
+        },
+        {
+            $sort:{
+                createdAt:-1
+            }
+        },
+        {
+            $unwind: "$attachments",
+        },
+        {
+            $group:{
+                _id:"$chat",
+                attachments:{$push:"$attachments.secureUrl"}
+            }
+        },
+    ])
+
+    if(!pipelineResults.length){
+        return res.status(200).json({_id:id,attachments:[],totalPages:0})
+    }
+
+    const result = pipelineResults[0] as IAttachment
+    const totalPages =  Math.ceil(result.attachments.length/Number(limit))
+    const totalAttachments = result.attachments.length
+    result.attachments = result.attachments?.slice((Number(page) - 1) * Number(limit),Number(page) * Number(limit));
+    
+    res.status(200).json({...result,totalPages,totalAttachments});
+    
+})
+
+export {uploadAttachment,fetchAttachments}

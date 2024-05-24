@@ -3,6 +3,8 @@ import { Avatar } from "../ui/Avatar"
 import { AddMemberSection } from "./AddMemberSection"
 import { SharedMedia } from "./SharedMedia"
 import { AvatarList } from "../shared/AvatarList"
+import { IAttachment } from "../../interfaces/attachment"
+
 
 type PropTypes = {
     isAdmin:boolean
@@ -10,10 +12,15 @@ type PropTypes = {
     chatAvatar:string
     chatName:string
     members:IChatWithUnreadMessages['members']
+    attachments:IAttachment
+    isAttachmentsFetching:boolean
+    selectedChatId:string
     toggleChatDetailsBar: () => void
+    fetchMoreAttachments: (chatId: string, page: number) => void
 }
 
-export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat,toggleChatDetailsBar}:PropTypes) => {
+export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat,attachments,selectedChatId,toggleChatDetailsBar,fetchMoreAttachments}:PropTypes) => {
+
   return (
     
     <div className="flex flex-col justify-center items-center gap-y-7 text-text relative">
@@ -66,8 +73,13 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat,tog
                 }
 
             </div>
-
-            <SharedMedia/>
+            {
+              <SharedMedia
+                selectedChatId={selectedChatId}
+                attachments={attachments}
+                fetchMoreAttachments={fetchMoreAttachments}
+              />
+            }
 
         </div>
 

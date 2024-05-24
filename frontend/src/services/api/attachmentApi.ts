@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../config/envConfig";
+import { IAttachment } from "../../interfaces/attachment";
 
 export const attachmentApi = createApi({
     reducerPath:"attachmentApi",
@@ -9,6 +10,7 @@ export const attachmentApi = createApi({
     }),
 
     endpoints:(builder)=>({
+
         sendAttachments:builder.mutation<void,{chatId:string,members:Array<string>,attachments:Array<Blob>}>({
 
             
@@ -33,10 +35,15 @@ export const attachmentApi = createApi({
                 }
                 
             }
+        }),
+
+        fetchAttachments:builder.query<IAttachment,{chatId:string,page:number}>({ 
+            query:({chatId,page})=>`/${chatId}?page=${page}`,
         })
     })
 })
 
 export const {
     useSendAttachmentsMutation,
+    useLazyFetchAttachmentsQuery,
 } = attachmentApi

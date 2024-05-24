@@ -27,6 +27,7 @@ import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
 import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
 import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
 import { useToggleChatBar } from "../hooks/useUI/useToggleChatBar"
+import { useToggleChatDetailsBar } from "../hooks/useUI/useToggleChatDetailsBar"
 import { useToggleGif } from "../hooks/useUI/useToggleGif"
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
@@ -36,7 +37,7 @@ import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
-import { useToggleChatDetailsBar } from "../hooks/useUI/useToggleChatDetailsBar"
+import { useFetchAttachments } from "../hooks/useAttachment/useFetchAttachments"
 
 export const ChatPage = () => {
 
@@ -52,9 +53,8 @@ export const ChatPage = () => {
    const messageContainerRef = useRef<HTMLDivElement>(null)
    
    const {isMessagesFetching,messages} = useFetchMessages(selectedChatDetails?._id)
+   const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()
 
-
-   
    const updateSelectedChatId = useUpdateChatSelection()
    const toggleChatBar = useToggleChatBar()
    const toggleChatDetailsBar = useToggleChatDetailsBar()
@@ -86,6 +86,9 @@ export const ChatPage = () => {
    const chatName = getChatName(selectedChatDetails,loggedInUser?._id)
    const chatAvatar= getChatAvatar(selectedChatDetails,loggedInUser?._id)
 
+   const handleFetchMoreAttachments = (chatId:string,page:number)=>{
+        fetchMoreAttachments({chatId,page},true)
+   }
 
   return (
     <>
@@ -156,7 +159,7 @@ export const ChatPage = () => {
 
             <div className={`flex-[.6] bg-background max-sm:w-full max-2xl:fixed ${!chatDetailsBar?"max-2xl:-right-[32rem]":""} ${chatDetailsBar?"max-2xl:right-0":""}  max-2xl:px-4 max-2xl:w-[25rem]`}>
                 {
-                    !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar &&
+                    !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar && sharedMedia &&
 
                     <ChatDetails
                       isAdmin={selectedChatDetails.admin===loggedInUser._id}
@@ -164,7 +167,11 @@ export const ChatPage = () => {
                       chatName={chatName}
                       chatAvatar={chatAvatar}
                       members={selectedChatDetails.members}
+                      attachments={sharedMedia}
+                      isAttachmentsFetching={isAttachmentsFetching}
+                      selectedChatId={selectedChatDetails._id}
                       toggleChatDetailsBar={toggleChatDetailsBar}
+                      fetchMoreAttachments={handleFetchMoreAttachments}
                     />
                 }
             </div>

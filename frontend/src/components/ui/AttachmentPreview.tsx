@@ -21,19 +21,19 @@ export const AttachmentPreview = () => {
     }
 
   return (
-    <div className="flex flex-col justify-center items-center gap-y-10 px-8 py-3">
+    <div className="flex flex-col justify-center items-center py-4 gap-y-10 ">
 
         <div className="flex items-center gap-x-4">
 
-            <button onClick={handlePreviousClick}>
+            <button onClick={handlePreviousClick} className="max-sm:hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                 </svg>
             </button>
 
-            <img className="w-[30rem] h-[30rem] object-contain" src={attachments[currentAttachmentIndex]} alt="image" />
+            <img className="w-[30rem] h-[30rem] max-lg:w-[25rem] max-lg:h-[25rem] max-md:w-[20rem] max-md:h-[20rem] max-sm:w-[] max-sm:h-[] object-contain" src={attachments[currentAttachmentIndex]} alt="image" />
             
-            <button onClick={handleNextClick}>
+            <button onClick={handleNextClick} className="max-sm:hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                 </svg>
@@ -41,7 +41,7 @@ export const AttachmentPreview = () => {
 
         </div>
 
-        <div className="flex items-center w-full justify-center flex-wrap gap-x-2">
+        <div className="flex items-center w-full justify-center flex-wrap gap-y-4 gap-x-2">
             {
                 attachments.map((attachment,index)=>(
                     <img onClick={()=>setcurrentAttachmentIndex(index)} className={`w-20 h-20 object-contain cursor-pointer ${currentAttachmentIndex===index?"outline outline-1 outline-secondary-darker p-1 rounded-sm":null} `} src={attachment} alt="" />

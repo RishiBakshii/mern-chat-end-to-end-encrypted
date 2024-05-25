@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Helmet } from "react-helmet-async"
 import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
@@ -54,7 +54,7 @@ export const ChatPage = () => {
    const messageContainerRef = useRef<HTMLDivElement>(null)
 
    
-   const {isMessagesFetching,messages,fetchMoreMessages,totalMessagePages} = useFetchMessages(selectedChatDetails?._id,1)
+   const {messages,fetchMoreMessages,totalMessagePages} = useFetchMessages(selectedChatDetails?._id,1)
    
    const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()
    
@@ -64,6 +64,7 @@ export const ChatPage = () => {
    
    useScrollToBottom(messageContainerRef,[selectedChatDetails,messages],0)
    
+
    // listeners
    useFriendRequestListener()
    useMessageListener()
@@ -97,7 +98,7 @@ export const ChatPage = () => {
    }
 
    const handleFetchMoreMessages = (_id:string,page:number)=>{
-        fetchMoreMessages({_id,page},true)
+        fetchMoreMessages({_id,page})
    }
 
   return (
@@ -117,6 +118,7 @@ export const ChatPage = () => {
 
                         <ChatListWithSearch
                             chats={chats}
+                            selectedChatId={selectedChatDetails?._id}
                             loggedInUserId={loggedInUser._id}
                             toggleChatBar={toggleChatBar}
                             updateSelectedChatId={updateSelectedChatId}

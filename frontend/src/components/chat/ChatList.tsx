@@ -5,12 +5,13 @@ import { ChatCard } from "./ChatCard"
 type PropTypes = {
   chats:Array<IChatWithUnreadMessages>
   loggedInUserId:string
+  selectedChatId:string | undefined
   updateSelectedChatId:(chatId: string) => void
   toggleChatBar:()=>void
   getChatName: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
   getChatAvatar: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
 }
-export const ChatList = memo(({chats,loggedInUserId,updateSelectedChatId,toggleChatBar,getChatAvatar,getChatName}:PropTypes) => {
+export const ChatList = memo(({chats,loggedInUserId,selectedChatId,updateSelectedChatId,toggleChatBar,getChatAvatar,getChatName}:PropTypes) => {
 
   return (
     <>
@@ -19,6 +20,7 @@ export const ChatList = memo(({chats,loggedInUserId,updateSelectedChatId,toggleC
           chats.map(chat=>(
 
             <ChatCard
+              selectedChatId={selectedChatId}
               isTyping={chat.userTyping.length>0}
               chatId={chat._id}
               chatName={getChatName(chat,loggedInUserId)!}

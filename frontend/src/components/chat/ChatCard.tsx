@@ -7,14 +7,15 @@ type PropTypes = {
   avatar:string
   unreadMessage:IUnreadMessage
   isTyping:boolean
+  selectedChatId:string | undefined
   updateSelectedChatId:(chatId:string)=>void
   toggleChatBar:()=>void
 }
 
-export const ChatCard = ({chatName,avatar,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatCard = ({chatName,selectedChatId,avatar,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
 
   return (
-    <div onClick={()=>{updateSelectedChatId(chatId);toggleChatBar()}} className="text-text p-1 flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3">
+    <div onClick={()=>{updateSelectedChatId(chatId);toggleChatBar()}} className={` ${selectedChatId===chatId?"bg-secondary-dark":""}  text-text p-1 flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3`}>
 
         <img className="aspect-square w-16 rounded-full object-cover max-md:w-14" src={avatar} />
 

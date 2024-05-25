@@ -6,7 +6,7 @@ import { Types } from "mongoose";
 const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
     const {id} = req.params
-    const {page = 1, limit = 12} = req.query
+    const {page = 1, limit = 20} = req.query
 
     const pageNumber = Number(page)
     const limitNumber = Number(limit)

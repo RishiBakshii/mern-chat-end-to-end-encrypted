@@ -21,10 +21,6 @@ export const messageApi = createApi({
                 currentCache.messages.unshift(...newItems.messages)
             },
 
-            // forceRefetch: ({ currentArg, previousArg }) => {
-            //     return false
-            // },
-
         })
         
     })

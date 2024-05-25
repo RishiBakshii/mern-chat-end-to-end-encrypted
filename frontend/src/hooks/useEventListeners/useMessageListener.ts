@@ -13,8 +13,8 @@ export const useMessageListener = () => {
     useSocketEvent(Events.MESSAGE,(newMessage:IMessage)=>{
         if(selectedChatId && newMessage.chat===selectedChatId){
           dispatch(
-            messageApi.util.updateQueryData('getMessagesByChatId',selectedChatId,(draft)=>{
-              draft.push(newMessage)
+            messageApi.util.updateQueryData('getMessagesByChatId',{_id:selectedChatId,page:1},(draft)=>{
+              draft.messages.push(newMessage)
             })
           )
         }

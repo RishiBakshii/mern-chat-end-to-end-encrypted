@@ -15,7 +15,7 @@ export const SharedMedia = ({attachments,selectedChatId,fetchMoreAttachments}:Pr
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(()=>{
-
+        console.log(page);
         if(page===attachments.totalPages){
             setHasMore(false)
         }
@@ -27,10 +27,8 @@ export const SharedMedia = ({attachments,selectedChatId,fetchMoreAttachments}:Pr
     const handleScroll = ()=>{
         const container = containerRef.current;
 
-        if(container){
-            if (container.scrollHeight - container.scrollTop === container.clientHeight) {
-                setPage(prev=>prev+1)
-            }
+        if(container && container.scrollHeight - container.scrollTop === container.clientHeight && hasMore){
+            setPage(prev=>prev+1)
         }
     }
 

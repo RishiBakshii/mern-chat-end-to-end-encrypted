@@ -1,25 +1,25 @@
-import { ACCEPTED_FILE_MIME_TYPES } from "../../constants";
 
 type PropTypes = {
   messageVal: string;
   handleFileChange:(e: React.ChangeEvent<HTMLInputElement>) => void
   setMessageVal: React.Dispatch<React.SetStateAction<string>>;
   toggleGif:()=>void
+  toggleAttachmentsMenu: React.Dispatch<React.SetStateAction<boolean>>
 };
 
-export const MessageInput = ({ messageVal, setMessageVal, toggleGif, handleFileChange }: PropTypes) => {
+export const MessageInput = ({ messageVal, setMessageVal, toggleGif,toggleAttachmentsMenu }: PropTypes) => {
   return (
     <div className="flex bg-secondary rounded-xl text-text">
        
       <div className="px-3 py-4 justify-center items-center flex relative ">
-          <input onChange={handleFileChange} accept={ACCEPTED_FILE_MIME_TYPES.join(",")} multiple type="file" className="absolute w-full h-full opacity-0 cursor-pointer"/>
           <svg
+            onClick={()=>toggleAttachmentsMenu(prev=>!prev)}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 text-secondary-darker"
+            className="w-6 h-6 text-secondary-darker cursor-pointer"
           >
             <path
               strokeLinecap="round"

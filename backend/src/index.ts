@@ -1,35 +1,35 @@
-import express, { Request, Response } from 'express'
-import {createServer} from 'http'
-import { Server } from 'socket.io'
-import cors from 'cors'
-import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
-import { config } from './config/env.config.js'
-import { errorMiddleware } from './middlewares/error.middleware.js'
-import { connectDB } from './config/db.config.js'
-import { env } from './schemas/env.schema.js'
-import type { AuthenticatedSocket } from './interfaces/auth/auth.interface.js'
-import type { IMessage, IMessageEventPayload } from './interfaces/message/message.interface.js'
-import './config/cloudinary.config.js'
+import cors from 'cors'
+import express, { Request, Response } from 'express'
+import { createServer } from 'http'
+import morgan from 'morgan'
 import passport from 'passport'
-import './passport/google.strategy.js'
+import { Server } from 'socket.io'
+import './config/cloudinary.config.js'
+import { connectDB } from './config/db.config.js'
+import { config } from './config/env.config.js'
+import type { AuthenticatedSocket } from './interfaces/auth/auth.interface.js'
+import type { IMessage } from './interfaces/message/message.interface.js'
+import { errorMiddleware } from './middlewares/error.middleware.js'
 import './passport/github.strategy.js'
+import './passport/google.strategy.js'
+import { env } from './schemas/env.schema.js'
 
+import attachmentRoutes from './routes/attachment.router.js'
 import authRoutes from './routes/auth.router.js'
 import chatRoutes from './routes/chat.router.js'
-import userRoutes from './routes/user.router.js'
-import requestRoutes from './routes/request.router.js'
-import messageRoutes from './routes/message.router.js'
 import friendRoutes from './routes/friend.router.js'
-import attachmentRoutes from './routes/attachment.router.js'
+import messageRoutes from './routes/message.router.js'
+import requestRoutes from './routes/request.router.js'
+import userRoutes from './routes/user.router.js'
 
-import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
+import { Types } from 'mongoose'
 import { Events } from './enums/event/event.enum.js'
+import { IUnreadMessageEventPayload } from './interfaces/unread-message/unread-message.interface.js'
+import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
-import { IMemberDetails } from './interfaces/chat/chat.interface.js'
 import { getMemberSockets, getOtherMembers } from './utils/socket.util.js'
-import { IUnreadMessageEventPayload } from './interfaces/unread-message/unread-message.interface.js'
 
 
 const app=express()
@@ -71,30 +71,99 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     socket.broadcast.emit(Events.ONLINE,socket.user?._id)
 
-    socket.on(Events.MESSAGE,async({chat,content,members,url}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string,members : Array<string>})=>{
+    socket.on(Events.MESSAGE,async({chat,content,members,url,isPoll,pollQuestion,pollOptions}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string,members : Array<string>})=>{
 
         // save to db
-        const newMessage = await new Message({chat,content,sender:socket.user?._id,url})
-        .populate<{"sender":IMemberDetails}>("sender",['avatar',"username"])
-
-        newMessage.save()
+        const newMessage = await Message.create({chat,content,sender:socket.user?._id,url,isPoll,pollQuestion,pollOptions})
         
-        // realtime response
-        const realtimeMessageResponse:IMessageEventPayload = {
-            _id: newMessage._id.toString(),
-            content: newMessage.content,
-            sender: {
-                _id: newMessage.sender._id,
-                avatar: newMessage.sender.avatar.secureUrl,
-                username: newMessage.sender.username
+        const transformedMessage  = await Message.aggregate([
+            {
+                $match:{
+                    chat:new Types.ObjectId(chat),
+                    _id:newMessage._id
+                }
             },
-            chat: newMessage.chat?.toString(),
-            url:newMessage.url,
-            createdAt: newMessage.createdAt,
-            updatedAt:  newMessage.updatedAt
-        }
+            {
+                $lookup: {
+                from: "users",
+                localField: "sender",
+                foreignField: "_id",
+                as: "sender",
+                pipeline: [
+                    {
+                    $addFields: {
+                        avatar: "$avatar.secureUrl",
+                    },
+                    },
+                    {
+                    $project: {
+                        username: 1,
+                        avatar: 1,
+                    },
+                    },
+                ],
+                },
+            },
+            {
+                $addFields: {
+                    sender: {
+                        $arrayElemAt: ["$sender", 0],
+                    },
+                },
+            },
+            {
+                $addFields: {
+                    "attachments":"$attachments.secureUrl"
+                },
+            },
+            {
+                $unwind:{
+                    path:"$pollOptions",
+                    preserveNullAndEmptyArrays:true,
+                }
+            },
+            {
+                $lookup:{
+                    from:"users",
+                    localField:"pollOptions.votes",
+                    foreignField:"_id",
+                    as:"pollOptions.votes",
+                    pipeline:[
+                        {
+                            $project:{
+                                username:1,
+                                avatar:"$avatar.secureUrl"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                $group: {
+                  _id: "$_id",  // Group by the original message _id
+                  sender: { $first: "$sender" },  // Keep the first sender object
+                  chat: { $first: "$chat" },  // Keep the first chat ID
+                  isPoll: { $first: "$isPoll" },  // Keep the first isPoll flag
+                  content:{$first:'$content'},
+                  url:{$first:'$url'},
+                  pollQuestion: { $first: "$pollQuestion" }, // Keep the first pollQuestion
+                  pollOptions: {
+                    $push: "$pollOptions"  // Push each unwound pollOption into the array
+                  },
+    
+                  attachments: { $first: "$attachments" },  // Keep the first attachments array (optional)
+                  createdAt: { $first: "$createdAt" },  // Keep the first createdAt timestamp
+                  updatedAt: { $first: "$updatedAt" },  // Keep the first updatedAt timestamp
+                }
+            },
+            {
+                $sort:{
+                    'createdAt':1
+                }
+            }
+        ])
 
-        io.to(getMemberSockets(members)).emit(Events.MESSAGE,realtimeMessageResponse)
+        io.to(getMemberSockets(members)).emit(Events.MESSAGE,transformedMessage[0])
 
         // unread message creation for receivers
         const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
@@ -118,6 +187,10 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
         const messageData:IUnreadMessageEventPayload['message'] = {}
 
+        if(newMessage.isPoll){
+            messageData.poll=true
+        }
+        
         if(newMessage.url){
             messageData.url=true
         }
@@ -129,11 +202,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
         {
             chatId:chat,
             message:messageData,
-            sender:{
-                _id:newMessage.sender._id,
-                avatar:newMessage.sender.avatar.secureUrl,
-                username:newMessage.sender.username
-            }
+            sender:transformedMessage[0].sender
         }
 
 
@@ -183,6 +252,52 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             },
             chatId:chatId
         })
+    })
+
+    socket.on(Events.VOTE_IN,async({chatId,members,messageId,optionIndex}:{chatId:string,messageId:string,optionIndex:number,members:Array<string>})=>{
+        
+        const message = await Message.findOneAndUpdate(
+            { chat: chatId, _id: messageId },
+            {"$addToSet":{[`pollOptions.${optionIndex}.votes`]:socket.user?._id}},
+            { new: true ,projection:["chat","_id"]}
+        )
+        
+        const userInfo = {
+            _id:socket.user?._id,
+            avatar:socket.user?.avatar?.secureUrl,
+            username:socket.user?.username
+        }
+        
+        const payload = {
+            _id:message?._id,
+            optionIndex,
+            user:userInfo
+        }
+
+        io.to(getMemberSockets(members)).emit(Events.VOTE_IN,payload)
+
+    })
+
+    socket.on(Events.VOTE_OUT,async({chatId,members,messageId,optionIndex}:{chatId:string,messageId:string,optionIndex:number,members:Array<string>})=>{
+        
+        const message = await Message.findOneAndUpdate(
+            { chat: chatId, _id: messageId },
+            {"$pull":{[`pollOptions.${optionIndex}.votes`]:socket.user?._id}},
+            { new: true ,projection:["chat","_id"]}
+        )
+        
+        const userInfo = {
+            _id:socket.user?._id,
+        }
+        
+        const payload = {
+            _id:message?._id,
+            optionIndex,
+            user:userInfo
+        }
+
+        io.to(getMemberSockets(members)).emit(Events.VOTE_OUT,payload)
+
     })
 
     socket.on("disconnect",()=>{

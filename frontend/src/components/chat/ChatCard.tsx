@@ -40,6 +40,9 @@ export const ChatCard = ({chatName,avatar,chatId,unreadMessage,isTyping,updateSe
                 
                   <p className="text-sm text-secondary-darker">
                     {
+                      unreadMessage?.message?.poll?
+                      "Sent a poll"
+                      :
                       unreadMessage?.message?.url ? 
                       "Sent a gif"
                       :

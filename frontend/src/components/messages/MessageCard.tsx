@@ -5,6 +5,8 @@ import { Gif } from "../ui/Gif";
 import { AttachmentList } from "./AttachmentList";
 import { EditMessageForm } from "./EditMessageForm";
 import { Message } from "./Message";
+import { PollCardForm } from "./PollCardForm";
+import { IChatWithUnreadMessages } from "../../interfaces/chat";
 
 type PropTypes = {
     editMessageId:string | undefined,
@@ -12,12 +14,14 @@ type PropTypes = {
     myMessage:boolean;
     message:IMessage,
     isGroupChat:boolean,
+    selectedChatDetails:IChatWithUnreadMessages
+    loggedInUserId:string
     onContextMenuOpen:(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string) => void
     setEditMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
     setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessageId,isContextMenuOpen,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen}:PropTypes) => {
+export const MessageCard = memo(({message,myMessage=false,isGroupChat,loggedInUserId,editMessageId,isContextMenuOpen,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen,selectedChatDetails}:PropTypes) => {
 
     const contextOptions = [
         {
@@ -60,6 +64,17 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessag
                 <p className="text-primary-dark font-medium">{message.sender.username}</p>
             }
             
+            {
+                message.isPoll && message.pollQuestion &&
+                <PollCardForm
+                   loggedInUserId={loggedInUserId}
+                   messageId={message._id}
+                   selectedChatDetails={selectedChatDetails}
+                   question={message.pollQuestion}
+                   options={message.pollOptions}
+                />
+            }
+
             {
                 message.attachments &&
                 <AttachmentList attachments={message.attachments}/>

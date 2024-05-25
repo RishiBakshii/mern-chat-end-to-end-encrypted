@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
 
-export const useScrollToBottom = (ref:React.RefObject<HTMLDivElement>,dependency:Array<any>,delay:number) => {
+export const useScrollToBottom = (ref:React.RefObject<HTMLDivElement>,dependency:Array<any>) => {
 
     useEffect(() => {
-        setTimeout(() => {
-            if(ref.current){
-                ref.current.scrollTop = ref.current.scrollHeight;
-            }
-        }, delay);
+        if(ref.current){
+            ref.current.scrollTop = ref.current.scrollHeight;
+        }
     }, dependency);
 
     return ref;

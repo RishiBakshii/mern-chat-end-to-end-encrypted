@@ -14,7 +14,6 @@ export const useFetchAttachments = () => {
 
     useEffect(()=>{
         if(selectedChatId){
-            console.log('triggered for',selectedChatId);
             fetchAttachments({chatId:selectedChatId,page:1},true)
         }
     },[selectedChatId])

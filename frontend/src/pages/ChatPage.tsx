@@ -38,6 +38,9 @@ import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
 import { useFetchAttachments } from "../hooks/useAttachment/useFetchAttachments"
+import { useTogglePoolForm } from "../hooks/useUI/useTogglePoolForm"
+import { useVoteInListener } from "../hooks/useEventListeners/useVoteInListener"
+import { useVoteOutListener } from "../hooks/useEventListeners/useVoteOutListener"
 
 export const ChatPage = () => {
 
@@ -59,7 +62,7 @@ export const ChatPage = () => {
    const toggleChatBar = useToggleChatBar()
    const toggleChatDetailsBar = useToggleChatDetailsBar()
    
-   useScrollToBottom(messageContainerRef,[messages,selectedChatDetails],0)
+   useScrollToBottom(messageContainerRef,[messages,selectedChatDetails])
    
    // listeners
    useFriendRequestListener()
@@ -74,12 +77,15 @@ export const ChatPage = () => {
    useMessageEditListener()
    useDeleteChatListener()
    useMemberRemovedListener()
+   useVoteInListener()
+   useVoteOutListener()
    
    useUpdateUnreadChatAsSeen(selectedChatDetails)
    
    const toggleGif = useToggleGif()
    const openRemoveMemberForm = useOpenRemoveMemberForm()
-
+   const togglePoolForm = useTogglePoolForm()
+ 
    const getChatName=useGetChatName()
    const getChatAvatar = useGetChatAvatar()
    
@@ -137,6 +143,7 @@ export const ChatPage = () => {
                         <div ref={messageContainerRef}  className="h-full flex flex-col gap-y-4 max-xl:gap-y-2 overflow-y-scroll">
 
                             <MessageList
+                                selectedChatDetails={selectedChatDetails}
                                 isGroupChat={selectedChatDetails.isGroupChat} 
                                 messages={messages} 
                                 loggedInUserId={loggedInUser._id}
@@ -151,13 +158,16 @@ export const ChatPage = () => {
 
                         </div>
 
-                        <MessageForm toggleGif={toggleGif}/>  
+                        <MessageForm 
+                          toggleGif={toggleGif}
+                          togglePoolForm={togglePoolForm}
+                        />  
 
                     </div>
                 }
             </div>
 
-            <div className={`flex-[.6] bg-background max-sm:w-full max-2xl:fixed ${!chatDetailsBar?"max-2xl:-right-[32rem]":""} ${chatDetailsBar?"max-2xl:right-0":""}  max-2xl:px-4 max-2xl:w-[25rem]`}>
+            <div className={`flex-[.6] bg-background max-sm:w-full max-2xl:fixed ${!chatDetailsBar?"max-2xl:-right-[50rem]":""} ${chatDetailsBar?"max-2xl:right-0":""}  max-2xl:px-4 max-2xl:w-[25rem]`}>
                 {
                     !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar && sharedMedia &&
 

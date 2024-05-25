@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import type { IMessage } from "../interfaces/message/message.interface.js";
 
 
@@ -26,6 +26,23 @@ const messageSchema = new Schema<IMessage>({
     },
     url:{
         type:String
+    },
+    isPoll:{
+        type:Boolean
+    },
+    pollQuestion:{
+        type:String
+    },
+    pollOptions:{
+        type:[
+            {
+                option:String,
+                votes:[{
+                    type:Types.ObjectId,
+                    ref:"User"
+                }]
+            }
+        ]
     },
     isEdited:{
         type:Boolean

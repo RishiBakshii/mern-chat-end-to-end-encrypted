@@ -1,5 +1,10 @@
 import { IChatMember } from "../chat"
 
+export interface IPollOption {
+    option:string,
+    votes:Array<IChatMember>
+}
+
 export interface IMessage {
     _id:string
     content?:string
@@ -12,6 +17,9 @@ export interface IMessage {
     url?:string
     isEdited?:boolean
     attachments?:Array<string> | []
+    isPoll?:boolean
+    pollQuestion?:string
+    pollOptions?:Array<IPollOption>
     createdAt:Date
     updatedAt:Date
 }
@@ -22,6 +30,7 @@ export interface IUnreadMessage {
         content?:string
         url?:boolean
         attachments?:boolean
+        poll?:boolean
     },
     sender:IChatMember
 }
@@ -30,6 +39,9 @@ export interface IMessageEventPayloadData {
     chat:string
     content?:string
     url?:string
+    isPoll?:boolean
+    pollQuestion?:string
+    pollOptions?:Array<{option:string,votes:Array<string>}>
     members:Array<string>
 }
 
@@ -63,4 +75,22 @@ export interface IEditMessageEventReceiveData {
     isEdited: boolean
 }
 
+export interface IVoteInEventPayloadData {
+    chatId:string
+    messageId:string
+    optionIndex:number
+    members:Array<string>
+}
+
+export interface IVoteInEventReceiveData {
+    _id:string
+    user:IChatMember
+    optionIndex:number
+}
+
+export interface IVoteOutEventReceiveData extends Omit<IVoteInEventReceiveData,'user'> {
+    user:Pick<IChatMember , '_id'>
+}
+
 export interface IUserTypingEventPayloadData extends IMessageSeenEventPayloadData {}
+export interface IVoteOutEventPayloadData extends IVoteInEventPayloadData {}

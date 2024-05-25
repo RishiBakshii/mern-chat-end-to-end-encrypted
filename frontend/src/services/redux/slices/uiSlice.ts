@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IUi } from "../../../interfaces/ui";
 import { RootState } from "../store/store";
+import { IMessage } from "../../../interfaces/messages";
 
 
 const initialState:IUi = {
@@ -15,7 +16,10 @@ const initialState:IUi = {
     gifForm:false,
     attachments:[],
     chatBar:true,
-    chatDetailsBar:false
+    chatDetailsBar:false,
+    pollForm:false,
+    viewVotes:false,
+    votesData:null
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -60,6 +64,15 @@ const uiSlice = createSlice({
         setChatDetailsBar:(state,action:PayloadAction<boolean>)=>{
             state.chatDetailsBar=action.payload
         },
+        setPollForm:(state,action:PayloadAction<boolean>)=>{
+            state.pollForm=action.payload
+        },
+        setViewVotes:(state,action:PayloadAction<boolean>)=>{
+            state.viewVotes=action.payload
+        },
+        setVotesData:(state,action:PayloadAction<Pick<IMessage,'pollQuestion' | 'pollOptions'>>)=>{
+            state.votesData=action.payload
+        },
     }
 })
 
@@ -76,6 +89,9 @@ export const selectisDarkMode = (state:RootState)=>state.uiSlice.isDarkMode
 export const selectAttachments = (state:RootState)=>state.uiSlice.attachments
 export const selectChatBar = (state:RootState)=>state.uiSlice.chatBar
 export const selectChatDetailsBar = (state:RootState)=>state.uiSlice.chatDetailsBar
+export const selectPollForm = (state:RootState)=>state.uiSlice.pollForm
+export const selectViewVotes = (state:RootState)=>state.uiSlice.viewVotes
+export const selectVotesData = (state:RootState)=>state.uiSlice.votesData
 
 // exporting actions
 export const {
@@ -92,6 +108,9 @@ export const {
     resetAttachments,
     setChatBar,
     setChatDetailsBar,
+    setPollForm,
+    setViewVotes,
+    setVotesData,
 } = uiSlice.actions
 
 export default uiSlice

@@ -35,9 +35,14 @@ export const useUnreadMessageListener = () => {
 
                 chat.unreadMessages.message.url=false
                 chat.unreadMessages.message.attachments = false
+                chat.unreadMessages.message.poll = false
 
                 chat.unreadMessages.count++
                 
+                if(message.poll){
+                  chat.unreadMessages.message.poll=true
+                }
+
                 if(message.content?.length){
                   chat.unreadMessages.message.content = message.content
                 }

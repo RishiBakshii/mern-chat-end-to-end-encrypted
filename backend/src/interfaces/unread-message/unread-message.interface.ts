@@ -16,6 +16,7 @@ export interface IUnreadMessageEventPayload {
         content?:string
         url?:boolean
         attachments?:boolean
+        poll?:boolean
     },
     sender:{
         _id:string,

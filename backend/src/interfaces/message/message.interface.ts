@@ -1,4 +1,5 @@
 import { Types } from "mongoose"
+import { IMemberDetails } from "../chat/chat.interface.js"
 
 export interface IAttachment {
     secureUrl:string,
@@ -12,6 +13,9 @@ export interface IMessage {
     chat:Types.ObjectId
     url?:string
     attachments?:Array<IAttachment>
+    isPoll?:boolean
+    pollQuestion?:string
+    pollOptions?:Array<{option:string,votes:Array<Types.ObjectId>}>
     isEdited?:boolean
     createdAt:Date
     updatedAt:Date
@@ -29,6 +33,9 @@ export interface IMessageEventPayload {
     chat: string,
     url?:string,
     attachments?:Array<IAttachment['secureUrl']>,
+    isPoll?:boolean
+    pollQuestion?:string
+    pollOptions?:Array<{option:string,votes:Array<IMemberDetails>}>
     createdAt: Date,
     updatedAt:  Date
 }

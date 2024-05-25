@@ -7,8 +7,8 @@ const developmentConfig:IConfig = {
 }
 
 const productionConfig:IConfig = {
-    clientUrl:"",
-    callbackUrl:""
+    clientUrl:"https://baatchit.online",
+    callbackUrl:"https://baatchit.online/api/v1/auth"
 }
 
 export const config = env.NODE_ENV==='DEVELOPMENT'?developmentConfig:productionConfig

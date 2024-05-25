@@ -40,6 +40,7 @@ export const useUnreadMessageListener = () => {
                 chat.unreadMessages.count++
                 
                 if(message.poll){
+                  console.log('in message.poll condition');
                   chat.unreadMessages.message.poll=true
                 }
 

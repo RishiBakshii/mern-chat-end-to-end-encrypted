@@ -36,7 +36,7 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
       }
     },[selectedAttachments])
 
-    const isTyping = useDebounce(messageVal)
+    const isTyping = useDebounce(messageVal,350)
 
     useEmitTypingEvent(isTyping)
 

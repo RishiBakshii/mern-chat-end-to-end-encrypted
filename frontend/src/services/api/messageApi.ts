@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../config/envConfig";
 import type { IMessage } from "../../interfaces/messages";
-import type { IChatWithUnreadMessages } from "../../interfaces/chat";
 
 export const messageApi = createApi({
     reducerPath:'messageApi',
@@ -10,9 +9,24 @@ export const messageApi = createApi({
         credentials:'include'
     }),
     endpoints:(builder)=>({
-        getMessagesByChatId:builder.query<Array<IMessage>,IChatWithUnreadMessages['_id']>({
-            query:(_id)=>`/message/${_id}`
+        getMessagesByChatId:builder.query<{messages:Array<IMessage>,totalPages:number},{_id:string,page:number}>({
+
+            query:({_id,page})=>`/message/${_id}?page=${page}`,
+            
+            // Merge the new page of messages with the previous ones
+            serializeQueryArgs: ({ endpointName ,queryArgs:{_id}}) => {
+              return  `${endpointName}_${_id}`
+            },
+            merge: (currentCache, newItems) => {
+                currentCache.messages.unshift(...newItems.messages)
+            },
+
+            // forceRefetch: ({ currentArg, previousArg }) => {
+            //     return false
+            // },
+
         })
+        
     })
 })
 

@@ -93,11 +93,11 @@ export const ChatPage = () => {
    const chatAvatar= getChatAvatar(selectedChatDetails,loggedInUser?._id)
 
    const handleFetchMoreAttachments = (chatId:string,page:number)=>{
-        fetchMoreAttachments({chatId,page},true)
+        fetchMoreAttachments({chatId,page})
    }
 
    const handleFetchMoreMessages = (_id:string,page:number)=>{
-        fetchMoreMessages({_id,page})
+        fetchMoreMessages({_id,page},true)
    }
 
   return (

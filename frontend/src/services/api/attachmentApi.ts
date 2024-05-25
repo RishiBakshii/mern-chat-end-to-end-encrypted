@@ -39,6 +39,15 @@ export const attachmentApi = createApi({
 
         fetchAttachments:builder.query<IAttachment,{chatId:string,page:number}>({ 
             query:({chatId,page})=>`/${chatId}?page=${page}`,
+
+            serializeQueryArgs:({endpointName,queryArgs:{chatId}})=>{
+                return `${endpointName}_${chatId}`
+            },
+
+            merge: (currentCache, newItems) => {
+                currentCache.attachments.push(...newItems.attachments)
+                currentCache.totalPages=newItems.totalPages
+            },
         })
     })
 })

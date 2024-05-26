@@ -316,3 +316,6 @@ app.use(errorMiddleware)
 server.listen(env.PORT,()=>{
     console.log(`server [STARTED] ~ http://localhost:${env.PORT}`);
 })
+
+
+export default server;

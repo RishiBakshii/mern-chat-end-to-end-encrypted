@@ -39,8 +39,10 @@ const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
 
     const newUser = await User.create({email,name,password:hashedPassword,username,avatar:{
         secureUrl:DEFAULT_AVATAR
-    }})
-    sendToken(res,newUser._id,201,getSecureUserInfo(newUser) as IUser)
+    }}) as IUser
+
+
+    sendToken(res,newUser._id,201,getSecureUserInfo(newUser))
     
 }) 
 
@@ -51,7 +53,7 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
 
     if(isExistingUser && await bcrypt.compare(password,isExistingUser.password)){
         
-        sendToken(res,isExistingUser['_id'],200,getSecureUserInfo(isExistingUser) as IUser)
+        sendToken(res,isExistingUser['_id'],200,getSecureUserInfo(isExistingUser))
         return 
     }
 

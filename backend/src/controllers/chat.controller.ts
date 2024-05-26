@@ -29,8 +29,8 @@ export const addUnreadMessagesStage = {
         avatar: "",
       },
     },
-    userTyping: [],
-    seenBy: [],
+    userTyping: Array<[]>,
+    seenBy: Array<[]>,
   },
 }
 

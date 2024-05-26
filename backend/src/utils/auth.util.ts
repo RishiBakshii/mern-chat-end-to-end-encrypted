@@ -5,7 +5,7 @@ import { env } from '../schemas/env.schema.js'
 import {v2 as cloudinary} from 'cloudinary'
 import { config } from '../config/env.config.js'
 
-export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:IUser,OAuth:boolean=false)=>{
+export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:Omit<IUser, 'password'>,OAuth:boolean=false)=>{
 
     const cookieOptions:CookieOptions = {
         maxAge:parseInt(env.JWT_TOKEN_EXPIRATION_DAYS) * 24 * 60 * 60 * 1000,
@@ -48,7 +48,7 @@ export const deleteFilesFromCloudinary = async(publicIds:Array<string>)=>{
     return uploadResult
 }
 
-export const getSecureUserInfo = (user:IUser)=>{
+export const getSecureUserInfo = (user:any)=>{
     return {
         _id:user._id,
         name:user.name,

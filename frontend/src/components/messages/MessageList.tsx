@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { IUser } from "../../interfaces/auth"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import type { IMessage } from "../../interfaces/messages"
@@ -9,7 +9,7 @@ type PropTypes = {
   loggedInUserId:IUser['_id']
   isGroupChat:boolean
   selectedChatDetails:IChatWithUnreadMessages
-  totalPages:number | undefined
+  totalPages:number
   fetchMoreMessages: (_id: string, page: number) => void
   messageContainerRef: React.RefObject<HTMLDivElement>
 }
@@ -17,10 +17,74 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
 
   const [page,setPage] = useState<number>(1)
   const [hasMore,setHasMore] = useState<boolean>(true)
+  const prevHeightRef = useRef<number>(0);
+  const [loading,setLoading] = useState<boolean>(false)
+  const [prevLoading,setPrevLoading] = useState<boolean>(false)
 
   const [openContextMenuMessageId, setOpenContextMenuMessageId] = useState<string>()
   const [editMessageId,setEditMessageId] = useState<string>()
-  const [loadingMore,setLoadingMore] = useState<boolean>(false)
+
+  useEffect(()=>{
+    if(messageContainerRef.current && messageContainerRef.current.scrollTop !== messageContainerRef.current.scrollHeight){
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight
+    }
+  },[])
+
+  useEffect(()=>{
+    setHasMore(true)
+    setPage(1)
+  },[selectedChatDetails])
+
+  useEffect(()=>{
+    if(loading){
+      setTimeout(() => {
+        setLoading(false)
+      },500);
+    }
+  },[loading])
+
+  useEffect(()=>{
+
+    if(page>1){
+
+      setLoading(true)
+  
+      if(page===totalPages+1){
+        setHasMore(false)
+        return
+      }
+      
+      setPrevLoading(true)
+      fetchMoreMessages(selectedChatDetails._id,page)
+
+    }
+
+  },[page])
+
+  // for maintaing the scroll position
+  useEffect(() => {
+    const container = messageContainerRef.current;
+    if (container && page > 1 && prevLoading) {
+      container.scrollTop = container.scrollHeight - prevHeightRef.current;
+      setPrevLoading(false)
+    }
+  }, [messages]);
+
+  useEffect(()=>{
+    const container = messageContainerRef.current;
+    if(!prevLoading && container && !loading){
+      container.scrollTop = container.scrollHeight
+    }
+  },[messages,prevLoading])
+
+
+  const handleScroll = ()=>{
+    const threshold = 284
+    if(messageContainerRef.current && messageContainerRef.current.scrollTop < threshold && hasMore && !loading) {
+      prevHeightRef.current = messageContainerRef.current.scrollHeight;
+      setPage(prev=>prev+1)
+    }
+  }
 
   const handleSetOpenContextMenuMessageId=(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string)=>{
     e.stopPropagation()
@@ -28,34 +92,9 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
     setOpenContextMenuMessageId(messageId)
   }
 
-  useEffect(()=>{
-    setLoadingMore(false)
-  },[messages])
-
-  useEffect(()=>{
-    console.log("page",page,"totalPage",totalPages);
-
-    if(totalPages && page===totalPages){
-      console.log('end');
-      setHasMore(false)
-      return
-    }
-    if(page>1){
-      console.log('this condition');
-      fetchMoreMessages(selectedChatDetails._id,page)
-    }
-  },[page])
-
-  const handleScroll = () => {
-
-    const container = messageContainerRef.current
-  
-    if (container && container.scrollTop < 284 && hasMore && !loadingMore) {
-      setPage(page+1)
-    }
-  };
-
   return (
+    <>
+    <h5 className="text-white text-xl">current Page {page}  , max pages {totalPages} , has more {hasMore?"true":"false"}</h5>
     <div ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-scroll">
 
       {messages?.map((message,index) => (
@@ -75,5 +114,6 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
       ))}
 
     </div>
+    </>
   )
 }

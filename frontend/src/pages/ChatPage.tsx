@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { Helmet } from "react-helmet-async"
 import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
@@ -25,6 +25,7 @@ import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMe
 import { useVoteInListener } from "../hooks/useEventListeners/useVoteInListener"
 import { useVoteOutListener } from "../hooks/useEventListeners/useVoteOutListener"
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
+import { useClearAdditionalMessagesOnChatChange } from "../hooks/useMessages/useClearAdditionalMessagesOnChatChange"
 import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
 import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
 import { useToggleChatBar } from "../hooks/useUI/useToggleChatBar"
@@ -33,10 +34,10 @@ import { useToggleGif } from "../hooks/useUI/useToggleGif"
 import { useTogglePoolForm } from "../hooks/useUI/useTogglePoolForm"
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
-import { useScrollToBottom } from "../hooks/useUtils/useScrollToBottom"
+import { useScrollToBottomOnChatChange } from "../hooks/useUtils/useScrollToBottomOnChatChange"
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
-import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
+import { selectSelectedChatDetails, selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
 
@@ -52,6 +53,7 @@ export const ChatPage = () => {
    const chatDetailsBar = useAppSelector(selectChatDetailsBar)
    const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
    const messageContainerRef = useRef<HTMLDivElement>(null)
+   const selectedChatId = useAppSelector(selectSelectedChatId)
 
    
    const {messages,fetchMoreMessages,totalMessagePages} = useFetchMessages(selectedChatDetails?._id,1)
@@ -61,9 +63,10 @@ export const ChatPage = () => {
    const updateSelectedChatId = useUpdateChatSelection()
    const toggleChatBar = useToggleChatBar()
    const toggleChatDetailsBar = useToggleChatDetailsBar()
-   
-   useScrollToBottom(messageContainerRef,[selectedChatDetails,messages],0)
-   
+
+   const clearExtraPreviousMessages = useClearAdditionalMessagesOnChatChange()
+      
+   useScrollToBottomOnChatChange(messageContainerRef,[selectedChatId])
 
    // listeners
    useFriendRequestListener()
@@ -100,6 +103,7 @@ export const ChatPage = () => {
    const handleFetchMoreMessages = (_id:string,page:number)=>{
         fetchMoreMessages({_id,page})
    }
+   
 
   return (
     <>
@@ -117,6 +121,7 @@ export const ChatPage = () => {
                         !isChatsFetching && chats && loggedInUser ?
 
                         <ChatListWithSearch
+                            clearExtraPreviousMessages={clearExtraPreviousMessages}
                             chats={chats}
                             selectedChatId={selectedChatDetails?._id}
                             loggedInUserId={loggedInUser._id}
@@ -148,7 +153,7 @@ export const ChatPage = () => {
                             }
 
                             {
-                                selectedChatDetails && messages && loggedInUser &&
+                                selectedChatDetails && messages && loggedInUser && totalMessagePages &&
 
                                 <MessageList
                                     messageContainerRef={messageContainerRef}

@@ -7,15 +7,33 @@ type PropTypes = {
   avatar:string
   unreadMessage:IUnreadMessage
   isTyping:boolean
+  isMd:boolean
   selectedChatId:string | undefined
   updateSelectedChatId:(chatId:string)=>void
   toggleChatBar:()=>void
+  clearExtraPreviousMessages: (chatId: string) => void
 }
 
-export const ChatCard = ({chatName,selectedChatId,avatar,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatCard = ({chatName,clearExtraPreviousMessages,selectedChatId,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+  
+
+  const handleChatCardClick = (chatId:string) =>{
+
+    if(selectedChatId!==chatId){
+      if(selectedChatId){
+        clearExtraPreviousMessages(selectedChatId)
+      }
+      updateSelectedChatId(chatId)
+    }
+
+    if(isMd){
+      toggleChatBar()
+    }
+
+  }
 
   return (
-    <div onClick={()=>{updateSelectedChatId(chatId);toggleChatBar()}} className={` ${selectedChatId===chatId?"bg-secondary-dark":""}  text-text p-1 flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3`}>
+    <div onClick={()=>handleChatCardClick(chatId)} className={` ${selectedChatId===chatId?"bg-secondary-dark":""}  text-text p-1 flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3`}>
 
         <img className="aspect-square w-16 rounded-full object-cover max-md:w-14" src={avatar} />
 

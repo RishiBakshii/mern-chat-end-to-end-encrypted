@@ -1,28 +1,23 @@
 import { useGetChatsQuery } from "../../services/api/chatApi"
-import { selectSelectedChatId, updateSelectedChatDetails, updateSelectedChatId } from "../../services/redux/slices/chatSlice"
-import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
+import { updateSelectedChatDetails, updateSelectedChatId } from "../../services/redux/slices/chatSlice"
+import { useAppDispatch } from "../../services/redux/store/hooks"
 
 export const useUpdateChatSelection = () => {
 
     const dispatch = useAppDispatch()
-    const selectedChatId = useAppSelector(selectSelectedChatId)
 
     const {data:chats} = useGetChatsQuery()
     
-    return (chatId:string) =>{
+    return (chatId:string) =>{  
+        console.log(chatId);
 
-        if(chatId!==selectedChatId){
+        dispatch(updateSelectedChatId(chatId))
 
-            dispatch(updateSelectedChatId(chatId))
-    
-            const chatDetails = chats?.find(chat=>chat._id===chatId)
-    
-            if(chatDetails) {
-                dispatch(updateSelectedChatDetails(chatDetails))
-            }
+        const chatDetails = chats?.find(chat=>chat._id===chatId)
+
+        if(chatDetails) {
+            dispatch(updateSelectedChatDetails(chatDetails))
         }
-
-
     }
 
 }

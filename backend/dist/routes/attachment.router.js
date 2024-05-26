@@ -5,4 +5,3 @@ import { fetchAttachments, uploadAttachment } from "../controllers/attachment.co
 export default Router()
     .post("/", verifyToken, upload.array("attachments[]", 5), uploadAttachment)
     .get("/:id", verifyToken, fetchAttachments);
-//# sourceMappingURL=attachment.router.js.map

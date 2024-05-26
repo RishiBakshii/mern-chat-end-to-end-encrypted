@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -60,14 +51,12 @@ app.use("/api/v1/attachment", attachmentRoutes);
 io.use(socketAuthenticatorMiddleware);
 // socket
 io.on("connection", (socket) => {
-    var _a, _b;
-    userSocketIds.set((_a = socket.user) === null || _a === void 0 ? void 0 : _a._id.toString(), socket.id);
-    socket.broadcast.emit(Events.ONLINE, (_b = socket.user) === null || _b === void 0 ? void 0 : _b._id);
-    socket.on(Events.MESSAGE, (_c) => __awaiter(void 0, [_c], void 0, function* ({ chat, content, members, url, isPoll, pollQuestion, pollOptions }) {
-        var _d, _e, _f;
+    userSocketIds.set(socket.user?._id.toString(), socket.id);
+    socket.broadcast.emit(Events.ONLINE, socket.user?._id);
+    socket.on(Events.MESSAGE, async ({ chat, content, members, url, isPoll, pollQuestion, pollOptions }) => {
         // save to db
-        const newMessage = yield Message.create({ chat, content, sender: (_d = socket.user) === null || _d === void 0 ? void 0 : _d._id, url, isPoll, pollQuestion, pollOptions });
-        const transformedMessage = yield Message.aggregate([
+        const newMessage = await Message.create({ chat, content, sender: socket.user?._id, url, isPoll, pollQuestion, pollOptions });
+        const transformedMessage = await Message.aggregate([
             {
                 $match: {
                     chat: new Types.ObjectId(chat),
@@ -154,19 +143,18 @@ io.on("connection", (socket) => {
         ]);
         io.to(getMemberSockets(members)).emit(Events.MESSAGE, transformedMessage[0]);
         // unread message creation for receivers
-        const memberIds = getOtherMembers({ members, user: (_e = socket.user) === null || _e === void 0 ? void 0 : _e._id.toString() });
-        const updateOrCreateUnreadMessagePromise = memberIds.map((memberId) => __awaiter(void 0, void 0, void 0, function* () {
-            var _g;
-            const isExistingUnreadMessage = yield UnreadMessage.findOne({ chat, user: memberId });
+        const memberIds = getOtherMembers({ members, user: socket.user?._id.toString() });
+        const updateOrCreateUnreadMessagePromise = memberIds.map(async (memberId) => {
+            const isExistingUnreadMessage = await UnreadMessage.findOne({ chat, user: memberId });
             if (isExistingUnreadMessage) {
                 isExistingUnreadMessage.count ? isExistingUnreadMessage.count++ : null;
                 isExistingUnreadMessage.message = newMessage._id;
                 isExistingUnreadMessage.save();
                 return isExistingUnreadMessage;
             }
-            return UnreadMessage.create({ chat, user: memberId, sender: (_g = socket.user) === null || _g === void 0 ? void 0 : _g._id, message: newMessage._id });
-        }));
-        yield Promise.all(updateOrCreateUnreadMessagePromise);
+            return UnreadMessage.create({ chat, user: memberId, sender: socket.user?._id, message: newMessage._id });
+        });
+        await Promise.all(updateOrCreateUnreadMessagePromise);
         const messageData = {};
         if (newMessage.isPoll) {
             messageData.poll = true;
@@ -174,7 +162,7 @@ io.on("connection", (socket) => {
         if (newMessage.url) {
             messageData.url = true;
         }
-        if ((_f = newMessage.content) === null || _f === void 0 ? void 0 : _f.length) {
+        if (newMessage.content?.length) {
             messageData.content = newMessage.content.substring(0, 25);
         }
         const unreadMessageData = {
@@ -183,74 +171,69 @@ io.on("connection", (socket) => {
             sender: transformedMessage[0].sender
         };
         io.to(getMemberSockets(memberIds)).emit(Events.UNREAD_MESSAGE, unreadMessageData);
-    }));
-    socket.on(Events.MESSAGE_SEEN, (_h) => __awaiter(void 0, [_h], void 0, function* ({ chatId, members }) {
-        var _j, _k, _l, _m, _o;
-        const areUnreadMessages = yield UnreadMessage.findOne({ chat: chatId, user: (_j = socket.user) === null || _j === void 0 ? void 0 : _j._id });
+    });
+    socket.on(Events.MESSAGE_SEEN, async ({ chatId, members }) => {
+        const areUnreadMessages = await UnreadMessage.findOne({ chat: chatId, user: socket.user?._id });
         if (areUnreadMessages) {
             areUnreadMessages.count = 0;
             areUnreadMessages.readAt = new Date();
-            yield areUnreadMessages.save();
+            await areUnreadMessages.save();
         }
         const memberSocketIds = getMemberSockets(members);
         io.to(memberSocketIds).emit(Events.MESSAGE_SEEN, {
             user: {
-                _id: (_k = socket.user) === null || _k === void 0 ? void 0 : _k._id,
-                username: (_l = socket.user) === null || _l === void 0 ? void 0 : _l.username,
-                avatar: (_o = (_m = socket.user) === null || _m === void 0 ? void 0 : _m.avatar) === null || _o === void 0 ? void 0 : _o.secureUrl
+                _id: socket.user?._id,
+                username: socket.user?.username,
+                avatar: socket.user?.avatar?.secureUrl
             },
             chat: chatId,
-            readAt: areUnreadMessages === null || areUnreadMessages === void 0 ? void 0 : areUnreadMessages.readAt,
+            readAt: areUnreadMessages?.readAt,
         });
-    }));
-    socket.on(Events.MESSAGE_EDIT, (_p) => __awaiter(void 0, [_p], void 0, function* ({ messageId, updatedContent, memberIds }) {
-        const updatedMessage = yield Message.findByIdAndUpdate(messageId, { isEdited: true, content: updatedContent }, { new: true, projection: ['chat', 'content', 'isEdited'] });
+    });
+    socket.on(Events.MESSAGE_EDIT, async ({ messageId, updatedContent, memberIds }) => {
+        const updatedMessage = await Message.findByIdAndUpdate(messageId, { isEdited: true, content: updatedContent }, { new: true, projection: ['chat', 'content', 'isEdited'] });
         io.to(getMemberSockets(memberIds)).emit(Events.MESSAGE_EDIT, updatedMessage);
-    }));
+    });
     socket.on(Events.USER_TYPING, ({ chatId, members }) => {
-        var _a, _b, _c, _d, _e;
-        const otherMembers = getOtherMembers({ members, user: (_a = socket.user) === null || _a === void 0 ? void 0 : _a._id.toString() });
+        const otherMembers = getOtherMembers({ members, user: socket.user?._id.toString() });
         const otherMemberSockets = getMemberSockets(otherMembers);
         io.to(otherMemberSockets).emit(Events.USER_TYPING, {
             user: {
-                _id: (_b = socket.user) === null || _b === void 0 ? void 0 : _b._id.toString(),
-                username: (_c = socket.user) === null || _c === void 0 ? void 0 : _c.username,
-                avatar: (_e = (_d = socket.user) === null || _d === void 0 ? void 0 : _d.avatar) === null || _e === void 0 ? void 0 : _e.secureUrl
+                _id: socket.user?._id.toString(),
+                username: socket.user?.username,
+                avatar: socket.user?.avatar?.secureUrl
             },
             chatId: chatId
         });
     });
-    socket.on(Events.VOTE_IN, (_q) => __awaiter(void 0, [_q], void 0, function* ({ chatId, members, messageId, optionIndex }) {
-        var _r, _s, _t, _u, _v;
-        const message = yield Message.findOneAndUpdate({ chat: chatId, _id: messageId }, { "$addToSet": { [`pollOptions.${optionIndex}.votes`]: (_r = socket.user) === null || _r === void 0 ? void 0 : _r._id } }, { new: true, projection: ["chat", "_id"] });
+    socket.on(Events.VOTE_IN, async ({ chatId, members, messageId, optionIndex }) => {
+        const message = await Message.findOneAndUpdate({ chat: chatId, _id: messageId }, { "$addToSet": { [`pollOptions.${optionIndex}.votes`]: socket.user?._id } }, { new: true, projection: ["chat", "_id"] });
         const userInfo = {
-            _id: (_s = socket.user) === null || _s === void 0 ? void 0 : _s._id,
-            avatar: (_u = (_t = socket.user) === null || _t === void 0 ? void 0 : _t.avatar) === null || _u === void 0 ? void 0 : _u.secureUrl,
-            username: (_v = socket.user) === null || _v === void 0 ? void 0 : _v.username
+            _id: socket.user?._id,
+            avatar: socket.user?.avatar?.secureUrl,
+            username: socket.user?.username
         };
         const payload = {
-            _id: message === null || message === void 0 ? void 0 : message._id,
+            _id: message?._id,
             optionIndex,
             user: userInfo
         };
         io.to(getMemberSockets(members)).emit(Events.VOTE_IN, payload);
-    }));
-    socket.on(Events.VOTE_OUT, (_w) => __awaiter(void 0, [_w], void 0, function* ({ chatId, members, messageId, optionIndex }) {
-        var _x, _y;
-        const message = yield Message.findOneAndUpdate({ chat: chatId, _id: messageId }, { "$pull": { [`pollOptions.${optionIndex}.votes`]: (_x = socket.user) === null || _x === void 0 ? void 0 : _x._id } }, { new: true, projection: ["chat", "_id"] });
+    });
+    socket.on(Events.VOTE_OUT, async ({ chatId, members, messageId, optionIndex }) => {
+        const message = await Message.findOneAndUpdate({ chat: chatId, _id: messageId }, { "$pull": { [`pollOptions.${optionIndex}.votes`]: socket.user?._id } }, { new: true, projection: ["chat", "_id"] });
         const userInfo = {
-            _id: (_y = socket.user) === null || _y === void 0 ? void 0 : _y._id,
+            _id: socket.user?._id,
         };
         const payload = {
-            _id: message === null || message === void 0 ? void 0 : message._id,
+            _id: message?._id,
             optionIndex,
             user: userInfo
         };
         io.to(getMemberSockets(members)).emit(Events.VOTE_OUT, payload);
-    }));
+    });
     socket.on("disconnect", () => {
-        var _a;
-        socket.broadcast.emit(Events.OFFLINE, (_a = socket.user) === null || _a === void 0 ? void 0 : _a._id);
+        socket.broadcast.emit(Events.OFFLINE, socket.user?._id);
     });
 });
 app.get("/", (req, res) => {
@@ -264,4 +247,3 @@ if (import.meta.url.endsWith('dist/index.js')) {
     });
 }
 export default server;
-//# sourceMappingURL=index.js.map

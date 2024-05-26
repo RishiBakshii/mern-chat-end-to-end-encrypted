@@ -5,12 +5,10 @@ export const upload = multer({
     limits: { fileSize: MAX_FILE_SIZE },
     storage: multer.diskStorage({
         filename: (req, file, cb) => {
-            var _a;
-            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a._id;
+            const userId = req.user?._id;
             const uniqueMiddleName = uuidV4();
             const newFileName = `${userId}-${uniqueMiddleName}-${file.originalname}`;
             cb(null, newFileName);
         }
     })
 });
-//# sourceMappingURL=multer.middleware.js.map

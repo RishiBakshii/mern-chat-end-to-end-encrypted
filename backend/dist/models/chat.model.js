@@ -30,4 +30,3 @@ const chatSchema = new Schema({
     }
 }, { versionKey: false, timestamps: true });
 export const Chat = model("Chat", chatSchema);
-//# sourceMappingURL=chat.model.js.map

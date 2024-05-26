@@ -1,17 +1,14 @@
 {
-  "compilerOptions": {
-      "module": "ES2020",
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "target": "es6",
-      "noImplicitAny": true,
-      "moduleResolution": "node",
-      "sourceMap": true,
-      "outDir": "dist",
-      "baseUrl": ".",
-      "paths": {
-          "*": ["node_modules/*", "src/types/*"]
-      }
-  },
-  "include": ["./src/**/*"]
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "NodeNext",
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "esModuleInterop": false,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*"]
+    
   }

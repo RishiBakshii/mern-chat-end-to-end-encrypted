@@ -16,4 +16,3 @@ const otpSchema = new Schema({
     }
 }, { versionKey: false });
 export const Otp = model("Otp", otpSchema);
-//# sourceMappingURL=otp.model.js.map

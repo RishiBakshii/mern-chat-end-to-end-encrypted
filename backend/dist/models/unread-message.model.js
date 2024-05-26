@@ -29,4 +29,3 @@ const unreadMessageSchema = new Schema({
     },
 }, { versionKey: false, timestamps: true });
 export const UnreadMessage = model("UnreadMessage", unreadMessageSchema);
-//# sourceMappingURL=unread-message.model.js.map

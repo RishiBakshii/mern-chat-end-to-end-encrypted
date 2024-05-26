@@ -4,4 +4,3 @@ export var RequestStatus;
     RequestStatus["Accepted"] = "Accepted";
     RequestStatus["Rejected"] = "Rejected";
 })(RequestStatus || (RequestStatus = {}));
-//# sourceMappingURL=request.enum.js.map

@@ -10,4 +10,3 @@ export default Router()
     .get("/", verifyToken, getUserChats)
     .patch("/:id/members", verifyToken, validate(addMemberToChatSchema), addMemberToChat)
     .delete("/:id/members", verifyToken, validate(removeMemberfromChat), removeMemberFromChat);
-//# sourceMappingURL=chat.router.js.map

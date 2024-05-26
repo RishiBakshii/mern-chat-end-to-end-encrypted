@@ -8,4 +8,3 @@ const productionConfig = {
     callbackUrl: "https://baatchit.online/api/v1/auth"
 };
 export const config = env.NODE_ENV === 'DEVELOPMENT' ? developmentConfig : productionConfig;
-//# sourceMappingURL=env.config.js.map

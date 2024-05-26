@@ -9,4 +9,3 @@ export const getOtherMembers = ({ members, user }) => {
 export const getMemberSockets = (members) => {
     return members.map(member => userSocketIds.get(member));
 };
-//# sourceMappingURL=socket.util.js.map

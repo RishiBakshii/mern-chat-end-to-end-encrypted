@@ -12,4 +12,3 @@ const friendSchema = new Schema({
     }
 }, { versionKey: false, timestamps: true });
 export const Friend = model('Friend', friendSchema);
-//# sourceMappingURL=friend.model.js.map

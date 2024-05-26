@@ -18,4 +18,3 @@ const requestSchema = new Schema({
     },
 }, { versionKey: false, timestamps: true });
 export const Request = model("Request", requestSchema);
-//# sourceMappingURL=request.model.js.map

@@ -37,4 +37,3 @@ export const errorMiddleware = (err, req, res, next) => {
     }
     return res.status(statusCode).json({ message });
 };
-//# sourceMappingURL=error.middleware.js.map

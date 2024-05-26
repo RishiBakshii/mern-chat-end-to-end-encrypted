@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
@@ -61,8 +52,7 @@ export const updateAvatarFeild = {
         avatar: "$avatar.secureUrl",
     },
 };
-const createChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+const createChat = asyncErrorHandler(async (req, res, next) => {
     let uploadResults = [];
     const { isGroupChat, members, avatar, name } = req.body;
     if (isGroupChat === 'true') {
@@ -72,27 +62,27 @@ const createChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 
         else if (!name) {
             return next(new CustomError("name is required for creating group chat", 400));
         }
-        const membersWithReqUser = [...members, (_a = req.user) === null || _a === void 0 ? void 0 : _a._id];
-        const isExistingGroupChat = yield Chat.findOne({
+        const membersWithReqUser = [...members, req.user?._id];
+        const isExistingGroupChat = await Chat.findOne({
             members: { $all: membersWithReqUser, $size: membersWithReqUser.length },
         });
         if (isExistingGroupChat) {
             return next(new CustomError("group chat already exists", 400));
         }
         if (req.file) {
-            uploadResults = yield uploadFilesToCloudinary([req.file]);
+            uploadResults = await uploadFilesToCloudinary([req.file]);
         }
-        const newGroupChat = yield Chat.create({
+        const newGroupChat = await Chat.create({
             avatar: {
-                secureUrl: ((_b = uploadResults[0]) === null || _b === void 0 ? void 0 : _b.secure_url) ? uploadResults[0].secure_url : DEFAULT_AVATAR,
-                publicId: ((_c = uploadResults[0]) === null || _c === void 0 ? void 0 : _c.public_id) ? uploadResults[0].public_id : null
+                secureUrl: uploadResults[0]?.secure_url ? uploadResults[0].secure_url : DEFAULT_AVATAR,
+                publicId: uploadResults[0]?.public_id ? uploadResults[0].public_id : null
             },
             isGroupChat,
             members: membersWithReqUser,
-            admin: (_d = req.user) === null || _d === void 0 ? void 0 : _d._id,
+            admin: req.user?._id,
             name
         });
-        const transformedChat = yield Chat.aggregate([
+        const transformedChat = await Chat.aggregate([
             {
                 $match: {
                     _id: newGroupChat._id,
@@ -103,7 +93,7 @@ const createChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 
             addUnreadMessagesStage
         ]);
         const membersIdsInString = newGroupChat.members.map(member => member._id.toString());
-        const otherMembers = getOtherMembers({ members: membersIdsInString, user: (_e = req.user) === null || _e === void 0 ? void 0 : _e._id.toString() });
+        const otherMembers = getOtherMembers({ members: membersIdsInString, user: req.user?._id.toString() });
         emitEvent(req, Events.NEW_GROUP, otherMembers, transformedChat[0]);
         return res.status(201).json(transformedChat[0]);
     }
@@ -117,15 +107,15 @@ const createChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 
         else if (avatar) {
             return next(new CustomError("Avatar cannot be assigned to a normal chat", 400));
         }
-        const membersWithReqUser = [...members, (_f = req.user) === null || _f === void 0 ? void 0 : _f._id];
-        const isExistingChat = yield Chat.findOne({
+        const membersWithReqUser = [...members, req.user?._id];
+        const isExistingChat = await Chat.findOne({
             members: { $all: membersWithReqUser, $size: membersWithReqUser.length },
         });
         if (isExistingChat) {
             return next(new CustomError("Chat already exists", 400));
         }
-        const normalChat = yield Chat.create({ members: [...members, (_g = req.user) === null || _g === void 0 ? void 0 : _g._id] });
-        const transformedChat = yield Chat.aggregate([
+        const normalChat = await Chat.create({ members: [...members, req.user?._id] });
+        const transformedChat = await Chat.aggregate([
             {
                 $match: {
                     _id: normalChat._id
@@ -135,17 +125,16 @@ const createChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 
             addUnreadMessagesStage
         ]);
         const memberStringIds = normalChat.members.map(member => member._id.toString());
-        const otherMembers = getOtherMembers({ members: memberStringIds, user: (_h = req.user) === null || _h === void 0 ? void 0 : _h._id.toString() });
+        const otherMembers = getOtherMembers({ members: memberStringIds, user: req.user?._id.toString() });
         emitEvent(req, Events.NEW_GROUP, otherMembers, transformedChat);
         return res.status(201).json(transformedChat);
     }
-}));
-const getUserChats = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _j, _k;
-    const chats = yield Chat.aggregate([
+});
+const getUserChats = asyncErrorHandler(async (req, res, next) => {
+    const chats = await Chat.aggregate([
         {
             $match: {
-                members: (_j = req.user) === null || _j === void 0 ? void 0 : _j._id,
+                members: req.user?._id,
             },
         },
         updateAvatarFeild,
@@ -155,7 +144,7 @@ const getUserChats = asyncErrorHandler((req, res, next) => __awaiter(void 0, voi
                 from: "unreadmessages",
                 let: {
                     chatId: "$_id",
-                    userId: (_k = req.user) === null || _k === void 0 ? void 0 : _k._id,
+                    userId: req.user?._id,
                 },
                 pipeline: [
                     {
@@ -232,22 +221,21 @@ const getUserChats = asyncErrorHandler((req, res, next) => __awaiter(void 0, voi
         }
     ]);
     return res.status(200).json(chats);
-}));
-const addMemberToChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _l, _m;
+});
+const addMemberToChat = asyncErrorHandler(async (req, res, next) => {
     const { id } = req.params;
     const { members } = req.body;
-    const isExistingChat = yield Chat.findById(id);
+    const isExistingChat = await Chat.findById(id);
     if (!isExistingChat) {
         return next(new CustomError("Chat does not exists", 404));
     }
     if (!isExistingChat.isGroupChat) {
         return next(new CustomError("This is not a group chat, you cannot add members", 400));
     }
-    if (((_l = isExistingChat.admin) === null || _l === void 0 ? void 0 : _l._id.toString()) !== ((_m = req.user) === null || _m === void 0 ? void 0 : _m._id.toString())) {
+    if (isExistingChat.admin?._id.toString() !== req.user?._id.toString()) {
         return next(new CustomError("You are not allowed to add members as you are not the admin of this chat", 400));
     }
-    const validMembers = yield User.aggregate([
+    const validMembers = await User.aggregate([
         {
             $match: {
                 _id: { $in: members.map(member => new Types.ObjectId(member)) }
@@ -266,7 +254,7 @@ const addMemberToChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, 
         return next(new CustomError(`${existingMembers.map(member => `${member.username}`)} already exists in members of this chat`, 400));
     }
     isExistingChat.members.push(...validMembers.map(member => new Types.ObjectId(member._id)));
-    yield isExistingChat.save();
+    await isExistingChat.save();
     // Extract old members
     const newMemberIdsSet = new Set(members);
     const oldMembers = isExistingChat.members.filter(member => !newMemberIdsSet.has(member.toString()));
@@ -275,7 +263,7 @@ const addMemberToChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, 
         chatId: isExistingChat._id,
         members: validMembers
     });
-    const transformedChat = yield Chat.aggregate([
+    const transformedChat = await Chat.aggregate([
         {
             $match: {
                 _id: isExistingChat._id
@@ -287,19 +275,18 @@ const addMemberToChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, 
     ]);
     emitEvent(req, Events.NEW_GROUP, members, transformedChat[0]);
     res.status(200).json(validMembers);
-}));
-const removeMemberFromChat = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _o, _p, _q;
+});
+const removeMemberFromChat = asyncErrorHandler(async (req, res, next) => {
     const { id } = req.params;
     const { members } = req.body;
-    const isExistingChat = yield Chat.findById(id);
+    const isExistingChat = await Chat.findById(id);
     if (!isExistingChat) {
         return next(new CustomError("Chat does not exists", 404));
     }
     if (!isExistingChat.isGroupChat) {
         return next(new CustomError("This is not a group chat, you cannot remove members", 400));
     }
-    if (((_o = req.user) === null || _o === void 0 ? void 0 : _o._id.toString()) !== ((_p = isExistingChat.admin) === null || _p === void 0 ? void 0 : _p._id.toString())) {
+    if (req.user?._id.toString() !== isExistingChat.admin?._id.toString()) {
         return next(new CustomError("You are not allowed to remove members as you are not the admin of this chat", 400));
     }
     const existingChatMemberIds = isExistingChat.members.map(member => member._id.toString());
@@ -309,13 +296,12 @@ const removeMemberFromChat = asyncErrorHandler((req, res, next) => __awaiter(voi
     }
     if (isExistingChat.members.length === 3) {
         const publicIdsToBeDestroyed = [];
-        if ((_q = isExistingChat.avatar) === null || _q === void 0 ? void 0 : _q.publicId) {
+        if (isExistingChat.avatar?.publicId) {
             publicIdsToBeDestroyed.push(isExistingChat.avatar.publicId);
         }
-        const messageWithAttachements = yield Message.find({ chat: isExistingChat._id, attachments: { $ne: [] } });
+        const messageWithAttachements = await Message.find({ chat: isExistingChat._id, attachments: { $ne: [] } });
         messageWithAttachements.forEach(message => {
-            var _a;
-            if ((_a = message.attachments) === null || _a === void 0 ? void 0 : _a.length) {
+            if (message.attachments?.length) {
                 const attachmentsPublicId = message.attachments.map(attachment => attachment.publicId);
                 publicIdsToBeDestroyed.push(...attachmentsPublicId);
             }
@@ -326,19 +312,18 @@ const removeMemberFromChat = asyncErrorHandler((req, res, next) => __awaiter(voi
             UnreadMessage.deleteMany({ chat: isExistingChat._id }),
             deleteFilesFromCloudinary(publicIdsToBeDestroyed)
         ];
-        yield Promise.all(chatDeletePromise);
+        await Promise.all(chatDeletePromise);
         emitEvent(req, Events.DELETE_CHAT, existingChatMemberIds, { chatId: isExistingChat._id });
         return res.status(200).json();
     }
-    const isAdminLeavingIndex = members.findIndex(member => { var _a; return ((_a = isExistingChat.admin) === null || _a === void 0 ? void 0 : _a._id.toString()) === member; });
+    const isAdminLeavingIndex = members.findIndex(member => isExistingChat.admin?._id.toString() === member);
     if (isAdminLeavingIndex !== -1) {
         isExistingChat.admin = isExistingChat.members[0];
     }
     isExistingChat.members = isExistingChat.members.filter(existingMember => !members.includes(existingMember._id.toString()));
-    yield isExistingChat.save();
+    await isExistingChat.save();
     emitEvent(req, Events.DELETE_CHAT, members, { chatId: isExistingChat._id });
     emitEvent(req, Events.MEMBER_REMOVED, existingChatMemberIds.filter(id => !members.includes(id)), { chatId: isExistingChat._id, membersId: members });
     return res.status(200).json();
-}));
+});
 export { addMemberToChat, createChat, getUserChats, removeMemberFromChat };
-//# sourceMappingURL=chat.controller.js.map

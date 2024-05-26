@@ -11,4 +11,3 @@ export const addMemberToChatSchema = z.object({
 export const removeMemberfromChat = z.object({
     members: z.string({ required_error: "Atleast one member is required to remove from chat" }).array()
 });
-//# sourceMappingURL=chat.schema.js.map

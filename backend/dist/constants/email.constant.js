@@ -37,4 +37,3 @@ export const otpVerificationBody = (username, otp) => {
     The [Your App Name] Team
     `;
 };
-//# sourceMappingURL=email.constant.js.map

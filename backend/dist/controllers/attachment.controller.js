@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { ACCEPTED_FILE_MIME_TYPES } from "../constants/file.constant.js";
@@ -15,9 +6,8 @@ import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
 import { UnreadMessage } from "../models/unread-message.model.js";
 import { Types } from "mongoose";
-const uploadAttachment = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
-    if (!((_a = req.files) === null || _a === void 0 ? void 0 : _a.length)) {
+const uploadAttachment = asyncErrorHandler(async (req, res, next) => {
+    if (!req.files?.length) {
         return next(new CustomError("Please provide the files", 400));
     }
     const { chatId, memberIds } = req.body;
@@ -33,19 +23,19 @@ const uploadAttachment = asyncErrorHandler((req, res, next) => __awaiter(void 0,
         const invalidFileNames = invalidFiles.map(file => file.originalname).join(', ');
         return next(new CustomError(`Unsupported file types: ${invalidFileNames}`, 400));
     }
-    const uploadResults = yield uploadFilesToCloudinary(attachments);
+    const uploadResults = await uploadFilesToCloudinary(attachments);
     const attachmentsArray = uploadResults.map((result) => {
         return {
             secureUrl: result.secure_url,
             publicId: result.public_id
         };
     });
-    const message = yield new Message({
+    const message = await new Message({
         chat: chatId,
-        sender: (_b = req.user) === null || _b === void 0 ? void 0 : _b._id,
+        sender: req.user?._id,
         attachments: attachmentsArray
     }).populate("sender", ['avatar', "username"]);
-    yield message.save();
+    await message.save();
     const realtimeMessageResponse = {
         _id: message._id.toString(),
         chat: chatId,
@@ -59,19 +49,18 @@ const uploadAttachment = asyncErrorHandler((req, res, next) => __awaiter(void 0,
         updatedAt: message.updatedAt
     };
     emitEvent(req, Events.MESSAGE, memberIds, realtimeMessageResponse);
-    const otherMembers = getOtherMembers({ members: memberIds, user: (_c = req.user) === null || _c === void 0 ? void 0 : _c._id.toString() });
-    const updateOrCreateUnreadMessagePromise = otherMembers.map((memberId) => __awaiter(void 0, void 0, void 0, function* () {
-        var _d;
-        const isExistingUnreadMessage = yield UnreadMessage.findOne({ chat: chatId, user: memberId });
+    const otherMembers = getOtherMembers({ members: memberIds, user: req.user?._id.toString() });
+    const updateOrCreateUnreadMessagePromise = otherMembers.map(async (memberId) => {
+        const isExistingUnreadMessage = await UnreadMessage.findOne({ chat: chatId, user: memberId });
         if (isExistingUnreadMessage) {
             isExistingUnreadMessage.count ? isExistingUnreadMessage.count++ : null;
             isExistingUnreadMessage.message = message._id;
             isExistingUnreadMessage.save();
             return isExistingUnreadMessage;
         }
-        return UnreadMessage.create({ chat: chatId, user: memberId, sender: (_d = req.user) === null || _d === void 0 ? void 0 : _d._id, message: message._id });
-    }));
-    yield Promise.all(updateOrCreateUnreadMessagePromise);
+        return UnreadMessage.create({ chat: chatId, user: memberId, sender: req.user?._id, message: message._id });
+    });
+    await Promise.all(updateOrCreateUnreadMessagePromise);
     const unreadMessageData = {
         chatId: chatId,
         message: {
@@ -85,12 +74,11 @@ const uploadAttachment = asyncErrorHandler((req, res, next) => __awaiter(void 0,
     };
     emitEvent(req, Events.UNREAD_MESSAGE, memberIds, unreadMessageData);
     return res.sendStatus(201).json();
-}));
-const fetchAttachments = asyncErrorHandler((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
+});
+const fetchAttachments = asyncErrorHandler(async (req, res, next) => {
     const { id } = req.params;
     const { page = 1, limit = 6 } = req.query;
-    const pipelineResults = yield Message.aggregate([
+    const pipelineResults = await Message.aggregate([
         {
             $match: {
                 chat: new Types.ObjectId(id),
@@ -118,8 +106,7 @@ const fetchAttachments = asyncErrorHandler((req, res, next) => __awaiter(void 0,
     const result = pipelineResults[0];
     const totalPages = Math.ceil(result.attachments.length / Number(limit));
     const totalAttachments = result.attachments.length;
-    result.attachments = (_e = result.attachments) === null || _e === void 0 ? void 0 : _e.slice((Number(page) - 1) * Number(limit), Number(page) * Number(limit));
-    res.status(200).json(Object.assign(Object.assign({}, result), { totalPages, totalAttachments }));
-}));
+    result.attachments = result.attachments?.slice((Number(page) - 1) * Number(limit), Number(page) * Number(limit));
+    res.status(200).json({ ...result, totalPages, totalAttachments });
+});
 export { uploadAttachment, fetchAttachments };
-//# sourceMappingURL=attachment.controller.js.map

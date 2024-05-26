@@ -7,4 +7,3 @@ export const validate = (schema) => (req, res, next) => {
         next(error);
     }
 };
-//# sourceMappingURL=validate.middleware.js.map

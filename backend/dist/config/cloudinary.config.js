@@ -5,4 +5,3 @@ cloudinary.config({
     api_key: env.CLOUDINARY_API_KEY,
     api_secret: env.CLOUDINARY_API_SECRET
 });
-//# sourceMappingURL=cloudinary.config.js.map

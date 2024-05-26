@@ -7,4 +7,3 @@ export default Router()
     .get("/", verifyToken, getUserDetails)
     .get("/search", verifyToken, getUserByUsername)
     .patch("/", verifyToken, upload.single("avatar"), fileValidation, udpateUser);
-//# sourceMappingURL=user.router.js.map

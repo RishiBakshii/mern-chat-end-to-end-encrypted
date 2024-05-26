@@ -16,4 +16,3 @@ const resetPasswordSchema = new Schema({
     }
 }, { versionKey: false });
 export const ResetPassword = model("Reset-Password", resetPasswordSchema);
-//# sourceMappingURL=reset-password.model.js.map

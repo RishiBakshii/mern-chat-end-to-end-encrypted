@@ -15,4 +15,3 @@ export var Events;
     Events["VOTE_IN"] = "VOTE_IN";
     Events["VOTE_OUT"] = "VOTE_OUT";
 })(Events || (Events = {}));
-//# sourceMappingURL=event.enum.js.map

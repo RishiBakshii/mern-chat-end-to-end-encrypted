@@ -29,7 +29,6 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
   }
 
   useEffect(()=>{
-    alert("messaged changed")
     setLoadingMore(false)
   },[messages])
 

@@ -172,9 +172,10 @@ const redirectHandler = asyncErrorHandler(async(req:AuthenticatedRequest,res:Res
 
     if(req.user){
         sendToken(res,req.user?._id,200,getSecureUserInfo(req.user) as IUser,true)
+        res.redirect(config.clientUrl)
     }
     else{
-        return res.redirect("/")
+        return res.redirect(`${config.clientUrl}/auth/login`)
     }
 })
 

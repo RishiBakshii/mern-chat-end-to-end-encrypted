@@ -1,10 +1,10 @@
-import {Strategy as GoogleStrategy} from 'passport-google-oauth20'
-import passport from 'passport'
-import { User } from '../models/user.model.js';
-import { env } from '../schemas/env.schema.js';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { config } from '../config/env.config.js';
 import { DEFAULT_AVATAR } from '../constants/file.constant.js';
+import { User } from '../models/user.model.js';
+import { env } from '../schemas/env.schema.js';
 
 passport.use(new GoogleStrategy({
     clientID: env.GOOGLE_CLIENT_ID,

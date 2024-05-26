@@ -46,4 +46,3 @@ const messageSchema = new Schema({
     }
 }, { versionKey: false, timestamps: true });
 export const Message = model("Message", messageSchema);
-//# sourceMappingURL=message.model.js.map

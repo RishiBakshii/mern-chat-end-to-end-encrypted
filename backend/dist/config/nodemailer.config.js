@@ -14,4 +14,3 @@ catch (error) {
     console.log(error);
 }
 export { transporter };
-//# sourceMappingURL=nodemailer.config.js.map

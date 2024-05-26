@@ -12,4 +12,3 @@ export const fileValidation = (req, res, next) => {
     }
     return next();
 };
-//# sourceMappingURL=file-validation.middleware.js.map

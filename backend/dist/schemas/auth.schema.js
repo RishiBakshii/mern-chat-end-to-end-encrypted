@@ -22,4 +22,3 @@ export const resetPasswordSchema = z.object({
 export const verifyOtpSchema = z.object({
     otp: z.string({ required_error: "otp is required" })
 });
-//# sourceMappingURL=auth.schema.js.map

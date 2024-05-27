@@ -93,8 +93,6 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
   }
 
   return (
-    <>
-    <h5 className="text-white text-xl">current Page {page}  , max pages {totalPages} , has more {hasMore?"true":"false"}</h5>
     <div ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-scroll">
 
       {messages?.map((message,index) => (
@@ -114,6 +112,5 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
       ))}
 
     </div>
-    </>
   )
 }

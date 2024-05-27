@@ -13,6 +13,7 @@ import { UploadApiResponse } from "cloudinary";
 import { Types } from "mongoose";
 import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 import { UnreadMessage } from "../models/unread-message.model.js";
+import { deleteChat } from "../utils/chat.util.js";
 
 
 export const addUnreadMessagesStage = {
@@ -370,32 +371,6 @@ const removeMemberFromChat = asyncErrorHandler(async(req:AuthenticatedRequest,re
 
 
     if(isExistingChat.members.length===3){
-
-        const publicIdsToBeDestroyed:Array<string> = []
-
-        if(isExistingChat.avatar?.publicId){
-          publicIdsToBeDestroyed.push(isExistingChat.avatar.publicId)
-        }
-
-        const messageWithAttachements = await Message.find({chat:isExistingChat._id,attachments:{$ne:[]}})
-        
-        messageWithAttachements.forEach(message=>{
-
-         if(message.attachments?.length){
-           const attachmentsPublicId = message.attachments.map(attachment=>attachment.publicId)
-           publicIdsToBeDestroyed.push(...attachmentsPublicId)
-         }
-
-        })
-
-        const chatDeletePromise:Array<Promise<any>> = [
-          isExistingChat.deleteOne(),
-          Message.deleteMany({chat:isExistingChat._id}),
-          UnreadMessage.deleteMany({chat:isExistingChat._id}),
-          deleteFilesFromCloudinary(publicIdsToBeDestroyed)
-        ]
-
-        await Promise.all(chatDeletePromise)
 
         emitEvent(req,Events.DELETE_CHAT,existingChatMemberIds,{chatId:isExistingChat._id})
 

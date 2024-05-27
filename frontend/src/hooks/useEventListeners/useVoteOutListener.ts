@@ -17,9 +17,9 @@ export const useVoteOutListener = () => {
         if(selectedChatId){
 
             dispatch(
-                messageApi.util.updateQueryData("getMessagesByChatId",selectedChatId,(draft)=>{
+                messageApi.util.updateQueryData("getMessagesByChatId",{_id:selectedChatId,page:1},(draft)=>{
 
-                    const message = draft.find(draft=>draft._id===_id)
+                    const message = draft.messages.find(draft=>draft._id===_id)
                     
                     if(message && message.isPoll && message.pollOptions){
                         const voteToBeRemovedIndex = message.pollOptions[optionIndex].votes.findIndex(({_id})=>_id===user._id)

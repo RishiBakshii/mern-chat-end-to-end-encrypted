@@ -16,9 +16,9 @@ export const useVoteInListener = () => {
         if(selectedChatId){
 
             dispatch(
-                messageApi.util.updateQueryData("getMessagesByChatId",selectedChatId,(draft)=>{
+                messageApi.util.updateQueryData("getMessagesByChatId",{_id:selectedChatId,page:1},(draft)=>{
     
-                    const message = draft.find(draft=>draft._id===_id)
+                    const message = draft.messages.find(draft=>draft._id===_id)
                     if(message && message.isPoll && message.pollOptions){
                         message.pollOptions[optionIndex].votes.push(user)
                     }

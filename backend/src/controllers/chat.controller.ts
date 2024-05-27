@@ -369,12 +369,8 @@ const removeMemberFromChat = asyncErrorHandler(async(req:AuthenticatedRequest,re
       return next(new CustomError("Please provide valid members to remove",400))
     }
 
-
     if(isExistingChat.members.length===3){
-
-        emitEvent(req,Events.DELETE_CHAT,existingChatMemberIds,{chatId:isExistingChat._id})
-
-        return res.status(200).json()
+      return next(new CustomError("Minimum 3 members are required in a group chat",400))
     }
 
     const isAdminLeavingIndex = members.findIndex(member=>isExistingChat.admin?._id.toString()===member)

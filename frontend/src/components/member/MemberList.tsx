@@ -1,19 +1,21 @@
-import { IChatMember } from "../../interfaces/chat"
+import { IChatMember, IChatWithUnreadMessages } from "../../interfaces/chat"
 import { MemberCard } from "./MemberCard"
 
 type PropTypes = {
     selectable:boolean
+    existingMembers:IChatWithUnreadMessages['members'] | []
     members:Array<IChatMember>
     selectedMembers:Array<string>
     toggleSelection: (memberId: string) => void
 }
 
-export const MemberList = ({members,selectedMembers,selectable,toggleSelection}:PropTypes) => {
+export const MemberList = ({members,selectedMembers,selectable,existingMembers,toggleSelection}:PropTypes) => {
   return (
     <div className="flex flex-col gap-y-2">
         {
             members.map(member=>(
                 <MemberCard
+                  isMemberAlready={existingMembers?.map(member=>member._id).includes(member._id)}
                   selectable={selectable}
                   key={member._id}
                   member={member}

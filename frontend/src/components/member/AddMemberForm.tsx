@@ -22,6 +22,7 @@ export const AddMemberForm = () => {
 
   const handleAddMember = () => {
     if(selectedChatDetails?._id){
+      setSelectedMembers([])
       addMember({_id:selectedChatDetails?._id,members:selectedMembers})
     }
   }
@@ -53,6 +54,7 @@ export const AddMemberForm = () => {
 
         <MemberList
           selectable={true}
+          existingMembers={selectedChatDetails?.members || []}
           members={filteredFriends}
           selectedMembers={selectedMembers}
           toggleSelection={toggleSelection} 

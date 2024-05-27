@@ -1,15 +1,12 @@
 import { useMediaQuery } from "../../hooks/useUtils/useMediaQuery"
-import { ChatHeaderOptions } from "./ChatHeaderOptions"
 
 type PropTypes = {
-  isGroupChat:boolean
   totalMembers:number
   chatName:string
-  openRemoveMemberForm: () => void
   toggleChatDetailsBar: () => void
 }
 
-export const ChatHeader = ({totalMembers,chatName,isGroupChat,openRemoveMemberForm,toggleChatDetailsBar}:PropTypes) => {
+export const ChatHeader = ({totalMembers,chatName,toggleChatDetailsBar}:PropTypes) => {
   
   const is2xl = useMediaQuery(1536)
 
@@ -21,10 +18,6 @@ export const ChatHeader = ({totalMembers,chatName,isGroupChat,openRemoveMemberFo
             <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
         </div>
 
-        <ChatHeaderOptions 
-         isGroupChat={isGroupChat}
-         openRemoveMemberForm={openRemoveMemberForm}
-        />
     </div>
 
   )

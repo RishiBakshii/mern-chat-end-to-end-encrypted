@@ -27,7 +27,6 @@ import { useVoteOutListener } from "../hooks/useEventListeners/useVoteOutListene
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
 import { useClearAdditionalMessagesOnChatChange } from "../hooks/useMessages/useClearAdditionalMessagesOnChatChange"
 import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
-import { useOpenRemoveMemberForm } from "../hooks/useUI/useOpenRemoveMemberForm"
 import { useToggleChatBar } from "../hooks/useUI/useToggleChatBar"
 import { useToggleChatDetailsBar } from "../hooks/useUI/useToggleChatDetailsBar"
 import { useToggleGif } from "../hooks/useUI/useToggleGif"
@@ -87,7 +86,6 @@ export const ChatPage = () => {
    useUpdateUnreadChatAsSeen(selectedChatDetails)
    
    const toggleGif = useToggleGif()
-   const openRemoveMemberForm = useOpenRemoveMemberForm()
    const togglePoolForm = useTogglePoolForm()
  
    const getChatName=useGetChatName()
@@ -144,10 +142,8 @@ export const ChatPage = () => {
                                 selectedChatDetails && chatName &&
 
                                 <ChatHeader
-                                    isGroupChat={selectedChatDetails.isGroupChat}
                                     chatName={chatName}
                                     totalMembers={selectedChatDetails.members.length}
-                                    openRemoveMemberForm={openRemoveMemberForm}
                                     toggleChatDetailsBar={toggleChatDetailsBar}
                                 />
                             }

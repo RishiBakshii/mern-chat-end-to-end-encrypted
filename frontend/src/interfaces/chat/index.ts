@@ -9,6 +9,7 @@ export interface IChatMember {
     _id:string
     username:string
     avatar:string
+    isActive:boolean
 }
 
 export interface IChatWithUnreadMessages {

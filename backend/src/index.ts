@@ -71,6 +71,9 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     socket.broadcast.emit(Events.ONLINE,socket.user?._id)
 
+    const onlineUserIds = Array.from(userSocketIds.keys());
+    socket.emit(Events.ONLINE_USERS, onlineUserIds);
+
     socket.on(Events.MESSAGE,async({chat,content,members,url,isPoll,pollQuestion,pollOptions}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string,members : Array<string>})=>{
 
         // save to db
@@ -301,6 +304,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
     })
 
     socket.on("disconnect",()=>{
+        userSocketIds.delete(socket.user?._id);
         socket.broadcast.emit(Events.OFFLINE,socket.user?._id)
     })
 })

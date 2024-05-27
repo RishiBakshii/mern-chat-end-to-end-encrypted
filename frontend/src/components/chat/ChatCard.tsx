@@ -1,10 +1,15 @@
+import { useEffect, useState } from "react"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { IUnreadMessage } from "../../interfaces/messages"
 import { TypingIndicator } from "../ui/TypingIndicator"
 
 type PropTypes = {
   chatId:string
   chatName:string
+  isGroupChat:boolean
+  members:IChatWithUnreadMessages['members']
   avatar:string
+  loggedInUserId:string
   unreadMessage:IUnreadMessage
   isTyping:boolean
   isMd:boolean
@@ -14,8 +19,7 @@ type PropTypes = {
   clearExtraPreviousMessages: (chatId: string) => void
 }
 
-export const ChatCard = ({chatName,clearExtraPreviousMessages,selectedChatId,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
-  
+export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPreviousMessages,members,selectedChatId,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
 
   const handleChatCardClick = (chatId:string) =>{
 
@@ -32,6 +36,31 @@ export const ChatCard = ({chatName,clearExtraPreviousMessages,selectedChatId,ava
 
   }
 
+  const renderOnlineStatus = () => {
+
+    if (isGroupChat) {
+
+      const onlineMembers = members.filter((member) => member._id !== loggedInUserId && member.isActive).length;
+
+      return onlineMembers > 0 ? 
+        <div className="text-sm text-secondary-darker flex items-center gap-x-1 ml-1">
+          <div className="bg-green-400 h-[10px] w-[10px] rounded-full"/>
+          <p>{onlineMembers} online</p>
+        </div>
+        : 
+       null;
+    } 
+    
+    else {
+      const otherMember = members.find((member) => member._id !== loggedInUserId);
+      return otherMember?.isActive ? 
+        <div className="bg-green-400 h-[10px] w-[10px] rounded-full"/>
+        : 
+        null
+    }
+  };
+
+
   return (
     <div onClick={()=>handleChatCardClick(chatId)} className={` ${selectedChatId===chatId?"bg-secondary-dark":""}  text-text p-1 flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3`}>
 
@@ -42,7 +71,10 @@ export const ChatCard = ({chatName,clearExtraPreviousMessages,selectedChatId,ava
             <div className="flex items-center gap-x-2 justify-between w-full">
 
                 <div className="flex items-center gap-x-2">
-                    <p className="font-medium">{chatName}</p>
+                    <div className="flex items-center gap-x-1">
+                        <p className="font-medium">{chatName}</p>
+                        {renderOnlineStatus()}
+                    </div>
                     {
                       isTyping && 
                       <div className="w-14 max-lg:w-12">

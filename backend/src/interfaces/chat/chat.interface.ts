@@ -14,6 +14,7 @@ export interface IMemberDetails {
     _id:string
     username:string
     avatar:IAvatar
+    isActive?:boolean
 }
 
 export interface IChatWithUnreadMessages extends Omit<IChat, 'members' | 'avatar'>{

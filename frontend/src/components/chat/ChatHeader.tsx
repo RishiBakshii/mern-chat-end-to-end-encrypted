@@ -17,7 +17,7 @@ export const ChatHeader = ({totalMembers,chatName,toggleChatDetailsBar}:PropType
             <h4 className="font-medium text-4xl text-fluid-h4">{chatName}</h4>
             <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
         </div>
-
+        
     </div>
 
   )

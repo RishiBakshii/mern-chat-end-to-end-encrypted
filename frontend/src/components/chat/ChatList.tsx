@@ -1,7 +1,7 @@
-import { memo, useEffect } from "react"
+import { memo } from "react"
+import { useMediaQuery } from "../../hooks/useUtils/useMediaQuery"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { ChatCard } from "./ChatCard"
-import { useMediaQuery } from "../../hooks/useUtils/useMediaQuery"
 
 type PropTypes = {
   chats:Array<IChatWithUnreadMessages>
@@ -24,6 +24,9 @@ export const ChatList = memo(({chats,loggedInUserId,selectedChatId,clearExtraPre
           chats.map(chat=>(
 
             <ChatCard
+              loggedInUserId={loggedInUserId}
+              isGroupChat={chat.isGroupChat}
+              members={chat.members}
               clearExtraPreviousMessages={clearExtraPreviousMessages}
               isMd={isMd}
               selectedChatId={selectedChatId}

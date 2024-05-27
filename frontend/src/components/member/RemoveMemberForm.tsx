@@ -1,22 +1,37 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRemoveMember } from "../../hooks/useMember/useRemoveMember"
-import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
-import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
+import { useAppSelector } from "../../services/redux/store/hooks"
 import { MemberList } from "./MemberList"
-import { setRemoveMemberForm } from "../../services/redux/slices/uiSlice"
+import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
 
 export const RemoveMemberForm = () => {
 
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
-    const loggedInUser = useAppSelector(selectLoggedInUser)
-    const dispatch  = useAppDispatch()
+
+    const loggedInUserId = useAppSelector(selectLoggedInUser)
+
+    const isMemberLength3 = selectedChatDetails && selectedChatDetails?.members.length <= 3
+    const [searchVal,setSearchVal] = useState<string>('')
+    const [filteredMembers,setFilteredMembers] = useState<IChatWithUnreadMessages['members']>([])
+
+    useEffect(()=>{
+
+        if(!searchVal.trim().length && selectedChatDetails){
+            setFilteredMembers(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId?._id))
+        }
+        else{
+            setFilteredMembers(
+                filteredMembers.filter(member=>member.username.toLowerCase().includes(searchVal.toLowerCase()))
+            )
+        }
+    },[searchVal,selectedChatDetails])
 
     const {removeMember} = useRemoveMember()
 
     const [selectedMembers,setSelectedMembers] = useState<Array<string>>([])
     
-
     const toggleSelection = (memberId:string)=>{
         if(selectedMembers.includes(memberId)){
             setSelectedMembers(prev=>prev.filter(member=>member!==memberId))
@@ -29,42 +44,46 @@ export const RemoveMemberForm = () => {
     const handleRemoveMember = ()=>{
 
         if(selectedChatDetails){
+            setSelectedMembers([])
             removeMember({chatId:selectedChatDetails?._id,memberIds:selectedMembers})
         }
-
-        // dispatch(setRemoveMemberForm(false))
-
-    }
-
-    const handleLeaveGroup = ()=>{
-
-        if(selectedChatDetails && loggedInUser){
-            removeMember({chatId:selectedChatDetails._id,memberIds:[loggedInUser._id]})
-        }
-
-        dispatch(setRemoveMemberForm(false))
     }
 
   return (
 
     <div className="flex flex-col gap-y-5">
 
-        <h4 className="text-xl">Remove Member</h4>
-
-        <div className="overflow-y-scroll max-h-52">
+        <div className="flex flex-col gap-y-1">
+            <h4 className="text-xl">Remove Member</h4>
             {
-                selectedChatDetails &&
-                <MemberList
-                    members={selectedChatDetails.members.filter(member=>member._id!==loggedInUser?._id)}
-                    selectedMembers={selectedMembers}
-                    toggleSelection={toggleSelection}
-                />
+                isMemberLength3 &&
+                <p className="text-secondary-darker max-w-[30rem]">You cannot remove any members as group chat requires a minimum of 3 members</p>
             }
         </div>
         
+        <div className="flex flex-col gap-y-4">
+            <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 rounded w-full text-text bg-background outline outline-1 outline-secondary-darker" placeholder="Search Members"/>
+            <div className="overflow-y-scroll max-h-52 ">
+                {
+                    selectedChatDetails &&
+                    <MemberList
+                        selectable={isMemberLength3?false:true}
+                        members={filteredMembers}
+                        selectedMembers={selectedMembers}
+                        toggleSelection={toggleSelection}
+                    />
+                }
+            </div>
+
+        </div>
+        
         <div className="flex flex-col gap-y-2">
-            <button onClick={handleRemoveMember} disabled={selectedMembers.length===0} className="bg-primary text-white py-2 rounded-sm disabled:bg-gray-400">Remove</button>
-            <button onClick={handleLeaveGroup} className="bg-red-500 py-2 rounded-sm text-white">Leave Group</button>
+
+            {
+                selectedMembers.length>0 && 
+                <button onClick={handleRemoveMember} className="bg-red-500 text-white py-2 rounded-sm disabled:bg-gray-400">Remove {selectedMembers.length} {selectedMembers.length===1?"member":"members"}</button>
+            }
+
         </div>
 
     </div>

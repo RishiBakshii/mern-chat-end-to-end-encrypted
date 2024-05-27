@@ -4,6 +4,7 @@ import { AddMemberSection } from "./AddMemberSection"
 import { SharedMedia } from "./SharedMedia"
 import { AvatarList } from "../shared/AvatarList"
 import { IAttachment } from "../../interfaces/attachment"
+import { RemoveMemberSection } from "./RemoveMemberSection"
 
 
 type PropTypes = {
@@ -69,10 +70,17 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat,att
                 </div>
 
                 {
-                  isAdmin && isGroupChat && <AddMemberSection/>
+                  isAdmin && isGroupChat && 
+                  
+                  <>
+                  <AddMemberSection/>
+                  <RemoveMemberSection/>
+                  </>
                 }
 
             </div>
+
+            
             {
               <SharedMedia
                 selectedChatId={selectedChatId}

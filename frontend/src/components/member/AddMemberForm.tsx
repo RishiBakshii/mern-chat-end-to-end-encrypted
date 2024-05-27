@@ -51,7 +51,8 @@ export const AddMemberForm = () => {
 
       <div className="overflow-y-scroll max-h-52">
 
-        <MemberList 
+        <MemberList
+          selectable={true}
           members={filteredFriends}
           selectedMembers={selectedMembers}
           toggleSelection={toggleSelection} 

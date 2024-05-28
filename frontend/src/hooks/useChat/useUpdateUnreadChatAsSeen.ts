@@ -13,8 +13,7 @@ export const useUpdateUnreadChatAsSeen = (selectedChatDetails:IChatWithUnreadMes
 
             const data:IMessageSeenEventPayloadData = 
             {
-                chatId:selectedChatDetails._id,
-                members:selectedChatDetails.members.map(member=>member._id.toString())
+                chatId:selectedChatDetails._id
             }
 
             socket?.emit(Events.MESSAGE_SEEN,data)

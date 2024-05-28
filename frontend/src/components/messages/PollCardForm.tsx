@@ -26,7 +26,6 @@ export const PollCardForm = ({question,options,isMutipleAnswers,selectedChatDeta
 
     const payload:IVoteInEventPayloadData = {
       chatId:selectedChatDetails._id,
-      members:selectedChatDetails.members.map(member=>member._id),
       messageId,
       optionIndex
     } 
@@ -37,7 +36,6 @@ export const PollCardForm = ({question,options,isMutipleAnswers,selectedChatDeta
 
     const payload:IVoteOutEventPayloadData = {
       chatId:selectedChatDetails._id,
-      members:selectedChatDetails.members.map(member=>member._id),
       messageId,
       optionIndex
     } 

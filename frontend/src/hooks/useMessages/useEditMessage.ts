@@ -14,7 +14,7 @@ export const useEditMessage = () => {
         if(selectedChatDetails){
     
             const payload:IEditMessageEventPayloadData = {
-                memberIds:selectedChatDetails.members.map(member=>member._id),
+                chatId:selectedChatDetails._id,
                 messageId:messageId,
                 updatedContent,
             }

@@ -24,8 +24,7 @@ export const useSendMessage = () => {
                     return {option,votes:[]}
                 }),
                 pollQuestion,
-                isMultipleAnswers,
-                members:selectedChatDetails?.members.map(member=>member._id.toString())
+                isMultipleAnswers
             }
             socket?.emit(Events.MESSAGE,newMessage)
         }

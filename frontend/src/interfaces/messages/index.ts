@@ -44,12 +44,10 @@ export interface IMessageEventPayloadData {
     pollQuestion?:string
     pollOptions?:Array<{option:string,votes:Array<string>}>
     isMultipleAnswers?:boolean
-    members:Array<string>
 }
 
 export interface IMessageSeenEventPayloadData {
     chatId:string
-    members:Array<string>
 }
 
 export interface IMessageSeenEventReceiveData {
@@ -67,7 +65,7 @@ export interface IUnreadMessageEventReceiveData {
 export interface IEditMessageEventPayloadData {
     messageId:string,
     updatedContent:string,
-    memberIds:Array<string>
+    chatId:string
 }
 
 export interface IEditMessageEventReceiveData {
@@ -81,7 +79,6 @@ export interface IVoteInEventPayloadData {
     chatId:string
     messageId:string
     optionIndex:number
-    members:Array<string>
 }
 
 export interface IVoteInEventReceiveData {

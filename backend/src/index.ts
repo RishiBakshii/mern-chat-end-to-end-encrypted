@@ -30,6 +30,7 @@ import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middlew
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
 import { getMemberSockets, getOtherMembers } from './utils/socket.util.js'
+import { Chat } from './models/chat.model.js'
 
 
 const app=express()
@@ -65,7 +66,7 @@ app.use("/api/v1/attachment",attachmentRoutes)
 io.use(socketAuthenticatorMiddleware)
 
 // socket
-io.on("connection",(socket:AuthenticatedSocket)=>{
+io.on("connection",async(socket:AuthenticatedSocket)=>{
 
     userSocketIds.set(socket.user?._id.toString(),socket.id)
 
@@ -74,7 +75,12 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
     const onlineUserIds = Array.from(userSocketIds.keys());
     socket.emit(Events.ONLINE_USERS, onlineUserIds);
 
-    socket.on(Events.MESSAGE,async({chat,content,members,url,isPoll,pollQuestion,pollOptions,isMultipleAnswers}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string,members : Array<string>})=>{
+    const userChats = await Chat.find({"members":socket.user?._id},{"_id":1})
+    const chatIds = userChats.map(userChat=>userChat._id.toString())
+    socket.join(chatIds)
+
+
+    socket.on(Events.MESSAGE,async({chat,content,url,isPoll,pollQuestion,pollOptions,isMultipleAnswers}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string})=>{
 
         // save to db
         const newMessage = await Message.create({chat,content,sender:socket.user?._id,url,isPoll,pollQuestion,pollOptions,isMultipleAnswers})
@@ -167,54 +173,58 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             }
         ])
 
-        io.to(getMemberSockets(members)).emit(Events.MESSAGE,transformedMessage[0])
+        io.to(chat).emit(Events.MESSAGE,transformedMessage[0])
 
-        // unread message creation for receivers
-        const memberIds = getOtherMembers({members,user:socket.user?._id.toString()!})
+        // Handle unread messages for receivers
+        const currentChat = await Chat.findById(chat,{members:1,_id:0})
 
-        const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
+        if(currentChat){
+            const currentChatMembers = currentChat.members.map(member=>member._id.toString()) as Array<string>
+            const memberIds = getOtherMembers({members:currentChatMembers,user:socket.user?._id.toString()!})
+            
+            const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
+    
+                const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:memberId})
+    
+                if(isExistingUnreadMessage){
+                    isExistingUnreadMessage.count? isExistingUnreadMessage.count++ : null
+                    isExistingUnreadMessage.message = newMessage._id
+                    isExistingUnreadMessage.save()
+                    return isExistingUnreadMessage
+                }
+    
+               return UnreadMessage.create({chat,user:memberId,sender:socket.user?._id,message:newMessage._id})
+    
+            })
 
-            const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:memberId})
-
-            if(isExistingUnreadMessage){
-                isExistingUnreadMessage.count? isExistingUnreadMessage.count++ : null
-                isExistingUnreadMessage.message = newMessage._id
-                isExistingUnreadMessage.save()
-                return isExistingUnreadMessage
+            await Promise.all(updateOrCreateUnreadMessagePromise)
+    
+            const messageData:IUnreadMessageEventPayload['message'] = {}
+    
+            if(newMessage.isPoll){
+                messageData.poll=true
+            }
+            
+            if(newMessage.url){
+                messageData.url=true
+            }
+    
+            if(newMessage.content?.length){
+                messageData.content=newMessage.content.substring(0,25)
             }
 
-           return UnreadMessage.create({chat,user:memberId,sender:socket.user?._id,message:newMessage._id})
-
-        })
-
-        await Promise.all(updateOrCreateUnreadMessagePromise)
-
-        const messageData:IUnreadMessageEventPayload['message'] = {}
-
-        if(newMessage.isPoll){
-            messageData.poll=true
+            const unreadMessageData:IUnreadMessageEventPayload = {
+                chatId:chat,
+                message:messageData,
+                sender:transformedMessage[0].sender
+            }
+    
+            io.to(chat).emit(Events.UNREAD_MESSAGE,unreadMessageData)
         }
-        
-        if(newMessage.url){
-            messageData.url=true
-        }
-
-        if(newMessage.content?.length){
-            messageData.content=newMessage.content.substring(0,25)
-        }
-        const unreadMessageData:IUnreadMessageEventPayload = 
-        {
-            chatId:chat,
-            message:messageData,
-            sender:transformedMessage[0].sender
-        }
-
-
-        io.to(getMemberSockets(memberIds)).emit(Events.UNREAD_MESSAGE,unreadMessageData)
 
     })
 
-    socket.on(Events.MESSAGE_SEEN,async({chatId,members}:{chatId:string,members:Array<string>})=>{
+    socket.on(Events.MESSAGE_SEEN,async({chatId}:{chatId:string})=>{
 
         const areUnreadMessages = await UnreadMessage.findOne({chat:chatId,user:socket.user?._id})   
 
@@ -224,8 +234,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             await areUnreadMessages.save()
         }
 
-        const memberSocketIds = getMemberSockets(members)
-        io.to(memberSocketIds).emit(Events.MESSAGE_SEEN,{
+        io.to(chatId).emit(Events.MESSAGE_SEEN,{
 
             user:{
                 _id:socket.user?._id,
@@ -238,17 +247,20 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
 
     })
 
-    socket.on(Events.MESSAGE_EDIT,async({messageId,updatedContent,memberIds}:{messageId:string,updatedContent:string,memberIds:Array<string>})=>{
+    socket.on(Events.MESSAGE_EDIT,async({messageId,updatedContent,chatId}:{messageId:string,updatedContent:string,chatId:string})=>{
         
-        const updatedMessage = await Message.findByIdAndUpdate(messageId,{isEdited:true,content:updatedContent},{new:true,projection:['chat','content','isEdited']})
-        io.to(getMemberSockets(memberIds)).emit(Events.MESSAGE_EDIT,updatedMessage)
+        const updatedMessage = await Message.findByIdAndUpdate(
+            messageId,
+            {isEdited:true,content:updatedContent},
+            {new:true,projection:['chat','content','isEdited']}
+        )
+
+        io.to(chatId).emit(Events.MESSAGE_EDIT,updatedMessage)
     })
 
-    socket.on(Events.USER_TYPING,({chatId,members}:{chatId:string,members:Array<string>})=>{
-        const otherMembers = getOtherMembers({members,user:socket.user?._id.toString()!})
-        const otherMemberSockets = getMemberSockets(otherMembers)
+    socket.on(Events.USER_TYPING,({chatId}:{chatId:string})=>{
 
-        io.to(otherMemberSockets).emit(Events.USER_TYPING,{
+        io.to(chatId).emit(Events.USER_TYPING,{
             user:{
                 _id:socket.user?._id.toString(),
                 username:socket.user?.username,
@@ -258,7 +270,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
         })
     })
 
-    socket.on(Events.VOTE_IN,async({chatId,members,messageId,optionIndex}:{chatId:string,messageId:string,optionIndex:number,members:Array<string>})=>{
+    socket.on(Events.VOTE_IN,async({chatId,messageId,optionIndex}:{chatId:string,messageId:string,optionIndex:number})=>{
         
         const message = await Message.findOneAndUpdate(
             { chat: chatId, _id: messageId },
@@ -278,11 +290,11 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             user:userInfo
         }
 
-        io.to(getMemberSockets(members)).emit(Events.VOTE_IN,payload)
+        io.to(chatId).emit(Events.VOTE_IN,payload)
 
     })
 
-    socket.on(Events.VOTE_OUT,async({chatId,members,messageId,optionIndex}:{chatId:string,messageId:string,optionIndex:number,members:Array<string>})=>{
+    socket.on(Events.VOTE_OUT,async({chatId,messageId,optionIndex}:{chatId:string,messageId:string,optionIndex:number})=>{
         
         const message = await Message.findOneAndUpdate(
             { chat: chatId, _id: messageId },
@@ -300,7 +312,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
             user:userInfo
         }
 
-        io.to(getMemberSockets(members)).emit(Events.VOTE_OUT,payload)
+        io.to(chatId).emit(Events.VOTE_OUT,payload)
 
     })
 

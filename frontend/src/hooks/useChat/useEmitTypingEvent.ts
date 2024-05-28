@@ -16,8 +16,7 @@ export const useEmitTypingEvent = (isTyping:string) => {
 
             const data:IUserTypingEventPayloadData = 
             {
-                chatId:selectedChatDetails._id,
-                members:selectedChatDetails.members.map(member=>member._id)
+                chatId:selectedChatDetails._id
             }
 
             socket?.emit(Events.USER_TYPING,data)

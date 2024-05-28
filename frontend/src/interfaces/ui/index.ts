@@ -16,4 +16,5 @@ export interface IUi {
     pollForm:boolean
     viewVotes:boolean
     votesData:Pick<IMessage, 'pollQuestion' | 'pollOptions'> | null
+    chatUpdateForm:boolean
 }

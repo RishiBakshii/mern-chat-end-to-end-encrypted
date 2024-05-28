@@ -19,7 +19,8 @@ const initialState:IUi = {
     chatDetailsBar:false,
     pollForm:false,
     viewVotes:false,
-    votesData:null
+    votesData:null,
+    chatUpdateForm:false
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -73,6 +74,9 @@ const uiSlice = createSlice({
         setVotesData:(state,action:PayloadAction<Pick<IMessage,'pollQuestion' | 'pollOptions'>>)=>{
             state.votesData=action.payload
         },
+        setChatUpdateForm:(state,action:PayloadAction<boolean>)=>{
+            state.chatUpdateForm=action.payload
+        },
     }
 })
 
@@ -92,6 +96,7 @@ export const selectChatDetailsBar = (state:RootState)=>state.uiSlice.chatDetails
 export const selectPollForm = (state:RootState)=>state.uiSlice.pollForm
 export const selectViewVotes = (state:RootState)=>state.uiSlice.viewVotes
 export const selectVotesData = (state:RootState)=>state.uiSlice.votesData
+export const selectChatUpdateForm = (state:RootState)=>state.uiSlice.chatUpdateForm
 
 // exporting actions
 export const {
@@ -111,6 +116,7 @@ export const {
     setPollForm,
     setViewVotes,
     setVotesData,
+    setChatUpdateForm,
 } = uiSlice.actions
 
 export default uiSlice

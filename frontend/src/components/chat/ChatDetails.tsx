@@ -1,10 +1,10 @@
-import { IChatWithUnreadMessages } from "../../interfaces/chat"
-import { Avatar } from "../ui/Avatar"
-import { AddMemberSection } from "./AddMemberSection"
-import { SharedMedia } from "./SharedMedia"
-import { AvatarList } from "../shared/AvatarList"
 import { IAttachment } from "../../interfaces/attachment"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
+import { AvatarList } from "../shared/AvatarList"
+import { AddMemberSection } from "./AddMemberSection"
+import { ChatDetailsHeader } from "./ChatDetailsHeader"
 import { RemoveMemberSection } from "./RemoveMemberSection"
+import { SharedMedia } from "./SharedMedia"
 
 
 type PropTypes = {
@@ -32,21 +32,14 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat,att
             </svg>
         </button>
 
-        <h5 className="font-medium text-xl text-fluid-h5">Chat Details</h5>
-        
         <div className="flex flex-col gap-y-4 items-center">
 
-            <Avatar
-              alt="chat avatar"
-              imgUrl={chatAvatar}
-              width={20}
-              height={20}
+            <ChatDetailsHeader
+              isAdmin={isAdmin}
+              avatar={chatAvatar}
+              chatName={chatName}
+              membersLength={members.length}
             />
-
-            <div className="flex flex-col justify-center items-center">
-                <h4 className="text-lg font-medium">{chatName}</h4>
-                <p className="text-secondary-darker">{members?.length} members</p>
-            </div>
             
         </div>
 

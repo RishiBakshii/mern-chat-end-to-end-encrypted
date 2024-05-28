@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import type { AuthenticatedRequest, IUser } from "../interfaces/auth/auth.interface.js";
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
-import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType } from "../schemas/chat.schema.js";
+import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType, updateChatSchemaType } from "../schemas/chat.schema.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { Message } from "../models/message.model.js";
 import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
@@ -389,4 +389,57 @@ const removeMemberFromChat = asyncErrorHandler(async(req:AuthenticatedRequest,re
 
 })
 
-export { addMemberToChat, createChat, getUserChats, removeMemberFromChat };
+const updateChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const { id } = req.params
+    const { name }:updateChatSchemaType = req.body;
+    const avatar = req.file
+
+    if(!name && !avatar){
+      return next(new CustomError("Either avatar or name is required for updating a chat, please provide one"))
+    }
+
+    const chat = await Chat.findOne({_id:id})
+
+    console.log(chat);
+
+    if(!chat?.isGroupChat){
+      return next(new CustomError("You cannot update a private chat",400))
+    }
+
+    if (!chat) {
+        return next(new CustomError("chat not found",404))
+    }
+
+    if (name) chat.name = name;
+
+    if(avatar){
+            
+      if(chat.avatar?.publicId){
+        await deleteFilesFromCloudinary([chat.avatar.publicId])
+      }
+      
+      const uploadResult = await uploadFilesToCloudinary([avatar])
+
+      if(chat.avatar){
+        chat.avatar.publicId = uploadResult[0].public_id
+        chat.avatar.secureUrl = uploadResult[0].secure_url
+      }
+
+    }
+
+    await chat.save();
+
+    const updatedChatInfo:{name?:string,secureUrl?:string} = {}
+
+    if(name){
+      updatedChatInfo.name = chat.name 
+    }
+    if(avatar){
+      updatedChatInfo.secureUrl = chat.avatar?.secureUrl
+    }
+
+    return res.status(200).json(updatedChatInfo)
+})
+
+export { addMemberToChat, createChat, getUserChats, removeMemberFromChat, updateChat };

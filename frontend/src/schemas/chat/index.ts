@@ -6,6 +6,7 @@ const groupChatSchema = z.object({
     .max(25,{message:"Name cannot be more than 30 characters"}), 
 })
 
+
 type GroupChatSchemaType = z.infer<typeof groupChatSchema>
 
 export {

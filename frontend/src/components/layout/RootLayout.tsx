@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { resetAttachments, selectAddFriendForm, selectAddMemberForm, selectAttachments, selectFriendRequestForm, selectGifForm, selectGroupChatForm, selectPollForm, selectProfileForm, selectRemoveMemberForm, selectViewVotes, setAddFriendForm, setAddMemberForm, setFriendRequestForm, setGifForm, setNewgroupChatForm, setPollForm, setProfileForm, setRemoveMemberForm, setViewVotes } from "../../services/redux/slices/uiSlice"
+import { resetAttachments, selectAddFriendForm, selectAddMemberForm, selectAttachments, selectChatUpdateForm, selectFriendRequestForm, selectGifForm, selectGroupChatForm, selectPollForm, selectProfileForm, selectRemoveMemberForm, selectViewVotes, setAddFriendForm, setAddMemberForm, setChatUpdateForm, setFriendRequestForm, setGifForm, setNewgroupChatForm, setPollForm, setProfileForm, setRemoveMemberForm, setViewVotes } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 import { GroupChatForm } from "../chat/GroupChatForm"
 import { TenorGifForm } from "../chat/TenorGifForm"
@@ -13,6 +13,7 @@ import { AttachmentPreview } from "../ui/AttachmentPreview"
 import { ProfileForm } from "../user/ProfileForm"
 import { PollForm } from "../messages/PollForm"
 import { ViewVotes } from "../messages/ViewVotes"
+import { ChatUpdateForm } from "../chat/ChatUpdateForm"
 
 export const RootLayout = () => {
 
@@ -66,6 +67,10 @@ export const RootLayout = () => {
 
       <Modal isOpen={useAppSelector(selectViewVotes)} onClose={()=>dispatch(setViewVotes(false))}>
         <ViewVotes/>
+      </Modal>
+
+      <Modal isOpen={useAppSelector(selectChatUpdateForm)} onClose={()=>dispatch(setChatUpdateForm(false))}>
+        <ChatUpdateForm/>
       </Modal>
     </>
   )

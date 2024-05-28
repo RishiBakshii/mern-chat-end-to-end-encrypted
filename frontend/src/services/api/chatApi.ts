@@ -46,6 +46,26 @@ export const chatApi = createApi({
                 }
               },
         }),
+        updateChat:builder.mutation<Partial<Pick<IChatWithUnreadMessages, 'name' | 'avatar'>>,{chatId:string,avatar?:Blob,name?:string}>({
+            query:({avatar,name,chatId})=>{
+                
+                const formData = new FormData()
+                
+                if(avatar){
+                    formData.append('avatar',avatar)
+                }
+
+                if(name){
+                    formData.append("name",name)
+                }
+
+                return {
+                    url: `/chat/${chatId}`,
+                    method: "PATCH",
+                    body: formData,
+                };
+            }
+        }),
         addMember:builder.mutation<IChatWithUnreadMessages,{members:Array<string>,_id:string}>({
             query:({_id,members})=>({
                 url:`/chat/${_id}/members`,
@@ -68,5 +88,6 @@ export const {
     useGetChatsQuery,
     useCreateChatMutation,
     useAddMemberMutation,
-    useRemoveMemberMutation
+    useRemoveMemberMutation,
+    useUpdateChatMutation,
 } = chatApi

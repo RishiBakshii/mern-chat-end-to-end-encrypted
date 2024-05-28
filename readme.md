@@ -13,6 +13,7 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 - **🟢 User Presence**: See who's online and available for chat in real-time.
 - **⌨️ Typing Indicators**: See when other users are typing to enhance communication flow.
 - **✔️ Message Seen Status**: Know when your messages have been seen by other users.
+- **📊 Polling**: Send polls with either multiple votes set to true or false, allowing users to gather opinions and feedback.
 - **📁 File Sharing**: Share files and documents securely within chats.
 - **🎉 GIF Sending**: Express yourself with animated GIFs using the integrated Tenor GIF library.
 

@@ -80,6 +80,7 @@ const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFu
                 isPoll: { $first: "$isPoll" },
                 pollQuestion: { $first: "$pollQuestion" },
                 pollOptions: { $push: "$pollOptions" },
+                isMultipleAnswers: { $first: "$isMultipleAnswers" },
                 url: { $first: "$url" },
                 attachments: { $first: "$attachments" },
                 content: { $first: "$content" },

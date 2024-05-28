@@ -12,7 +12,6 @@ export const useVoteOutListener = () => {
     const selectedChatId = useAppSelector(selectSelectedChatId)
     
     useSocketEvent(Events.VOTE_OUT,({_id,optionIndex,user}:IVoteOutEventReceiveData)=>{
-        console.log('vote out event data',{_id,optionIndex,user});
 
         if(selectedChatId){
 

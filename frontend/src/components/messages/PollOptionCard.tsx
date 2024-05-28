@@ -4,14 +4,15 @@ import { Avatar } from "../ui/Avatar"
 type PropTypes = {
     index:number
     option:IPollOption
-    totalOptions:number
+    totalOptions:Array<IPollOption>
     messageId:string
     loggedInUserId:string
+    isMutipleAnswers:boolean
     handleVoteIn: ({ messageId, optionIndex }: Pick<IVoteInEventPayloadData, 'messageId' | "optionIndex">) => void  
     handleVoteOut: ({ messageId, optionIndex }: Pick<IVoteInEventPayloadData, 'messageId' | "optionIndex">) => void  
 }
 
-export const PollOptionCard = ({option,handleVoteIn,handleVoteOut,index,messageId,loggedInUserId,totalOptions}:PropTypes) => {
+export const PollOptionCard = ({option,handleVoteIn,handleVoteOut,isMutipleAnswers,index,messageId,loggedInUserId,totalOptions}:PropTypes) => {
 
     const handleVoteClick = ()=>{
         const doesVoteExists = option.votes.findIndex(vote=>vote._id===loggedInUserId)
@@ -20,13 +21,25 @@ export const PollOptionCard = ({option,handleVoteIn,handleVoteOut,index,messageI
             handleVoteOut({messageId,optionIndex:index})
         }
         else{
+            if (!isMutipleAnswers) {
+                
+                for (let i = 0; i < totalOptions.length; i++) {
+                    const currentOption = totalOptions[i];
+                    const previousVoteIndex = currentOption.votes.findIndex(vote => vote._id === loggedInUserId);
+                    if (previousVoteIndex !== -1) {
+                        handleVoteOut({ messageId, optionIndex: i });
+                        break;
+                    }
+                }
+            }
+    
             handleVoteIn({messageId,optionIndex:index})
         }
 
     }
 
     const calculateVotePercentage = ()=>{
-        const percentage = option.votes.length/totalOptions * 100
+        const percentage = option.votes.length/totalOptions.length * 100
         return Math.round(percentage)
     }
 

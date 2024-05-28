@@ -67,6 +67,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,loggedInUs
             {
                 message.isPoll && message.pollQuestion &&
                 <PollCardForm
+                   isMutipleAnswers={message?.isMultipleAnswers?true:false}
                    loggedInUserId={loggedInUserId}
                    messageId={message._id}
                    selectedChatDetails={selectedChatDetails}

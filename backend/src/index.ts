@@ -74,10 +74,10 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
     const onlineUserIds = Array.from(userSocketIds.keys());
     socket.emit(Events.ONLINE_USERS, onlineUserIds);
 
-    socket.on(Events.MESSAGE,async({chat,content,members,url,isPoll,pollQuestion,pollOptions}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string,members : Array<string>})=>{
+    socket.on(Events.MESSAGE,async({chat,content,members,url,isPoll,pollQuestion,pollOptions,isMultipleAnswers}:Omit<IMessage , "sender" | "chat" | "attachments"> & {chat:string,members : Array<string>})=>{
 
         // save to db
-        const newMessage = await Message.create({chat,content,sender:socket.user?._id,url,isPoll,pollQuestion,pollOptions})
+        const newMessage = await Message.create({chat,content,sender:socket.user?._id,url,isPoll,pollQuestion,pollOptions,isMultipleAnswers})
         
         const transformedMessage  = await Message.aggregate([
             {
@@ -153,6 +153,7 @@ io.on("connection",(socket:AuthenticatedSocket)=>{
                   pollOptions: {
                     $push: "$pollOptions"  // Push each unwound pollOption into the array
                   },
+                  isMultipleAnswers: { $first: "$isMultipleAnswers" },
     
                   attachments: { $first: "$attachments" },  // Keep the first attachments array (optional)
                   createdAt: { $first: "$createdAt" },  // Keep the first createdAt timestamp

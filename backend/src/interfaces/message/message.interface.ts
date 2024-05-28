@@ -16,6 +16,7 @@ export interface IMessage {
     isPoll?:boolean
     pollQuestion?:string
     pollOptions?:Array<{option:string,votes:Array<Types.ObjectId>}>
+    isMultipleAnswers?:boolean
     isEdited?:boolean
     createdAt:Date
     updatedAt:Date

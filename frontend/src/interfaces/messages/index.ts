@@ -20,6 +20,7 @@ export interface IMessage {
     isPoll?:boolean
     pollQuestion?:string
     pollOptions?:Array<IPollOption>
+    isMultipleAnswers?:boolean
     createdAt:Date
     updatedAt:Date
 }
@@ -42,6 +43,7 @@ export interface IMessageEventPayloadData {
     isPoll?:boolean
     pollQuestion?:string
     pollOptions?:Array<{option:string,votes:Array<string>}>
+    isMultipleAnswers?:boolean
     members:Array<string>
 }
 

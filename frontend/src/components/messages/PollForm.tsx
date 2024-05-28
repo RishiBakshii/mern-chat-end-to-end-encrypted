@@ -6,6 +6,8 @@ import { pollSchema, pollSchemaType } from "../../schemas/message"
 import { FormInput } from "../ui/FormInput"
 import { SubmitButton } from "../ui/SubmitButton"
 import { useTogglePoolForm } from "../../hooks/useUI/useTogglePoolForm"
+import { ToggleSwitch } from "../ui/ToggleSwitch"
+import { useState } from "react"
 
 export const PollForm = () => {
 
@@ -14,6 +16,7 @@ export const PollForm = () => {
   const sendMessage = useSendMessage()
   const togglePollForm = useTogglePoolForm()
 
+  const [isMultipleAnswers,setIsMultipleAnswers] = useState<boolean>(false)
 
   const { register, handleSubmit,control,formState: { errors } } = useForm<pollSchemaType>({resolver:zodResolver(pollSchema)})
 
@@ -43,7 +46,7 @@ export const PollForm = () => {
         return 
       }
 
-      sendMessage(undefined,undefined,question,options.map(option=>option.optionValue))
+      sendMessage(undefined,undefined,question,options.map(option=>option.optionValue),isMultipleAnswers)
       togglePollForm()
   }
 
@@ -87,6 +90,20 @@ export const PollForm = () => {
                 />
 
               ))
+            }
+
+            {
+              fields.length>1 && 
+
+              <div className="flex items-center justify-between">
+
+                  <p>Allow multiple answers</p>
+
+                  <ToggleSwitch
+                    initialValue={isMultipleAnswers}
+                    toggle={()=>setIsMultipleAnswers(!isMultipleAnswers)}
+                  />
+              </div>
             }
         </div>
 

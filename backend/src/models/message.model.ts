@@ -44,6 +44,9 @@ const messageSchema = new Schema<IMessage>({
             }
         ]
     },
+    isMultipleAnswers:{
+        type:Boolean
+    },
     isEdited:{
         type:Boolean
     }

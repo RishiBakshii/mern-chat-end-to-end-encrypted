@@ -12,9 +12,10 @@ type PropTypes = {
     options:IMessage['pollOptions']
     selectedChatDetails:IChatWithUnreadMessages
     loggedInUserId:string
+    isMutipleAnswers:boolean
 }
 
-export const PollCardForm = ({question,options,selectedChatDetails,messageId,loggedInUserId}:PropTypes) => {
+export const PollCardForm = ({question,options,isMutipleAnswers,selectedChatDetails,messageId,loggedInUserId}:PropTypes) => {
 
   const socket = getSocket()
 
@@ -55,7 +56,8 @@ export const PollCardForm = ({question,options,selectedChatDetails,messageId,log
 
         <h6 className="text-lg font-medium">{question}</h6>
 
-        <PollOptionList 
+        <PollOptionList
+          isMutipleAnswers={isMutipleAnswers} 
           loggedInUserId={loggedInUserId}
           messageId={messageId}
           handleVoteIn={handleVoteIn}

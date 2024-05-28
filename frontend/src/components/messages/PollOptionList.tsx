@@ -5,17 +5,19 @@ type PropTypes = {
     options:IMessage['pollOptions']
     messageId:string
     loggedInUserId:string
+    isMutipleAnswers:boolean
     handleVoteIn: ({ messageId, optionIndex }: Pick<IVoteInEventPayloadData, 'messageId' | "optionIndex">) => void
     handleVoteOut: ({ messageId, optionIndex }: Pick<IVoteInEventPayloadData, 'messageId' | "optionIndex">) => void
 }
 
-export const PollOptionList = ({options,handleVoteIn,handleVoteOut,messageId,loggedInUserId}:PropTypes) => {
+export const PollOptionList = ({options,handleVoteIn,isMutipleAnswers,handleVoteOut,messageId,loggedInUserId}:PropTypes) => {
   return (
     <div className="flex flex-col gap-y-3">
         {
             options?.map((option,index)=>(
                 <PollOptionCard
-                  totalOptions={options.length}
+                  isMutipleAnswers={isMutipleAnswers}
+                  totalOptions={options}
                   loggedInUserId={loggedInUserId}
                   key={index}
                   index={index}

@@ -10,9 +10,9 @@ export const useSendMessage = () => {
     const socket = getSocket()
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
     
-    return (messageVal?:string,url?:string,pollQuestion?:string,pollOptions?:Array<string>)=>{
+    return (messageVal?:string,url?:string,pollQuestion?:string,pollOptions?:Array<string>,isMultipleAnswers?:boolean)=>{
 
-        if(selectedChatDetails && (messageVal || url || pollOptions || pollQuestion)){
+        if(selectedChatDetails && (messageVal || url || pollOptions || pollQuestion || isMultipleAnswers)){
     
             const newMessage:IMessageEventPayloadData =  
             {
@@ -24,6 +24,7 @@ export const useSendMessage = () => {
                     return {option,votes:[]}
                 }),
                 pollQuestion,
+                isMultipleAnswers,
                 members:selectedChatDetails?.members.map(member=>member._id.toString())
             }
             socket?.emit(Events.MESSAGE,newMessage)

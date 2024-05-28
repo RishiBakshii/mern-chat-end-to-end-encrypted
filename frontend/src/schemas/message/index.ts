@@ -10,8 +10,7 @@ const pollSchema  = z.object({
         optionValue:z.string()
             .min(1,{message:"Option cannot be shorter than 1 character"})
             .max(40,{message:"Option cannot be longer than 40 characters"})
-    }).array()
-
+    }).array(),
 
 })
 

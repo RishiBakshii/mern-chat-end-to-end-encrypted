@@ -1,3 +1,4 @@
+import {motion} from 'framer-motion'
 
 type PropTypes = {
   messageVal: string;
@@ -13,9 +14,10 @@ export const MessageInput = ({ messageVal, setMessageVal,toggleCallInForm,toggle
     <div className="flex bg-secondary rounded-xl text-text">
       
       <button type="button" onClick={toggleCallInForm}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-        </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+</svg>
+
       </button>
 
       <div className="px-3 py-4 justify-center items-center flex relative ">
@@ -26,7 +28,7 @@ export const MessageInput = ({ messageVal, setMessageVal,toggleCallInForm,toggle
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 text-secondary-darker cursor-pointer"
+            className="w-6 h-6 text-secondary-darker cursor-pointer hover:text-primary"
           >
             <path
               strokeLinecap="round"
@@ -79,14 +81,14 @@ export const MessageInput = ({ messageVal, setMessageVal,toggleCallInForm,toggle
       </button>
 
       {messageVal?.trim().length > 0 && (
-        <button type="submit" className="px-3 py-4">
+        <motion.button initial={{x:5,opacity:0,position:"fixed"}} animate={{x:0,opacity:1,position:"static"}} type="submit" className="px-3 py-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 text-secondary-darker"
+            className="w-6 h-6 text-white hover:text-primary"
           >
             <path
               strokeLinecap="round"
@@ -94,7 +96,7 @@ export const MessageInput = ({ messageVal, setMessageVal,toggleCallInForm,toggle
               d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
             />
           </svg>
-        </button>
+        </motion.button>
       )}
     </div>
   );

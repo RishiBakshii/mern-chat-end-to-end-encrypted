@@ -48,6 +48,7 @@ import { useSpectatorJoinedListener } from "../hooks/useEventListeners/useSpecta
 import { useCallOut } from "../hooks/useCallIn/useCallOut"
 import { ICallOutEventPayloadData } from "../interfaces/callIn"
 import { useDispatchRemoveSpectatorById } from "../hooks/useCallIn/useDispatchRemoveSpectatorById"
+import { TypingIndicatorWithUserList } from "../components/chat/TypingIndicatorWithUserList"
 
 export const ChatPage = () => {
 
@@ -165,9 +166,11 @@ export const ChatPage = () => {
                         <div className="flex flex-col gap-y-3 h-full">
                             
                             {
-                                selectedChatDetails && chatName && loggedInUser && chatName &&
+                                selectedChatDetails && chatName && loggedInUser && chatName && chatAvatar && 
 
                                 <ChatHeader
+                                    isGroupChat={selectedChatDetails.isGroupChat}
+                                    chatAvatar={chatAvatar}
                                     selectedChatName={chatName}
                                     loggedInUserId={loggedInUser._id}
                                     chatName={chatName}
@@ -191,13 +194,6 @@ export const ChatPage = () => {
                                     fetchMoreMessages={handleFetchMoreMessages}
                                 />
                             }
-                                
-                            {/* <SeenByList members={selectedChatDetails.seenBy}/>
-
-                            <TypingIndicatorWithUserList 
-                                isGroupChat={selectedChatDetails.isGroupChat}
-                                users={selectedChatDetails.userTyping}
-                            /> */}
                             
                             {
                                 selectedChatDetails &&

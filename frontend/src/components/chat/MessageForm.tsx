@@ -1,15 +1,16 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { ACCEPTED_FILE_MIME_TYPES } from "../../constants"
 import { useEmitTypingEvent } from "../../hooks/useChat/useEmitTypingEvent"
 import { useSendMessage } from "../../hooks/useMessages/useSendMessage"
 import { useToast } from "../../hooks/useUI/useToast"
+import { useToggleCallInForm } from "../../hooks/useUI/useToggleCallInForm"
 import { useDebounce } from "../../hooks/useUtils/useDebounce"
 import { useSendAttachmentsMutation } from "../../services/api/attachmentApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
 import { MessageInput } from "../ui/MessageInput"
-import { useToggleCallInForm } from "../../hooks/useUI/useToggleCallInForm"
 
 type PropTypes = {
   toggleGif:()=>void
@@ -123,29 +124,33 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
             <div className="flex flex-wrap gap-2 mb-5">
               {
                   attachmentsPreview.map((preview,index)=>(
-                    <div className="relative">
+                    <motion.div whileHover={{scale:1.050,y:-5}} className="relative">
                       <button onClick={()=>handleRemoveSelectedAttachment(index)} className="absolute bg-gray-300 rounded-full w-7 h-7 -right-2 -top-2">-</button>
                       <img className="w-20 h-20 object-cover" src={preview} alt="" />
-                    </div>
+                    </motion.div>
                   ))
               }
-
             </div>
 
-            <button type="button" onClick={handleUploadAttachments} className="px-4 py-2 bg-primary text-white rounded-sm shadow-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
-                </svg>
-            </button>
+            <motion.button type="button" onClick={handleUploadAttachments} className="p-4 bg-primary text-white rounded-full shadow-xl">
+                
+                <div className="flex items-center gap-x-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 shrink-0">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+                  </svg>
+                  <p className="hidden">Uploading</p>
+                </div>
+            </motion.button>
 
 
           </div>
         }
 
+        <AnimatePresence>
         {
           attachmentsMenu && 
 
-          <div className="bg-secondary-dark p-4 w-36 rounded-md absolute -top-28 flex justify-between">
+          <motion.div variants={{hide:{y:40,opacity:0},show:{y:0,opacity:1}}} initial="hide" exit={"hide"} animate="show" className="bg-secondary-dark p-4 w-36 rounded-md absolute -top-28 flex justify-between">
 
             <div className="flex flex-col items-center relative">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-text">
@@ -162,10 +167,9 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
               <p className="text-text">Poll</p>
             </div>
 
-
-
-          </div>
+          </motion.div>
         }
+        </AnimatePresence>
 
         <MessageInput
          toggleCallInForm={toggleCallInForm}

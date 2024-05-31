@@ -93,7 +93,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
   }
 
   return (
-    <div ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto">
+    <div ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto overflow-x-hidden">
 
       {messages?.map((message,index) => (
         <MessageCard
@@ -110,6 +110,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
           selectedChatDetails={selectedChatDetails}
         />
       ))}
+
 
     </div>
   )

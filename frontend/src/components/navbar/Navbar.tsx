@@ -17,6 +17,7 @@ import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
+import {AnimatePresence, motion} from 'framer-motion'
 
 export const Navbar = () => {
 
@@ -106,21 +107,23 @@ export const Navbar = () => {
                    alt={`${loggedInUser?.username} avatar`}
                   />
                   
-                  {
-                    isNavMenuOpen && 
+                  <AnimatePresence>
+                    {
+                      isNavMenuOpen && 
 
-                    <div className="bg-secondary-dark w-[15rem] max-lg:md:right-28 max-md:right-1 self-end fixed rounded-lg shadow-2xl p-4 z-50">
+                      <motion.div variants={{hide:{y:-5,opacity:0},show:{y:0,opacity:1}}} initial="hide" animate="show" exit="hide"  className="bg-secondary-dark w-[15rem] max-lg:md:right-28 max-md:right-1 self-end fixed rounded-lg shadow-2xl p-4 z-50">
 
-                      <NavMenu 
-                       openProfileForm={openProfileForm}
-                       openAddFriendForm={openAddFriendForm}
-                       openNewGroupChatForm={openNewGroupChatForm}
-                       logoutUser={logoutUser}
-                      />
+                        <NavMenu 
+                        openProfileForm={openProfileForm}
+                        openAddFriendForm={openAddFriendForm}
+                        openNewGroupChatForm={openNewGroupChatForm}
+                        logoutUser={logoutUser}
+                        />
 
-                    </div>
+                      </motion.div>
 
-                  }
+                    }
+                  </AnimatePresence>
               </div>
 
       </div>

@@ -9,11 +9,13 @@ type PropTypes = {
   loggedInUserId:string
   totalMembers:number
   chatName:string
+  chatAvatar:string
+  isGroupChat:boolean
   spectators:Array<ISpectator>
   toggleChatDetailsBar: () => void
 }
 
-export const ChatHeader = ({loggedInUserId,selectedChatName,totalMembers,chatName,spectators,handleCallOut,toggleChatDetailsBar}:PropTypes) => {
+export const ChatHeader = ({loggedInUserId,selectedChatName,totalMembers,chatName,chatAvatar,isGroupChat,spectators,handleCallOut,toggleChatDetailsBar}:PropTypes) => {
   
   const is2xl = useMediaQuery(1536)
   
@@ -22,13 +24,19 @@ export const ChatHeader = ({loggedInUserId,selectedChatName,totalMembers,chatNam
 
         <div onClick={()=>is2xl?toggleChatDetailsBar():""} className="flex flex-col gap-y-1">
 
-          <div className="flex items-center gap-x-5">
-              <h4 className="font-medium text-4xl text-fluid-h4">{chatName}</h4>
+          <div className="flex gap-x-3">
+              <Avatar imgUrl={chatAvatar} height={14} width={14} alt={`${chatName} avatar`} />
+
+              <div className="flex flex-col gap-y-1">
+                  <h4 className="font-medium text-4xl text-fluid-h4">{chatName}</h4>
+                  {
+                    isGroupChat && 
+                    <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
+                  }
+              </div>
           </div>
 
           <div className="flex items-center gap-x-4">
-              <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
-              
               {
                 spectators.length>0 &&
                 <div className="flex items-center gap-x-2">

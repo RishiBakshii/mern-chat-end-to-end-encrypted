@@ -33,7 +33,6 @@ export const ChatUpdateForm = () => {
           chatId:selectedChatDetails?._id
         }
 
-        console.log(payload);
 
         if(name.trim()!==selectedChatDetails.name) payload.name=name
 

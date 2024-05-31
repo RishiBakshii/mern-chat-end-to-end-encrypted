@@ -2,44 +2,53 @@ import { getSocket } from "../../context/socket"
 import { Events } from "../../enums/events"
 import { useSetVotesData } from "../../hooks/useMessages/useSetVotesData"
 import { useToggleViewVotes } from "../../hooks/useUI/useToggleViewVotes"
-import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { IMessage, IVoteInEventPayloadData, IVoteOutEventPayloadData } from "../../interfaces/messages"
+import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
+import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
+import { useAppSelector } from "../../services/redux/store/hooks"
 import { PollOptionList } from "./PollOptionList"
 
 type PropTypes = {
     messageId:string
     question:string
     options:IMessage['pollOptions']
-    selectedChatDetails:IChatWithUnreadMessages
-    loggedInUserId:string
     isMutipleAnswers:boolean
 }
 
-export const PollCardForm = ({question,options,isMutipleAnswers,selectedChatDetails,messageId,loggedInUserId}:PropTypes) => {
+export const PollCardForm = ({question,options,isMutipleAnswers,messageId}:PropTypes) => {
 
   const socket = getSocket()
 
   const toggleViewVotes = useToggleViewVotes()
   const setVotesData = useSetVotesData()
+  const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
+  const loggedInUser = useAppSelector(selectLoggedInUser)
 
   const handleVoteIn = ({messageId,optionIndex}:Pick<IVoteInEventPayloadData , 'messageId' | "optionIndex">)=>{
 
-    const payload:IVoteInEventPayloadData = {
-      chatId:selectedChatDetails._id,
-      messageId,
-      optionIndex
-    } 
-    socket?.emit(Events.VOTE_IN,payload)
+    if(selectedChatDetails){
+
+      const payload:IVoteInEventPayloadData = {
+        chatId:selectedChatDetails._id,
+        messageId,
+        optionIndex
+      } 
+      socket?.emit(Events.VOTE_IN,payload)
+    }
   }
 
   const handleVoteOut = ({messageId,optionIndex}:Pick<IVoteInEventPayloadData , 'messageId' | "optionIndex">)=>{
 
-    const payload:IVoteOutEventPayloadData = {
-      chatId:selectedChatDetails._id,
-      messageId,
-      optionIndex
-    } 
-    socket?.emit(Events.VOTE_OUT,payload)
+    if(selectedChatDetails){
+      
+      const payload:IVoteOutEventPayloadData = {
+        chatId:selectedChatDetails._id,
+        messageId,
+        optionIndex
+      } 
+      socket?.emit(Events.VOTE_OUT,payload)
+
+    }
 
   }
 
@@ -54,14 +63,17 @@ export const PollCardForm = ({question,options,isMutipleAnswers,selectedChatDeta
 
         <h6 className="text-lg font-medium">{question}</h6>
 
-        <PollOptionList
-          isMutipleAnswers={isMutipleAnswers} 
-          loggedInUserId={loggedInUserId}
-          messageId={messageId}
-          handleVoteIn={handleVoteIn}
-          handleVoteOut={handleVoteOut}
-          options={options}
-        />
+        {
+          loggedInUser && 
+          <PollOptionList
+            isMutipleAnswers={isMutipleAnswers} 
+            loggedInUserId={loggedInUser._id}
+            messageId={messageId}
+            handleVoteIn={handleVoteIn}
+            handleVoteOut={handleVoteOut}
+            options={options}
+          />
+        }
 
         <button onClick={handleViewVotesClick} className="text-center">View votes</button>
     </div>

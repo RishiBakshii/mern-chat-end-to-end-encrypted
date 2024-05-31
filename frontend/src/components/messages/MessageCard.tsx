@@ -1,12 +1,8 @@
 import { memo } from "react";
 import type { IMessage } from "../../interfaces/messages";
 import { ContextMenu } from "../shared/ContextMenu";
-import { Gif } from "../ui/Gif";
-import { AttachmentList } from "./AttachmentList";
-import { EditMessageForm } from "./EditMessageForm";
-import { Message } from "./Message";
-import { PollCardForm } from "./PollCardForm";
 import { IChatWithUnreadMessages } from "../../interfaces/chat";
+import { RenderAppropriateMessage } from "./RenderAppropriateMessage";
 
 type PropTypes = {
     editMessageId:string | undefined,
@@ -59,50 +55,14 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,loggedInUs
         
         <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} max-w-96 min-w-10 max-md:max-w-80 max-sm:max-w-64 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
             
-            {
-                isGroupChat && !myMessage &&
-                <p className="text-primary-dark font-medium">{message.sender.username}</p>
-            }
-            
-            {
-                message.isPoll && message.pollQuestion &&
-                <PollCardForm
-                   isMutipleAnswers={message?.isMultipleAnswers?true:false}
-                   loggedInUserId={loggedInUserId}
-                   messageId={message._id}
-                   selectedChatDetails={selectedChatDetails}
-                   question={message.pollQuestion}
-                   options={message.pollOptions}
+                <RenderAppropriateMessage
+                   editMessageId={editMessageId}
+                   isGroupChat={isGroupChat}
+                   message={message}
+                   myMessage={myMessage}
+                   setEditMessageId={setEditMessageId}
+                   setOpenContextMenuMessageId={setOpenContextMenuMessageId}
                 />
-            }
-
-            {
-                message.attachments &&
-                <AttachmentList attachments={message.attachments}/>
-            }
-
-            {
-                message.url &&
-                <Gif url={message.url}/>
-            }
-
-            {
-                editMessageId === message._id  && message.content ?
-                <EditMessageForm
-                  messageId={message._id}
-                  prevContentValue={message.content}
-                  setEditMessageId={setEditMessageId}
-                  setOpenContextMenuMessageId={setOpenContextMenuMessageId}
-
-                />
-                :
-                message.content && 
-                <Message 
-                 content={message.content} 
-                 isEdited={message.isEdited}
-                />
-
-            }
         </div>
     </div>
   )

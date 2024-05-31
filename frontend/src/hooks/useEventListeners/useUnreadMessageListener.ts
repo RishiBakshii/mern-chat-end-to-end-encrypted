@@ -3,6 +3,7 @@ import { Events } from "../../enums/events"
 import type { IMessageSeenEventPayloadData, IUnreadMessageEventReceiveData } from "../../interfaces/messages"
 import { chatApi } from "../../services/api/chatApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
+import { selectJoinedChats, selectactiveJoinedChat, updateJoinedChatUnreadMessage } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 import { useSocketEvent } from "../useSocket/useSocketEvent"
 
@@ -12,19 +13,32 @@ export const useUnreadMessageListener = () => {
     const dispatch = useAppDispatch()
 
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
-
+    
+    const joinedChats = useAppSelector(selectJoinedChats)
+    const activeJoinedChat = useAppSelector(selectactiveJoinedChat)
+    
     useSocketEvent(Events.UNREAD_MESSAGE,({chatId,message,sender}:IUnreadMessageEventReceiveData)=>{
+
+        if(joinedChats.length>0){
+          const isMessageofJoinedChat =  joinedChats.find(joinedChat=>joinedChat.chatId===chatId)
+
+          if(isMessageofJoinedChat && activeJoinedChat!==isMessageofJoinedChat.chatId){
+            dispatch(updateJoinedChatUnreadMessage({chatId,unreadMesage:message}))
+          }
+
+          return
+
+        }
 
         if(chatId === selectedChatDetails?._id){
     
-          const payload:IMessageSeenEventPayloadData =  
-          {
+          const payload:IMessageSeenEventPayloadData = {
             chatId:selectedChatDetails._id,
-            members:selectedChatDetails.members.map(member=>member._id)
           }
-    
           socket?.emit(Events.MESSAGE_SEEN,payload)
+
         }
+
         else{
           dispatch(
             chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
@@ -40,7 +54,6 @@ export const useUnreadMessageListener = () => {
                 chat.unreadMessages.count++
                 
                 if(message.poll){
-                  console.log('in message.poll condition');
                   chat.unreadMessages.message.poll=true
                 }
 
@@ -59,5 +72,5 @@ export const useUnreadMessageListener = () => {
           )
         }
     
-      })
+      },joinedChats)
 }

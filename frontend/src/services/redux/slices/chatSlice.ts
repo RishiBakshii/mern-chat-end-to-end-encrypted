@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IChatIntitalState, IChatMember, IChatWithUnreadMessages } from "../../../interfaces/chat";
+import { IChatIntitalState, IChatMember, IChatWithUnreadMessages, ISpectator } from "../../../interfaces/chat";
 import { RootState } from "../store/store";
 
 const initialState:IChatIntitalState =  {
@@ -47,6 +47,15 @@ const chatSlice = createSlice({
                 state.selectedChatDetails.members = state.selectedChatDetails.members.filter(member=>!action.payload.includes(member._id))
             }
 
+        },
+        updateSpectators:(state,action:PayloadAction<ISpectator>)=>{
+            state.selectedChatDetails?.spectators.push(action.payload)
+        },
+        removeSpectators:(state,action:PayloadAction<{spectatorId:string}>)=>{
+
+            if(state.selectedChatDetails && state.selectedChatDetails.spectators){
+                state.selectedChatDetails.spectators = state.selectedChatDetails.spectators.filter(spec=>spec._id!==action.payload.spectatorId)
+            }
         }
 
     },
@@ -65,7 +74,9 @@ export const {
     updateUserTyping,
     removeUserTyping,
     updateSelectedChatMembers,
-    removeSelectedChatMembers
+    removeSelectedChatMembers,
+    updateSpectators,
+    removeSpectators,
 } = chatSlice.actions
 
 export default chatSlice

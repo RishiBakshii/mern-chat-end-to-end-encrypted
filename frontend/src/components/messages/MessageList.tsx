@@ -93,10 +93,11 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
   }
 
   return (
-    <div ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-scroll">
+    <div ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto">
 
       {messages?.map((message,index) => (
         <MessageCard
+          key={index}
           loggedInUserId={loggedInUserId}
           setOpenContextMenuMessageId={setOpenContextMenuMessageId}
           setEditMessageId={setEditMessageId}
@@ -104,7 +105,6 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
           onContextMenuOpen={handleSetOpenContextMenuMessageId}
           isContextMenuOpen={openContextMenuMessageId===message._id}
           isGroupChat={isGroupChat} 
-          key={index} 
           message={message} 
           myMessage={loggedInUserId===message.sender._id} 
           selectedChatDetails={selectedChatDetails}

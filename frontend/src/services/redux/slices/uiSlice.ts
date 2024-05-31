@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { ICallInRequestEventReceiveData, IJoinedChat } from "../../../interfaces/callIn";
+import { IMessage, IUnreadMessage } from "../../../interfaces/messages";
 import { IUi } from "../../../interfaces/ui";
 import { RootState } from "../store/store";
-import { IMessage } from "../../../interfaces/messages";
 
 
 const initialState:IUi = {
@@ -20,7 +21,13 @@ const initialState:IUi = {
     pollForm:false,
     viewVotes:false,
     votesData:null,
-    chatUpdateForm:false
+    chatUpdateForm:false,
+    callInForm:false,
+    callInRequests:[],
+    callInRequestDisplay:false,
+    joinedChats:[],
+    activeJoinedChat:null,
+    callOutForm:false
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -77,6 +84,48 @@ const uiSlice = createSlice({
         setChatUpdateForm:(state,action:PayloadAction<boolean>)=>{
             state.chatUpdateForm=action.payload
         },
+        setCallInForm:(state,action:PayloadAction<boolean>)=>{
+            state.callInForm=action.payload
+        },
+        setCallInRequests:(state,action:PayloadAction<ICallInRequestEventReceiveData>)=>{
+            state.callInRequests.push(action.payload)
+        },
+        setCallInRequestDisplay:(state,action:PayloadAction<boolean>)=>{
+            state.callInRequestDisplay=action.payload
+        },
+        deleteCallInRequest:(state,action:PayloadAction<{chatId:string}>)=>{
+            state.callInRequests = state.callInRequests.filter(request=>request.chat.chatId!==action.payload.chatId)
+        },
+        setJoinedChats:(state,action:PayloadAction<IJoinedChat>)=>{
+            state.joinedChats.push(action.payload)
+        },
+        setactiveJoinedChat:(state,action:PayloadAction<string>)=>{
+            state.activeJoinedChat = action.payload
+        },
+        updateJoinedChatMessage:(state,action:PayloadAction<{joinedChatId:IJoinedChat['chatId'],newMessage:IMessage}>)=>{
+
+            const joinedChat = state.joinedChats.find(joinedChat=>joinedChat.chatId===action.payload.joinedChatId)
+
+            if(joinedChat){
+                joinedChat.messages.push(action.payload.newMessage)
+            }
+        },
+        updateJoinedChatUnreadMessage:(state,action:PayloadAction<{chatId:string,unreadMesage:IUnreadMessage['message']}>)=>{
+
+            const joinedChat = state.joinedChats.find(joinedChat=>joinedChat.chatId===action.payload.chatId)
+
+            if(joinedChat){
+                joinedChat.unreadMessages.count += 1;
+                joinedChat.unreadMessages.message = action.payload.unreadMesage;
+            }
+        },
+        removeJoinedChat:(state,action:PayloadAction<{chatId:string}>)=>{
+            state.joinedChats = state.joinedChats.filter(joinedChat=>joinedChat.chatId!==action.payload.chatId)
+        },
+        setCallOutForm:(state,action:PayloadAction<boolean>)=>{
+            state.callOutForm=action.payload
+        }
+
     }
 })
 
@@ -97,6 +146,12 @@ export const selectPollForm = (state:RootState)=>state.uiSlice.pollForm
 export const selectViewVotes = (state:RootState)=>state.uiSlice.viewVotes
 export const selectVotesData = (state:RootState)=>state.uiSlice.votesData
 export const selectChatUpdateForm = (state:RootState)=>state.uiSlice.chatUpdateForm
+export const selectCallInForm = (state:RootState)=>state.uiSlice.callInForm
+export const selectCallInRequests = (state:RootState)=>state.uiSlice.callInRequests
+export const selectCallInRequestDisplay = (state:RootState)=>state.uiSlice.callInRequestDisplay
+export const selectJoinedChats = (state:RootState)=>state.uiSlice.joinedChats
+export const selectactiveJoinedChat = (state:RootState)=>state.uiSlice.activeJoinedChat
+export const selectCallOutForm = (state:RootState)=>state.uiSlice.callOutForm
 
 // exporting actions
 export const {
@@ -117,6 +172,16 @@ export const {
     setViewVotes,
     setVotesData,
     setChatUpdateForm,
+    setCallInForm,
+    setCallInRequests,
+    setCallInRequestDisplay,
+    deleteCallInRequest,
+    setJoinedChats,
+    updateJoinedChatMessage,
+    setactiveJoinedChat,
+    updateJoinedChatUnreadMessage,
+    removeJoinedChat,
+    setCallOutForm,
 } = uiSlice.actions
 
 export default uiSlice

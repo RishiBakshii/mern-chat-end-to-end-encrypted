@@ -24,6 +24,7 @@ export const ChatList = memo(({chats,loggedInUserId,selectedChatId,clearExtraPre
           chats.map(chat=>(
 
             <ChatCard
+              key={chat._id}
               loggedInUserId={loggedInUserId}
               isGroupChat={chat.isGroupChat}
               members={chat.members}

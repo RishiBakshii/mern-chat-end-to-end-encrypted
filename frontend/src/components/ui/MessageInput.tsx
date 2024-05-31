@@ -4,13 +4,20 @@ type PropTypes = {
   handleFileChange:(e: React.ChangeEvent<HTMLInputElement>) => void
   setMessageVal: React.Dispatch<React.SetStateAction<string>>;
   toggleGif:()=>void
+  toggleCallInForm: () => void
   toggleAttachmentsMenu: React.Dispatch<React.SetStateAction<boolean>>
 };
 
-export const MessageInput = ({ messageVal, setMessageVal, toggleGif,toggleAttachmentsMenu }: PropTypes) => {
+export const MessageInput = ({ messageVal, setMessageVal,toggleCallInForm,toggleGif,toggleAttachmentsMenu }: PropTypes) => {
   return (
     <div className="flex bg-secondary rounded-xl text-text">
-       
+      
+      <button type="button" onClick={toggleCallInForm}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+        </svg>
+      </button>
+
       <div className="px-3 py-4 justify-center items-center flex relative ">
           <svg
             onClick={()=>toggleAttachmentsMenu(prev=>!prev)}

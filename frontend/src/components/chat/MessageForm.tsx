@@ -9,6 +9,7 @@ import { useSendAttachmentsMutation } from "../../services/api/attachmentApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
 import { MessageInput } from "../ui/MessageInput"
+import { useToggleCallInForm } from "../../hooks/useUI/useToggleCallInForm"
 
 type PropTypes = {
   toggleGif:()=>void
@@ -18,6 +19,8 @@ type PropTypes = {
 export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
 
     const [messageVal,setMessageVal] = useState<string>('')
+
+    const toggleCallInForm = useToggleCallInForm()
 
     const [selectedAttachments,setSelectedAttachments] = useState<Array<Blob>>()
     const [attachmentsPreview,setAttachmentsPreview] = useState<Array<string>>()
@@ -165,6 +168,7 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
         }
 
         <MessageInput
+         toggleCallInForm={toggleCallInForm}
          handleFileChange={handleFileChange} 
          toggleGif={toggleGif} 
          messageVal={messageVal} 

@@ -1,3 +1,4 @@
+import { ICallInRequestEventReceiveData, IJoinedChat } from "../callIn"
 import { IMessage } from "../messages"
 
 export interface IUi {
@@ -17,4 +18,10 @@ export interface IUi {
     viewVotes:boolean
     votesData:Pick<IMessage, 'pollQuestion' | 'pollOptions'> | null
     chatUpdateForm:boolean
+    callInForm:boolean
+    callInRequests:Array<ICallInRequestEventReceiveData>
+    callInRequestDisplay:boolean
+    joinedChats:Array<IJoinedChat>
+    activeJoinedChat:string | null
+    callOutForm:boolean
 }

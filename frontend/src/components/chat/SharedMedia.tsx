@@ -15,7 +15,6 @@ export const SharedMedia = ({attachments,selectedChatId,fetchMoreAttachments}:Pr
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(()=>{
-        console.log(page);
         if(page===attachments.totalPages){
             setHasMore(false)
         }
@@ -40,7 +39,7 @@ export const SharedMedia = ({attachments,selectedChatId,fetchMoreAttachments}:Pr
             <p>{attachments?.totalAttachments>0?"Shared media":"No shared media"} {attachments?.totalAttachments}</p>
         </div>
 
-        <div ref={containerRef} onScroll={handleScroll} className="grid grid-cols-2 gap-4 place-items-center h-[28rem] overflow-y-scroll">
+        <div ref={containerRef} onScroll={handleScroll} className="grid grid-cols-2 gap-4 place-items-center h-[28rem] overflow-y-auto">
             {
                 attachments.attachments.map((url,index)=>(
                     <img key={index} className="w-40 h-40 object-cover" src={url} alt={`${index}`} />

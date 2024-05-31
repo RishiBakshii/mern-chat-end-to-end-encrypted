@@ -1,3 +1,4 @@
+
 import type { IUnreadMessage } from "../messages"
 
 export interface IChatIntitalState {
@@ -12,6 +13,11 @@ export interface IChatMember {
     isActive:boolean
 }
 
+export interface ISpectator extends Omit<IChatMember, 'isActive'> {
+    chatId:string
+    callerId:string
+}
+
 export interface IChatWithUnreadMessages {
     _id:string
     name?:string
@@ -22,6 +28,7 @@ export interface IChatWithUnreadMessages {
     unreadMessages:IUnreadMessage
     seenBy:Array<IChatMember>
     userTyping:Array<IChatMember>
+    spectators:Array<ISpectator>
 }
 
 export interface IUserTypingEventReceiveData {

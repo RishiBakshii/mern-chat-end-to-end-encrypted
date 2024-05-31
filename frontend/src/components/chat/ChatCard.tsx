@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { IUnreadMessage } from "../../interfaces/messages"
+import { ActiveDot } from "../ui/ActiveDot"
 import { TypingIndicator } from "../ui/TypingIndicator"
 
 type PropTypes = {
@@ -44,7 +44,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPrevious
 
       return onlineMembers > 0 ? 
         <div className="text-sm text-secondary-darker flex items-center gap-x-1 ml-1">
-          <div className="bg-green-400 h-[10px] w-[10px] rounded-full"/>
+          <ActiveDot/>
           <p>{onlineMembers} online</p>
         </div>
         : 
@@ -54,7 +54,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPrevious
     else {
       const otherMember = members.find((member) => member._id !== loggedInUserId);
       return otherMember?.isActive ? 
-        <div className="bg-green-400 h-[10px] w-[10px] rounded-full"/>
+        <ActiveDot/>
         : 
         null
     }

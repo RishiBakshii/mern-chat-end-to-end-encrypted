@@ -29,8 +29,9 @@ import { IUnreadMessageEventPayload } from './interfaces/unread-message/unread-m
 import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
-import { getMemberSockets, getOtherMembers } from './utils/socket.util.js'
+import { getOtherMembers } from './utils/socket.util.js'
 import { Chat } from './models/chat.model.js'
+import { ICallAcceptEventReceiveData, ICallInRejectEventPayloadData, ICallInRequestEventPayloadData, ICallOutEventReceiveData } from './interfaces/callIn/callIn.interface.js'
 
 
 const app=express()
@@ -314,6 +315,77 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
 
         io.to(chatId).emit(Events.VOTE_OUT,payload)
 
+    })
+
+    socket.on(Events.CALL_IN_REQUEST,async({callee,chat}:ICallInRequestEventPayloadData)=>{
+
+        const payload = {
+            caller:{
+                _id:socket.user?._id,
+                avatar:socket.user?.avatar?.secureUrl,
+                username:socket.user?.username
+            },
+            chat,
+        }
+
+        io.to(userSocketIds.get(callee)).emit(Events.CALL_IN_REQUEST,payload)        
+
+    })
+
+    socket.on(Events.CALL_IN_REJECT,(callerId:string)=>{
+        const payload = {
+            callee:{
+                _id:socket.user?._id,
+                avatar:socket.user?.avatar?.secureUrl,
+                username:socket.user?.username
+            }
+        }
+
+        io.to(userSocketIds.get(callerId)).emit(Events.CALL_IN_REJECT,payload)
+    })
+
+    socket.on(Events.CALL_IN_ACCEPT,async({callerId,chat}:ICallAcceptEventReceiveData)=>{
+
+        socket.join(chat.chatId)
+
+        const spectatorData = {
+            _id:socket.user?._id,
+            username:socket.user?.username,
+            avatar:socket.user?.avatar?.secureUrl,
+            chatId:chat.chatId,
+            callerId,
+        }
+        
+        const chatData = {
+            chatId:chat.chatId,
+            name:chat.name,
+            avatar:chat.avatar,
+            messages:[],
+            unreadMessages:[]
+        }
+
+        io.to(socket.id).emit(Events.CALL_IN_ACCEPT,chatData)
+
+        io.to(chat.chatId).emit(Events.SPECTATOR_JOINED,spectatorData)
+
+    })
+
+    socket.on(Events.CALL_OUT,({callee,chat}:ICallOutEventReceiveData)=>{
+
+        console.log({callee,chat});
+        const payload = {
+            caller:{
+                _id:socket.user?._id,
+                avatar:socket.user?.avatar?.secureUrl,
+                username:socket.user?.username
+            },
+            callee,
+            chat,
+        }
+        
+        io.to(chat.chatId).emit(Events.CALL_OUT,payload)
+
+        io.to(userSocketIds.get(callee._id)).socketsLeave(chat.chatId);
     })
 
     socket.on("disconnect",()=>{

@@ -5,7 +5,6 @@ import { Avatar } from "../ui/Avatar";
 export const ViewVotes = () => {
 
     const votesData = useAppSelector(selectVotesData)
-    console.log(votesData);
 
   return (
     <div className="flex flex-col gap-y-8">

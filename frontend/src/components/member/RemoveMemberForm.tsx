@@ -63,7 +63,7 @@ export const RemoveMemberForm = () => {
         
         <div className="flex flex-col gap-y-4">
             <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 rounded w-full text-text bg-background outline outline-1 outline-secondary-darker" placeholder="Search Members"/>
-            <div className="overflow-y-scroll max-h-52 ">
+            <div className="overflow-y-auto max-h-52 ">
                 {
                     selectedChatDetails &&
                     <MemberList

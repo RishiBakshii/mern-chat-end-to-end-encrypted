@@ -9,7 +9,6 @@ export const useUpdateChatSelection = () => {
     const {data:chats} = useGetChatsQuery()
     
     return (chatId:string) =>{  
-        console.log(chatId);
 
         dispatch(updateSelectedChatId(chatId))
 

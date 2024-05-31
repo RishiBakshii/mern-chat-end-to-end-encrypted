@@ -7,7 +7,7 @@ import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
 import { emitEvent } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
-import { addUnreadMessagesStage, populateMembersStage } from "./chat.controller.js";
+import { addUnreadMessagesAndSpectatorStage, populateMembersStage } from "./chat.controller.js";
 import { Friend } from "../models/friend.model.js";
 
 
@@ -144,7 +144,7 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
             }
           },
           populateMembersStage,
-          addUnreadMessagesStage
+          addUnreadMessagesAndSpectatorStage
         ])
 
         

@@ -40,6 +40,14 @@ import { selectSelectedChatDetails, selectSelectedChatId } from "../services/red
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
 import { useOnlineUsersListener } from "../hooks/useEventListeners/useOnlineUsersListener"
+import { useCallInRequestListener } from "../hooks/useEventListeners/useCallInRequestListener"
+import { useCallInRejectListener } from "../hooks/useEventListeners/useCallInRejectListener"
+import { useCallInAcceptListener } from "../hooks/useEventListeners/useCallinAcceptListener"
+import { useCallOutListener } from "../hooks/useEventListeners/useCallOutListener"
+import { useSpectatorJoinedListener } from "../hooks/useEventListeners/useSpectatorJoinedListener"
+import { useCallOut } from "../hooks/useCallIn/useCallOut"
+import { ICallOutEventPayloadData } from "../interfaces/callIn"
+import { useDispatchRemoveSpectatorById } from "../hooks/useCallIn/useDispatchRemoveSpectatorById"
 
 export const ChatPage = () => {
 
@@ -68,6 +76,9 @@ export const ChatPage = () => {
       
    useScrollToBottomOnChatChange(messageContainerRef,[selectedChatId])
 
+   const removeSpectatorById  = useDispatchRemoveSpectatorById()
+
+
    // listeners
    useFriendRequestListener()
    useMessageListener()
@@ -84,6 +95,11 @@ export const ChatPage = () => {
    useVoteInListener()
    useVoteOutListener()
    useOnlineUsersListener()
+   useCallInRequestListener()
+   useCallInAcceptListener()
+   useCallInRejectListener()
+   useCallOutListener()
+   useSpectatorJoinedListener()
    
    useUpdateUnreadChatAsSeen(selectedChatDetails)
    
@@ -95,6 +111,14 @@ export const ChatPage = () => {
    
    const chatName = getChatName(selectedChatDetails,loggedInUser?._id)
    const chatAvatar= getChatAvatar(selectedChatDetails,loggedInUser?._id)
+
+   const callOut = useCallOut()
+
+   const handleCallOut = (payload: ICallOutEventPayloadData)=>{
+    callOut(payload)
+    removeSpectatorById({spectatorChatId:payload.chat.chatId,spectatorId:payload.callee._id})
+
+   }
 
    const handleFetchMoreAttachments = (chatId:string,page:number)=>{
         fetchMoreAttachments({chatId,page})
@@ -115,7 +139,7 @@ export const ChatPage = () => {
         
         <div className="h-full w-full flex p-4 gap-x-6 bg-background">
 
-                <div className={`flex-[.5] p-2 min-w-[15rem] bg-background max-md:fixed ${chatBar?"max-sm:right-0 left-0":"-left-72"} overflow-y-scroll  h-full z-10`}>
+                <div className={`flex-[.5] p-2 min-w-[15rem] bg-background max-md:fixed ${chatBar?"max-sm:right-0 left-0":"-left-96"} overflow-y-auto  h-full z-10`}>
                     
                     {
                         !isChatsFetching && chats && loggedInUser ?
@@ -141,12 +165,16 @@ export const ChatPage = () => {
                         <div className="flex flex-col gap-y-3 h-full">
                             
                             {
-                                selectedChatDetails && chatName &&
+                                selectedChatDetails && chatName && loggedInUser && chatName &&
 
                                 <ChatHeader
+                                    selectedChatName={chatName}
+                                    loggedInUserId={loggedInUser._id}
                                     chatName={chatName}
+                                    spectators={selectedChatDetails.spectators}
                                     totalMembers={selectedChatDetails.members.length}
                                     toggleChatDetailsBar={toggleChatDetailsBar}
+                                    handleCallOut={handleCallOut}
                                 />
                             }
 

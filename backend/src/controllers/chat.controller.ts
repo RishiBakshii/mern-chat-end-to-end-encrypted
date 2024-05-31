@@ -1,22 +1,19 @@
+import { UploadApiResponse } from "cloudinary";
 import { NextFunction, Response } from "express";
-import type { AuthenticatedRequest, IUser } from "../interfaces/auth/auth.interface.js";
+import { Types } from "mongoose";
+import { DEFAULT_AVATAR } from "../constants/file.constant.js";
+import { Events } from "../enums/event/event.enum.js";
+import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
+import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType, updateChatSchemaType } from "../schemas/chat.schema.js";
-import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import { Message } from "../models/message.model.js";
-import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
-import { Events } from "../enums/event/event.enum.js";
 import { deleteFilesFromCloudinary, uploadFilesToCloudinary } from "../utils/auth.util.js";
-import { DEFAULT_AVATAR } from "../constants/file.constant.js";
-import { UploadApiResponse } from "cloudinary";
-import { Types } from "mongoose";
-import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
-import { UnreadMessage } from "../models/unread-message.model.js";
-import { deleteChat } from "../utils/chat.util.js";
+import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
+import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
 
 
-export const addUnreadMessagesStage = {
+export const addUnreadMessagesAndSpectatorStage = {
   $addFields: {
     unreadMessages: {
       count: 0,
@@ -32,6 +29,7 @@ export const addUnreadMessagesStage = {
     },
     userTyping: Array<[]>,
     seenBy: Array<[]>,
+    spectators:Array<[]>
   },
 }
 
@@ -112,7 +110,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
           },
           updateAvatarFeild,
           populateMembersStage,
-          addUnreadMessagesStage
+          addUnreadMessagesAndSpectatorStage
         ])
         
         const membersIdsInString:Array<string> = newGroupChat.members.map(member=>member._id.toString())
@@ -158,7 +156,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
             }
           },
           populateMembersStage,
-          addUnreadMessagesStage
+          addUnreadMessagesAndSpectatorStage
         ])
 
         const memberStringIds = normalChat.members.map(member=>member._id.toString())
@@ -257,6 +255,7 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
             "unreadMessages.message":{$arrayElemAt:['$unreadMessages.message',0]},
             seenBy: [],
             userTyping: [],
+            spectators:[],
           },
         },
         {
@@ -333,7 +332,7 @@ const addMemberToChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Res
       },
       updateAvatarFeild,
       populateMembersStage,
-      addUnreadMessagesStage
+      addUnreadMessagesAndSpectatorStage
 
     ])
 
@@ -443,3 +442,4 @@ const updateChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 })
 
 export { addMemberToChat, createChat, getUserChats, removeMemberFromChat, updateChat };
+

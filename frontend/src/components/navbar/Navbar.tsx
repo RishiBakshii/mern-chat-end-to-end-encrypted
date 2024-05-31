@@ -3,15 +3,18 @@ import { useOpenAddFriendForm } from "../../hooks/useUI/useOpenAddFriendForm"
 import { useOpenFriendRequestForm } from "../../hooks/useUI/useOpenFriendRequestForm"
 import { useOpenNewGroupChatForm } from "../../hooks/useUI/useOpenNewGroupChatForm"
 import { useOpenProfileForm } from "../../hooks/useUI/useOpenProfileForm"
+import { useToggleCallInRequestDisplay } from "../../hooks/useUI/useToggleCallInRequestDisplay"
+import { useToggleCallOutForm } from "../../hooks/useUI/useToggleCallOutForm"
 import { useToggleChatBar } from "../../hooks/useUI/useToggleChatBar"
 import { useToggleNavMenu } from "../../hooks/useUI/useToggleNavMenu"
 import { useUpdateTheme } from "../../hooks/useUtils/useUpdateTheme"
 import { useGetUserFriendRequestsQuery } from "../../services/api/requestApi"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
-import { selectNavMenu, selectisDarkMode } from "../../services/redux/slices/uiSlice"
+import { selectCallInRequests, selectNavMenu, selectisDarkMode } from "../../services/redux/slices/uiSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
 import { ChatBarHamburger } from "../chat/ChatBarHamburger"
 import { Avatar } from "../ui/Avatar"
+import { Badge } from "../ui/Badge"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
 
@@ -22,8 +25,14 @@ export const Navbar = () => {
 
   const {data:friendRequests} = useGetUserFriendRequestsQuery()
 
+  const callInRequests = useAppSelector(selectCallInRequests)
+
   const isDarkMode = useAppSelector(selectisDarkMode)
   const toggleNavMenu = useToggleNavMenu()
+
+  const toggleCallOutForm = useToggleCallOutForm()
+
+  const toggleCallInRequestDisplay = useToggleCallInRequestDisplay()
 
   const openNewGroupChatForm = useOpenNewGroupChatForm()
   const openAddFriendForm = useOpenAddFriendForm()
@@ -33,6 +42,7 @@ export const Navbar = () => {
   const toggleChatBar = useToggleChatBar()
 
   const loggedInUser = useAppSelector(selectLoggedInUser)
+
 
   const updateTheme = useUpdateTheme() 
 
@@ -71,10 +81,19 @@ export const Navbar = () => {
                   </svg>
                 </div>
               }
-              
-              
-              
 
+            <div onClick={()=>callInRequests.length?toggleCallInRequestDisplay():""} className="flex justify-center items-center cursor-pointer relative">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                </svg>
+
+                {
+                  callInRequests.length >0 && 
+                  <Badge value={callInRequests.length}/>
+                }
+
+            </div>
 
               <div className="relative ">
 

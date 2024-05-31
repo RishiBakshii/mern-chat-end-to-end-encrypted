@@ -12,7 +12,6 @@ export const FriendList = ({friends,handleAddOrRemoveMember,selectedMembers}:Pro
     <div className="flex flex-wrap gap-3">
         {
             friends.map((friend)=>(
-
                 <FriendCard
                  key={friend._id}
                  friend={friend}

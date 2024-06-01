@@ -21,7 +21,6 @@ export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatId,clearExt
     const [filteredChats,setFilteredChats] = useState<Array<IChatWithUnreadMessages>>(chats)
 
     useEffect(()=>{
-
         if(!searchVal.trim().length){
             setFilteredChats(chats)
         }

@@ -21,7 +21,7 @@ export const ChatList = memo(({chats,loggedInUserId,selectedChatId,clearExtraPre
     <>
     <div className="flex flex-col gap-y-4">
         {
-          chats.map(chat=>(
+          [...chats].sort((a,b)=>b.unreadMessages.count - a.unreadMessages.count).map(chat=>(
 
             <ChatCard
               key={chat._id}

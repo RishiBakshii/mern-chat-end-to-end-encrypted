@@ -114,7 +114,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
 
       <AnimatePresence>
       {
-        selectedChatDetails.userTyping.length > 0 && 
+        selectedChatDetails.userTyping?.length > 0 && 
         <motion.div className="w-fit" variants={{hide:{opacity:0,x:-10},show:{opacity:1,x:0}}} initial="hide" animate="show" exit="hide">
             <TypingIndicatorWithUserList
               isGroupChat={selectedChatDetails.isGroupChat}

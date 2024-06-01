@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { ACCEPTED_IMAGE_TYPES, DEFAULT_AVATAR } from "../../constants"
-import { useToast } from "../../hooks/useUI/useToast"
 import { GroupChatSchemaType, groupChatSchema } from "../../schemas/chat"
-import { useCreateChatMutation } from "../../services/api/chatApi"
 import { useGetFriendsQuery } from "../../services/api/friendApi"
 import { FriendList } from "./FriendList"
+import { useCreateGroupChat } from "../../hooks/useChat/useCreateGroupChat"
+import { useToggleGroupChatForm } from "../../hooks/useUI/useToggleGroupChatForm"
 
 
 export const GroupChatForm = () => {
@@ -16,15 +16,31 @@ export const GroupChatForm = () => {
   const [preview,setPreview] = useState<string>()
   const [selectedMembers,setSelectedMembers] = useState<Array<string>>([])
 
-  const [createChat, {isLoading,isError,isSuccess,error,isUninitialized}] = useCreateChatMutation()
 
   const {data:friends} = useGetFriendsQuery()
 
-  useToast({isLoading,isUninitialized,isSuccess,isError,error})
+  const {createChat,isSuccess} = useCreateGroupChat()
+  const toggleGroupChatForm = useToggleGroupChatForm()
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<GroupChatSchemaType>({
     resolver:zodResolver(groupChatSchema)
   })
+
+  useEffect(()=>{
+
+    let timeout:number
+
+    if(isSuccess){
+      timeout = setTimeout(() => {
+        toggleGroupChatForm()
+      }, 1000);
+    }
+
+    return ()=>{
+      clearTimeout(timeout)
+    }
+
+  },[isSuccess])
 
   const nameValue = watch("name")
 
@@ -42,6 +58,7 @@ export const GroupChatForm = () => {
         isGroupChat:"true",
         members:selectedMembers,
       })
+
     }
     
   }

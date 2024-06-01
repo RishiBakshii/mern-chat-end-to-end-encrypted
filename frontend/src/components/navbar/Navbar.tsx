@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useLogout } from "../../hooks/useAuth/useLogout"
 import { useOpenAddFriendForm } from "../../hooks/useUI/useOpenAddFriendForm"
 import { useOpenFriendRequestForm } from "../../hooks/useUI/useOpenFriendRequestForm"
-import { useOpenNewGroupChatForm } from "../../hooks/useUI/useOpenNewGroupChatForm"
 import { useOpenProfileForm } from "../../hooks/useUI/useOpenProfileForm"
 import { useToggleCallInRequestDisplay } from "../../hooks/useUI/useToggleCallInRequestDisplay"
 import { useToggleChatBar } from "../../hooks/useUI/useToggleChatBar"
@@ -17,6 +16,7 @@ import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
+import { useToggleGroupChatForm } from '../../hooks/useUI/useToggleGroupChatForm'
 
 export const Navbar = () => {
 
@@ -33,7 +33,7 @@ export const Navbar = () => {
 
   const toggleCallInRequestDisplay = useToggleCallInRequestDisplay()
 
-  const openNewGroupChatForm = useOpenNewGroupChatForm()
+  const openNewGroupChatForm = useToggleGroupChatForm()
   const openAddFriendForm = useOpenAddFriendForm()
   const openFriendRequestForm = useOpenFriendRequestForm()
   const openProfileForm = useOpenProfileForm()

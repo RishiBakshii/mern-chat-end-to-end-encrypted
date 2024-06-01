@@ -19,7 +19,7 @@ export const Modal = ({isOpen=false,onClose,children,height}:PropTypes) => {
     isOpen ? 
     createPortal(
     <div onClick={onClose} className="z-50 bg-black bg-opacity-15 w-screen h-screen absolute flex items-center justify-center text-text bg-background">
-        <motion.div initial={{y:-10,opacity:0}} animate={{y:0,opacity:1}} onClick={e=>e.stopPropagation()} className={`min-w-[30rem] max-sm:w-[90%] max-sm:min-w-[auto] h-[${height}rem] rounded-lg p-4 shadow-xl ${isDarkMode?"bg-secondary-dark":"bg-secondary"}`}>
+        <motion.div initial={{y:-10,opacity:0}} animate={{y:0,opacity:1}} onClick={e=>e.stopPropagation()} className={`min-w-[30rem] max-w-[35rem] max-sm:w-[90%] max-sm:min-w-[auto] h-[${height}rem] rounded-lg p-4 shadow-xl ${isDarkMode?"bg-secondary-dark":"bg-secondary"}`}>
             {children}
         </motion.div>
     </div>,

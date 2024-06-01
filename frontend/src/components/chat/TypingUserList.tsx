@@ -10,7 +10,7 @@ export const TypingUserList = ({users}:PropTypes) => {
     <div className="flex flex-col gap-y-2">
         {
             users.map(user=>(
-              <TypingCard avatar={user.avatar} username={user.username}/>
+              <TypingCard key={user._id} avatar={user.avatar} username={user.username}/>
             ))
         }
     </div>

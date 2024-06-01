@@ -3,6 +3,8 @@ import type { IUser } from "../../interfaces/auth"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import type { IMessage } from "../../interfaces/messages"
 import { MessageCard } from "./MessageCard"
+import { TypingIndicatorWithUserList } from "../chat/TypingIndicatorWithUserList"
+import {AnimatePresence, motion} from 'framer-motion'
 
 type PropTypes = {
   messages:Array<IMessage>
@@ -28,7 +30,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
     if(messageContainerRef.current && messageContainerRef.current.scrollTop !== messageContainerRef.current.scrollHeight){
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight
     }
-  },[])
+  },[selectedChatDetails.userTyping])
 
   useEffect(()=>{
     setHasMore(true)
@@ -78,6 +80,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
   },[messages,prevLoading])
 
 
+
   const handleScroll = ()=>{
     const threshold = 284
     if(messageContainerRef.current && messageContainerRef.current.scrollTop < threshold && hasMore && !loading) {
@@ -93,7 +96,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
   }
 
   return (
-    <div ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto overflow-x-hidden">
+    <div  ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto overflow-x-hidden">
 
       {messages?.map((message,index) => (
         <MessageCard
@@ -108,6 +111,18 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
           myMessage={loggedInUserId===message.sender._id} 
         />
       ))}
+
+      <AnimatePresence>
+      {
+        selectedChatDetails.userTyping.length > 0 && 
+        <motion.div className="w-fit" variants={{hide:{opacity:0,x:-10},show:{opacity:1,x:0}}} initial="hide" animate="show" exit="hide">
+            <TypingIndicatorWithUserList
+              isGroupChat={selectedChatDetails.isGroupChat}
+              users={selectedChatDetails.userTyping}
+            />
+        </motion.div>
+      }
+      </AnimatePresence>
 
 
     </div>

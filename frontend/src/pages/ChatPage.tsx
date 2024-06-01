@@ -171,7 +171,7 @@ export const ChatPage = () => {
 
                 <div className="flex-[1.6]">
 
-                        <div className="flex flex-col gap-y-3 h-full">
+                        <div className="flex flex-col gap-y-3 h-full justify-between">
                             
                             {
                                 selectedChatDetails && chatName && loggedInUser && chatName && chatAvatar && 

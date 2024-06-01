@@ -17,7 +17,7 @@ export const useUnreadMessageListener = () => {
     const joinedChats = useAppSelector(selectJoinedChats)
     const activeJoinedChat = useAppSelector(selectactiveJoinedChat)
     
-    useSocketEvent(Events.UNREAD_MESSAGE,({chatId,message,sender}:IUnreadMessageEventReceiveData)=>{
+    useSocketEvent(Events.UNREAD_MESSAGE,({chatId,message}:IUnreadMessageEventReceiveData)=>{
 
         if(joinedChats.length>0){
           const isMessageofJoinedChat =  joinedChats.find(joinedChat=>joinedChat.chatId===chatId)

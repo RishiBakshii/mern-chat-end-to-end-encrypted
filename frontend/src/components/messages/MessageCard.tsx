@@ -1,9 +1,8 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { memo } from "react";
 import type { IMessage } from "../../interfaces/messages";
 import { ContextMenu } from "../shared/ContextMenu";
-import { IChatWithUnreadMessages } from "../../interfaces/chat";
 import { RenderAppropriateMessage } from "./RenderAppropriateMessage";
-import {AnimatePresence, motion} from 'framer-motion'
 
 type PropTypes = {
     editMessageId:string | undefined,
@@ -11,14 +10,12 @@ type PropTypes = {
     myMessage:boolean;
     message:IMessage,
     isGroupChat:boolean,
-    selectedChatDetails:IChatWithUnreadMessages
-    loggedInUserId:string
     onContextMenuOpen:(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string) => void
     setEditMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
     setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export const MessageCard = memo(({message,myMessage=false,isGroupChat,loggedInUserId,editMessageId,isContextMenuOpen,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen,selectedChatDetails}:PropTypes) => {
+export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessageId,isContextMenuOpen,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen}:PropTypes) => {
 
     const contextOptions = [
         {

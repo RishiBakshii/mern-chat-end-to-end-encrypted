@@ -98,7 +98,6 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
       {messages?.map((message,index) => (
         <MessageCard
           key={index}
-          loggedInUserId={loggedInUserId}
           setOpenContextMenuMessageId={setOpenContextMenuMessageId}
           setEditMessageId={setEditMessageId}
           editMessageId={editMessageId}
@@ -107,7 +106,6 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
           isGroupChat={isGroupChat} 
           message={message} 
           myMessage={loggedInUserId===message.sender._id} 
-          selectedChatDetails={selectedChatDetails}
         />
       ))}
 

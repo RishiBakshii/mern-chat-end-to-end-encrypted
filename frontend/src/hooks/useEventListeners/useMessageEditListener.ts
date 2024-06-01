@@ -11,9 +11,9 @@ export const useMessageEditListener = () => {
     useSocketEvent(Events.MESSAGE_EDIT,({_id,chat,content,isEdited}:IEditMessageEventReceiveData)=>{
 
         dispatch(
-            messageApi.util.updateQueryData("getMessagesByChatId",chat,(draft)=>{
+            messageApi.util.updateQueryData("getMessagesByChatId",{_id:chat,page:1},(draft)=>{
 
-                const msg = draft.find(draft=>draft._id===_id)
+                const msg = draft.messages.find(draft=>draft._id===_id)
 
                 if(msg){
 

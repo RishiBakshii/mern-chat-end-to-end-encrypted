@@ -30,24 +30,24 @@ export const SignupForm = () => {
         <div className="flex flex-col gap-y-4">
 
             <div className="flex flex-col gap-y-1">
-                <FormInput placeholder="Name" register={register("name")} error={errors.name?.message}/>
+                <FormInput autoComplete="name webauthn" placeholder="Name" register={register("name")} error={errors.name?.message}/>
             </div>
 
 
             <div className="flex flex-col gap-y-1">
-                <FormInput placeholder="Username" register={register("username")} error={errors.username?.message}/>
+                <FormInput autoComplete="username" placeholder="Username" register={register("username")} error={errors.username?.message}/>
             </div>
 
             <div className="flex flex-col gap-y-1">
-                <FormInput placeholder="Email" register={register("email")} error={errors.email?.message}/>
+                <FormInput autoComplete="email" placeholder="Email" register={register("email")} error={errors.email?.message}/>
             </div>
 
             <div className="flex flex-col gap-y-1">
-                <FormInput placeholder="Password" register={register("password")} error={errors.password?.message}/>
+                <FormInput type="password" placeholder="Password" register={register("password")} error={errors.password?.message}/>
             </div>
 
             <div className="flex flex-col gap-y-1">
-                <FormInput placeholder="Confirm Password" register={register("confirmPassword")} error={errors.confirmPassword?.message}/>
+                <FormInput type="password" placeholder="Confirm Password" register={register("confirmPassword")} error={errors.confirmPassword?.message}/>
             </div>
         </div>
         

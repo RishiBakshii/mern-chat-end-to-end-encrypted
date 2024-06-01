@@ -21,6 +21,7 @@ export const ForgotPasswordForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
         <FormInput
+          autoComplete="email"
           placeholder="Registered email"
           register={{...register("email")}}
           error={errors.email?.message}

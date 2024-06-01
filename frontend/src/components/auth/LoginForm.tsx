@@ -29,11 +29,11 @@ export const LoginForm = () => {
         <div className="flex flex-col gap-y-4">
 
             <div className="flex flex-col gap-y-1">
-                <FormInput placeholder="Email" register={register("email")} error={errors.email?.message}/>
+                <FormInput autoComplete="email webauthn" placeholder="Email" register={register("email")} error={errors.email?.message}/>
             </div>
 
             <div className="flex flex-col gap-y-1">
-                <FormInput placeholder="Password" register={register("password")} error={errors.password?.message}/>
+                <FormInput type="password" autoComplete="current-password webauthn" placeholder="Password" register={register("password")} error={errors.password?.message}/>
             </div>
         </div>
         

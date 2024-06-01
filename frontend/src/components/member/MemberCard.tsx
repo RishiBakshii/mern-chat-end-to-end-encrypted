@@ -20,7 +20,7 @@ export const MemberCard = ({member,isSelected=false,isMemberAlready,selectable,t
         
         {
           isMemberAlready && 
-          <p className="">member</p>
+          <p>Member</p>
         }
     </div>
   )

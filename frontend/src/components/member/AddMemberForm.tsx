@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
-import { useToast } from "../../hooks/useUI/useToast"
+import { useAddMember } from "../../hooks/useMember/useAddMember"
 import { IFriend } from "../../interfaces/friends"
-import { useAddMemberMutation } from "../../services/api/chatApi"
 import { useGetFriendsQuery } from "../../services/api/friendApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
@@ -17,8 +16,7 @@ export const AddMemberForm = () => {
   const [searchVal,setSearchVal] = useState<string>('')
   const [filteredFriends, setFilteredFriends] = useState<Array<IFriend>>([]);
 
-  const [addMember,{isError,isLoading,isSuccess,isUninitialized,error}] = useAddMemberMutation()
-  useToast({isError,isLoading,isSuccess,isUninitialized,error,loaderToast:true,successMessage:"Members Added",successToast:true})
+  const {addMember} = useAddMember()
 
   const handleAddMember = () => {
     if(selectedChatDetails?._id){
@@ -50,7 +48,7 @@ export const AddMemberForm = () => {
 
       <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 rounded w-full text-text bg-background outline outline-1 outline-secondary-darker" placeholder="Search Friends"/>
 
-      <div className="overflow-y-scroll max-h-52">
+      <div className="overflow-y-auto max-h-52">
 
         <MemberList
           selectable={true}

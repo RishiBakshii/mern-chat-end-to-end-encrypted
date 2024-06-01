@@ -3,7 +3,7 @@ import type { IMessage } from "../../interfaces/messages";
 import { ContextMenu } from "../shared/ContextMenu";
 import { IChatWithUnreadMessages } from "../../interfaces/chat";
 import { RenderAppropriateMessage } from "./RenderAppropriateMessage";
-import {motion} from 'framer-motion'
+import {AnimatePresence, motion} from 'framer-motion'
 
 type PropTypes = {
     editMessageId:string | undefined,
@@ -33,18 +33,22 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,loggedInUs
         e.stopPropagation()
         
         if(myMessage && message.content){
-            onContextMenuOpen(e,message._id)
+            onContextMenuOpen(e,isContextMenuOpen?'':message._id)
         }
     }
 
   return (
     <motion.div initial={{x:-2}} animate={{x:0}} className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative`} onContextMenu={e=>handleContextMenuClick(e)}>
 
-        {
-            isContextMenuOpen &&
-            <ContextMenu options={contextOptions}/>
-        }
- 
+        <AnimatePresence>
+            {
+                isContextMenuOpen &&
+                <motion.div variants={{hide:{opacity:0,y:-10},show:{opacity:1,y:0}}} initial="hide" exit="hide" animate="show" >
+                    <ContextMenu options={contextOptions}/>
+                </motion.div>
+            }
+        </AnimatePresence>
+
         {
             !myMessage && 
             <img 

@@ -31,7 +31,7 @@ export const EditMessageForm = ({prevContentValue,messageId,setEditMessageId,set
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-y-3 flex-col">
+    <form onSubmit={handleSubmit} className="flex items-center gap-y-3 flex-col ">
         <textarea cols={30} value={updatedContentValue} onChange={e=>setUpdatedContentValue(e.target.value)} className="p-4 text-text bg-background outline outline-1 outline-secondary-dark"/>
         
         <div className="flex items-center gap-x-2">

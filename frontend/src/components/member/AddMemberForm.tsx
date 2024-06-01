@@ -5,12 +5,15 @@ import { useGetFriendsQuery } from "../../services/api/friendApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
 import { MemberList } from "./MemberList"
+import {motion} from 'framer-motion'
+import { useToggleAddMemberForm } from "../../hooks/useUI/useToggleAddMemberForm"
 
 export const AddMemberForm = () => {
 
   const {data:friends} = useGetFriendsQuery()
   
   const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
+  const toggleAddMemberForm = useToggleAddMemberForm()
 
   const [selectedMembers,setSelectedMembers] = useState<Array<string>>([])
   const [searchVal,setSearchVal] = useState<string>('')
@@ -20,7 +23,7 @@ export const AddMemberForm = () => {
 
   const handleAddMember = () => {
     if(selectedChatDetails?._id){
-      setSelectedMembers([])
+      toggleAddMemberForm()
       addMember({_id:selectedChatDetails?._id,members:selectedMembers})
     }
   }
@@ -60,7 +63,10 @@ export const AddMemberForm = () => {
 
       </div>
 
-      <button onClick={handleAddMember} disabled={selectedMembers.length===0} className="bg-primary text-white py-2 rounded-sm disabled:bg-gray-400">Add</button>
+      {
+        selectedMembers.length!==0 &&
+        <motion.button  initial={{y:5}} animate={{y:0}} onClick={handleAddMember} className="bg-primary text-white py-2 rounded-sm disabled:bg-gray-400">Add member</motion.button>
+      }
 
     </div>
   )

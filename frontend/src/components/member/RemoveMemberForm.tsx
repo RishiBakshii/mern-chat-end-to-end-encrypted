@@ -5,19 +5,25 @@ import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice
 import { useAppSelector } from "../../services/redux/store/hooks"
 import { MemberList } from "./MemberList"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
+import {motion} from 'framer-motion'
+import toast from "react-hot-toast"
+import { useToggleRemoveMemberForm } from "../../hooks/useUI/useToggleRemoveMemberForm"
 
 export const RemoveMemberForm = () => {
 
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
 
+    const toggleRemoveMemberForm = useToggleRemoveMemberForm()
+
     const loggedInUserId = useAppSelector(selectLoggedInUser)
 
     const isMemberLength3 = selectedChatDetails && selectedChatDetails?.members.length <= 3
+
     const [searchVal,setSearchVal] = useState<string>('')
     const [filteredMembers,setFilteredMembers] = useState<IChatWithUnreadMessages['members']>([])
+    const [selectedMembers,setSelectedMembers] = useState<Array<string>>([])
 
     useEffect(()=>{
-
         if(!searchVal.trim().length && selectedChatDetails){
             setFilteredMembers(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId?._id))
         }
@@ -30,21 +36,29 @@ export const RemoveMemberForm = () => {
 
     const {removeMember} = useRemoveMember()
 
-    const [selectedMembers,setSelectedMembers] = useState<Array<string>>([])
-    
     const toggleSelection = (memberId:string)=>{
-        if(selectedMembers.includes(memberId)){
-            setSelectedMembers(prev=>prev.filter(member=>member!==memberId))
+
+        if(selectedChatDetails){
+
+            if(selectedMembers.includes(memberId)){
+                setSelectedMembers(prev=>prev.filter(member=>member!==memberId))
+            }
+            else{
+                if(selectedChatDetails.members.length - selectedMembers.length > 3){
+                    setSelectedMembers(prev=>[...prev,memberId])
+                }
+                else{
+                    toast.error("Group cannot have less than 3 members")
+                }
+            }
         }
-        else{
-            setSelectedMembers(prev=>[...prev,memberId])
-        }
+
     }
 
     const handleRemoveMember = ()=>{
 
         if(selectedChatDetails){
-            setSelectedMembers([])
+            toggleRemoveMemberForm()
             removeMember({chatId:selectedChatDetails?._id,memberIds:selectedMembers})
         }
     }
@@ -62,7 +76,11 @@ export const RemoveMemberForm = () => {
         </div>
         
         <div className="flex flex-col gap-y-4">
-            <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 rounded w-full text-text bg-background outline outline-1 outline-secondary-darker" placeholder="Search Members"/>
+
+            {
+                !isMemberLength3 &&
+                <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 rounded w-full text-text bg-background outline outline-1 outline-secondary-darker" placeholder="Search Members"/>
+            }
             <div className="overflow-y-auto max-h-52 ">
                 {
                     selectedChatDetails &&
@@ -77,14 +95,12 @@ export const RemoveMemberForm = () => {
 
         </div>
         
-        <div className="flex flex-col gap-y-2">
-
-            {
-                selectedMembers.length>0 && 
-                <button onClick={handleRemoveMember} className="bg-red-500 text-white py-2 rounded-sm disabled:bg-gray-400">Remove {selectedMembers.length} {selectedMembers.length===1?"member":"members"}</button>
-            }
-
-        </div>
+        {
+            selectedMembers.length>0 &&
+            <motion.div initial={{y:5}} animate={{y:0}} className="flex flex-col gap-y-2">
+                    <button onClick={handleRemoveMember} className="bg-red-500 text-white py-2 rounded-sm disabled:bg-gray-400">Remove {selectedMembers.length} {selectedMembers.length===1?"member":"members"}</button>
+            </motion.div>
+        }
 
     </div>
   )

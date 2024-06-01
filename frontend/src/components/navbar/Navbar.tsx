@@ -1,10 +1,10 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useLogout } from "../../hooks/useAuth/useLogout"
 import { useOpenAddFriendForm } from "../../hooks/useUI/useOpenAddFriendForm"
 import { useOpenFriendRequestForm } from "../../hooks/useUI/useOpenFriendRequestForm"
 import { useOpenNewGroupChatForm } from "../../hooks/useUI/useOpenNewGroupChatForm"
 import { useOpenProfileForm } from "../../hooks/useUI/useOpenProfileForm"
 import { useToggleCallInRequestDisplay } from "../../hooks/useUI/useToggleCallInRequestDisplay"
-import { useToggleCallOutForm } from "../../hooks/useUI/useToggleCallOutForm"
 import { useToggleChatBar } from "../../hooks/useUI/useToggleChatBar"
 import { useToggleNavMenu } from "../../hooks/useUI/useToggleNavMenu"
 import { useUpdateTheme } from "../../hooks/useUtils/useUpdateTheme"
@@ -17,7 +17,6 @@ import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
-import {AnimatePresence, motion} from 'framer-motion'
 
 export const Navbar = () => {
 
@@ -31,7 +30,6 @@ export const Navbar = () => {
   const isDarkMode = useAppSelector(selectisDarkMode)
   const toggleNavMenu = useToggleNavMenu()
 
-  const toggleCallOutForm = useToggleCallOutForm()
 
   const toggleCallInRequestDisplay = useToggleCallInRequestDisplay()
 
@@ -96,7 +94,7 @@ export const Navbar = () => {
 
             </div>
 
-              <div className="relative ">
+              <div className="relative shrink-0">
 
                   <Avatar
                    cursor="pointer"

@@ -49,9 +49,12 @@ import { useCallOut } from "../hooks/useCallIn/useCallOut"
 import { ICallOutEventPayloadData } from "../interfaces/callIn"
 import { useDispatchRemoveSpectatorById } from "../hooks/useCallIn/useDispatchRemoveSpectatorById"
 import { TypingIndicatorWithUserList } from "../components/chat/TypingIndicatorWithUserList"
+import {motion} from 'framer-motion'
+import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
 
 export const ChatPage = () => {
 
+   const is640 =  useMediaQuery(640)
 
    const {isChatsFetching,chats} = useFetchChats()
    useFetchFriends()
@@ -140,7 +143,12 @@ export const ChatPage = () => {
         
         <div className="h-full w-full flex p-4 gap-x-6 bg-background">
 
-                <div className={`flex-[.5] p-2 min-w-[15rem] bg-background max-md:fixed ${chatBar?"max-sm:right-0 left-0":"-left-96"} overflow-y-auto  h-full z-10`}>
+                <motion.div 
+                    variants={{hide:{right:"50rem"},show:{left:0,right:0}}} 
+                    initial="hide" 
+                    animate={chatBar?"show":"hide"} 
+                    transition={{duration:.4,type:"spring"}}
+                    className={`flex-[.5] min-w-[15rem] p-2 bg-background max-md:fixed overflow-y-auto h-full z-10`}>
                     
                     {
                         !isChatsFetching && chats && loggedInUser ?
@@ -159,7 +167,7 @@ export const ChatPage = () => {
                         <ChatListWithSearchSkeleton/>
                     }
                     
-                </div>
+                </motion.div>
 
                 <div className="flex-[1.6]">
 
@@ -208,7 +216,12 @@ export const ChatPage = () => {
                         
                 </div>
 
-                <div className={`flex-[.6] bg-background max-sm:w-full max-2xl:fixed ${!chatDetailsBar?"max-2xl:-right-[50rem]":""} ${chatDetailsBar?"max-2xl:right-0":""}  max-2xl:px-4 max-2xl:w-[25rem]`}>
+                <motion.div 
+                    variants={{hide:{right:is640?"-40rem":"-26rem"},show:{right:0}}}
+                    initial="hide"
+                    animate={chatDetailsBar?"show":"hide"}
+                    transition={{type:"spring",duration:.4}}
+                    className="flex-[.6] bg-background max-sm:w-full max-2xl:fixed max-2xl:px-4 max-2xl:w-[25rem]">
                     {
                         !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar && sharedMedia &&
 
@@ -225,7 +238,7 @@ export const ChatPage = () => {
                         fetchMoreAttachments={handleFetchMoreAttachments}
                         />
                     }
-                </div>
+                </motion.div>
                 
         </div>
     </>

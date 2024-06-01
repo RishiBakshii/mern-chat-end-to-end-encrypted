@@ -38,7 +38,7 @@ export const ChatHeader = ({loggedInUserId,selectedChatName,totalMembers,chatNam
 
           <div className="flex items-center gap-x-4">
               {
-                spectators.length>0 &&
+                spectators?.length>0 &&
                 <div className="flex items-center gap-x-2">
                     <p className="text-secondary-darker">Spectators</p>
 

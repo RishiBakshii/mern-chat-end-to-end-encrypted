@@ -5,6 +5,7 @@ import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import type { IMessage } from "../../interfaces/messages"
 import { TypingIndicatorWithUserList } from "../chat/TypingIndicatorWithUserList"
 import { MessageCard } from "./MessageCard"
+import { useDeleteMessage } from '../../hooks/useMessages/useDeleteMessage'
 
 type PropTypes = {
   messages:Array<IMessage>
@@ -25,6 +26,8 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
 
   const [openContextMenuMessageId, setOpenContextMenuMessageId] = useState<string>()
   const [editMessageId,setEditMessageId] = useState<string>()
+
+  const deleteMessage = useDeleteMessage()
 
 
   useEffect(()=>{
@@ -109,6 +112,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
           setEditMessageId={setEditMessageId}
           editMessageId={editMessageId}
           onContextMenuOpen={handleSetOpenContextMenuMessageId}
+          deleteMessage={deleteMessage}
           isContextMenuOpen={openContextMenuMessageId===message._id}
           isGroupChat={isGroupChat} 
           message={message}

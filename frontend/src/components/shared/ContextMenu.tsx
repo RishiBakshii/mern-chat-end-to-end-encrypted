@@ -12,10 +12,10 @@ type PropTypes = {
 export const ContextMenu = ({options}:PropTypes) => {
 
     return (
-        <div className={`bg-secondary-dark text-text p-2 rounded-2xl shadow-2xl absolute -left-36`}>
+        <div className={`bg-secondary-dark text-text p-2 rounded-2xl shadow-2xl absolute -left-32 min-w-32`}>
             {
                 options.map(({name,handlerFunc})=>(
-                    <p key={name} className="hover:bg-secondary-dark rounded-sm cursor-pointer p-2" onClick={handlerFunc}>{name}</p>
+                    <p key={name} className="hover:bg-secondary-darker rounded-sm cursor-pointer p-2" onClick={handlerFunc}>{name}</p>
                 ))
             }
         </div>

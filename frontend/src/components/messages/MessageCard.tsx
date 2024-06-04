@@ -13,17 +13,22 @@ type PropTypes = {
     loggedInUserId:string
     isGroupChat:boolean,
     selectedChatDetails:IChatWithUnreadMessages,
+    deleteMessage: ({ messageId }: {messageId: string}) => void
     onContextMenuOpen:(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string) => void
     setEditMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
     setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedChatDetails,loggedInUserId,editMessageId,isContextMenuOpen,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen}:PropTypes) => {
+export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedChatDetails,loggedInUserId,editMessageId,isContextMenuOpen,deleteMessage,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen}:PropTypes) => {
 
     const contextOptions = [
         {
-            name:"Edit message",
+            name:"Edit",
             handlerFunc:()=>setEditMessageId(message._id)
+        },
+        {
+            name:"Delete",
+            handlerFunc:()=>deleteMessage({messageId:message._id})
         }
     ]
 

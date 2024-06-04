@@ -259,6 +259,15 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
         io.to(chatId).emit(Events.MESSAGE_EDIT,updatedMessage)
     })
 
+    socket.on(Events.MESSAGE_DELETE,async({messageId}:{messageId:string})=>{
+
+        const deletedMessage = await Message.findByIdAndDelete(messageId)
+
+        if(deletedMessage){
+            io.to(deletedMessage.chat._id.toString()).emit(Events.MESSAGE_DELETE,{messageId,chatId:deletedMessage.chat._id.toString()})
+        }
+    })
+
     socket.on(Events.USER_TYPING,({chatId}:{chatId:string})=>{
         
         socket.broadcast.to(chatId).emit(Events.USER_TYPING,{

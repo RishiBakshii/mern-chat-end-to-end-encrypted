@@ -57,6 +57,7 @@ export const getSecureUserInfo = (user:any)=>{
         email:user.email,
         createdAt:user.createdAt,
         updatedAt:user.updatedAt,
-        verified:user.verified
+        verified:user.verified,
+        publicKey:user?.publicKey
     }
 }

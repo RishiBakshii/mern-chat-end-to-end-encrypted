@@ -3,19 +3,22 @@ import { memo } from "react";
 import type { IMessage } from "../../interfaces/messages";
 import { ContextMenu } from "../shared/ContextMenu";
 import { RenderAppropriateMessage } from "./RenderAppropriateMessage";
+import { IChatWithUnreadMessages } from '../../interfaces/chat';
 
 type PropTypes = {
     editMessageId:string | undefined,
     isContextMenuOpen:boolean,
     myMessage:boolean;
     message:IMessage,
+    loggedInUserId:string
     isGroupChat:boolean,
+    selectedChatDetails:IChatWithUnreadMessages,
     onContextMenuOpen:(e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string) => void
     setEditMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
     setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessageId,isContextMenuOpen,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen}:PropTypes) => {
+export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedChatDetails,loggedInUserId,editMessageId,isContextMenuOpen,setOpenContextMenuMessageId,setEditMessageId,onContextMenuOpen}:PropTypes) => {
 
     const contextOptions = [
         {
@@ -59,6 +62,8 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,editMessag
             
                 <RenderAppropriateMessage
                    editMessageId={editMessageId}
+                   loggedInUserId={loggedInUserId}
+                   selectedChatDetails={selectedChatDetails}
                    isGroupChat={isGroupChat}
                    message={message}
                    myMessage={myMessage}

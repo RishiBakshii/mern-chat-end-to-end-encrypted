@@ -38,7 +38,7 @@ export interface IUnreadMessage {
 
 export interface IMessageEventPayloadData {
     chat:string
-    content?:string
+    content?:string | ArrayBuffer
     url?:string
     isPoll?:boolean
     pollQuestion?:string

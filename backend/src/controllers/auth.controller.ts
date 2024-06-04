@@ -1,21 +1,19 @@
+import bcrypt from 'bcryptjs';
 import { NextFunction, Request, Response } from "express";
-import { type signupSchemaType } from "../schemas/auth.schema.js";
-import { User } from "../models/user.model.js";
-import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import { generateOtp, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
-import type { loginSchemaType, verifyOtpSchemaType } from "../schemas/auth.schema.js";
-import bcrypt from 'bcryptjs'
-import type { forgotPasswordSchemaType } from "../schemas/auth.schema.js";
-import { sendMail } from "../utils/email.util.js";
-import { ResetPassword } from "../models/reset-password.model.js";
-import { env } from "../schemas/env.schema.js";
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 import { config } from "../config/env.config.js";
-import type { resetPasswordSchemaType } from "../schemas/auth.schema.js";
-import type { IUser } from "../interfaces/auth/auth.interface.js";
-import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
-import { Otp } from "../models/otp.model.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
+import type { AuthenticatedRequest, IUser } from "../interfaces/auth/auth.interface.js";
+import { Otp } from "../models/otp.model.js";
+import { ResetPassword } from "../models/reset-password.model.js";
+import { User } from "../models/user.model.js";
+import type { forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
+import { type signupSchemaType } from "../schemas/auth.schema.js";
+import { env } from "../schemas/env.schema.js";
+import { generateOtp, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
+import { sendMail } from "../utils/email.util.js";
+import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
+import { PrivateKeyRecoveryToken } from '../models/private-key-recovery-token.model.js';
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
@@ -41,8 +39,9 @@ const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
         secureUrl:DEFAULT_AVATAR
     }}) as IUser
 
+    const secureInfo = getSecureUserInfo(newUser) as IUser
 
-    sendToken(res,newUser._id,201,getSecureUserInfo(newUser))
+    sendToken(res,newUser._id,201,secureInfo)
     
 }) 
 
@@ -52,8 +51,10 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
     const isExistingUser = await User.findOne({email}).select("+password")
 
     if(isExistingUser && await bcrypt.compare(password,isExistingUser.password)){
-        
-        sendToken(res,isExistingUser['_id'],200,getSecureUserInfo(isExistingUser))
+
+        const secureInfo = getSecureUserInfo(isExistingUser) as IUser
+
+        sendToken(res,isExistingUser['_id'],200,secureInfo)
         return 
     }
 
@@ -128,9 +129,9 @@ const sendOtp = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,ne
     const otp = generateOtp()
     const hashedOtp = await bcrypt.hash(otp,10)
 
-    const newOtp = await Otp.create({user:req.user?._id,hashedOtp})
+    await Otp.create({user:req.user?._id,hashedOtp})
 
-    await sendMail(req.user?.email!,req.user?.username!,"OTP",undefined,otp)
+    await sendMail(req.user?.email!,req.user?.username!,'OTP',undefined,otp,undefined)
 
     return res.status(201).json({message:`We have sent the otp on ${req.user?.email}`})
 })
@@ -160,11 +161,77 @@ const verifyOtp = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,
 
 })
 
+const updateUserKeys = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const {publicKey,privateKey}:keySchemaType = req.body
+
+    const updatedUser = await User.findByIdAndUpdate(req.user?._id,{publicKey,privateKey},{new:true})
+    await updatedUser?.save()
+
+    return res.status(200).json({publicKey:updatedUser?.publicKey})
+
+})
+
+const verifyPassword = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const {password}:verifyPasswordSchemaType = req.body
+
+    if(req.user?.password && (await bcrypt.compare(password,req.user.password))){
+
+        const token = jwt.sign({user:req.user._id.toString()},env.JWT_SECRET)
+        const hashedToken = await bcrypt.hash(token,10)
+
+        const privateKeyPromise = [
+            PrivateKeyRecoveryToken.deleteMany({user:req.user._id}),
+            PrivateKeyRecoveryToken.create({user:req.user._id,hashedToken})
+        ]
+
+        await Promise.all(privateKeyPromise)
+
+        const verificationUrl = `${config.clientUrl}/auth/privatekey-verification/${token}`
+
+        await sendMail(req.user.email,req.user.username,'privateKeyRecovery',undefined,undefined,verificationUrl)
+
+        return res.status(200).json({message:"We have sent you an email with verification link, please check spam if not received"})
+    }
+
+    return next(new CustomError("Password is incorrect",400))
+})
+
+const verifyPrivateKeyToken = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const {recoveryToken}:verifyPrivateKeyTokenSchemaType = req.body
+    
+    const isExistingToken = await PrivateKeyRecoveryToken.findOne({user:req.user?._id})
+
+    if(!isExistingToken){
+        return next(new CustomError('Token does not exists',404))
+    }
+
+    if(isExistingToken.expiresAt < new Date){
+        await isExistingToken.deleteOne()
+        return next(new CustomError('Verification link has been expired',400))
+    }
+
+    if(!(await bcrypt.compare(recoveryToken,isExistingToken.hashedToken))){
+        return next(new CustomError('Verification link is not valid',400))
+    }
+
+    const decodedData = jwt.verify(recoveryToken,env.JWT_SECRET) as {user:string}
+
+    if(decodedData.user !== req.user?._id.toString()){
+        await isExistingToken.deleteOne()
+        return next(new CustomError('Verification link is not valid',400))
+    }
+
+    return res.status(200).json({privateKey:req.user.privateKey})
+
+})
+
 const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     if(req.user){
         return res.status(200).json(getSecureUserInfo(req.user))
     }
-
     return next(new CustomError("Token missing, please login again",401))
 })
 
@@ -184,4 +251,17 @@ const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
 })
 
 
-export {signup,login,logout,forgotPassword,resetPassword,sendOtp,verifyOtp,checkAuth,redirectHandler}
+export { 
+    checkAuth, 
+    forgotPassword, 
+    login, 
+    logout,
+    redirectHandler, 
+    resetPassword, 
+    sendOtp, 
+    signup, 
+    updateUserKeys, 
+    verifyOtp,
+    verifyPassword,
+    verifyPrivateKeyToken,
+};

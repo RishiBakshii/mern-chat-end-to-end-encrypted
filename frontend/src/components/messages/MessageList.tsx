@@ -1,10 +1,10 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from "react"
 import type { IUser } from "../../interfaces/auth"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import type { IMessage } from "../../interfaces/messages"
-import { MessageCard } from "./MessageCard"
 import { TypingIndicatorWithUserList } from "../chat/TypingIndicatorWithUserList"
-import {AnimatePresence, motion} from 'framer-motion'
+import { MessageCard } from "./MessageCard"
 
 type PropTypes = {
   messages:Array<IMessage>
@@ -25,6 +25,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
 
   const [openContextMenuMessageId, setOpenContextMenuMessageId] = useState<string>()
   const [editMessageId,setEditMessageId] = useState<string>()
+
 
   useEffect(()=>{
     if(messageContainerRef.current && messageContainerRef.current.scrollTop !== messageContainerRef.current.scrollHeight){
@@ -99,17 +100,21 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,selectedChatDet
     <div  ref={messageContainerRef} onScroll={handleScroll} className="flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto overflow-x-hidden">
 
       {messages?.map((message,index) => (
+
         <MessageCard
           key={index}
+          selectedChatDetails={selectedChatDetails}
+          loggedInUserId={loggedInUserId}
           setOpenContextMenuMessageId={setOpenContextMenuMessageId}
           setEditMessageId={setEditMessageId}
           editMessageId={editMessageId}
           onContextMenuOpen={handleSetOpenContextMenuMessageId}
           isContextMenuOpen={openContextMenuMessageId===message._id}
           isGroupChat={isGroupChat} 
-          message={message} 
+          message={message}
           myMessage={loggedInUserId===message.sender._id} 
         />
+
       ))}
 
       <AnimatePresence>

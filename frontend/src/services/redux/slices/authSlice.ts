@@ -13,6 +13,11 @@ const authSlice = createSlice({
         updateLoggedInUser:(state,action:PayloadAction<IUser>)=>{
             state.loggedInUser=action.payload
         },
+        updateLoggedInUserPublicKey:(state,action:PayloadAction<Pick<IUser,'publicKey'>>)=>{
+            if(state.loggedInUser){
+                state.loggedInUser.publicKey = action.payload.publicKey
+            }
+        },
         logout:(state)=>{
             state.loggedInUser=null
         }
@@ -23,6 +28,11 @@ const authSlice = createSlice({
 export const selectLoggedInUser = ((state:RootState)=>state.authSlice.loggedInUser)
 
 // exporting reducers
-export const {updateLoggedInUser,logout} = authSlice.actions
+export const {
+    updateLoggedInUser,
+    updateLoggedInUserPublicKey,
+    logout
+
+} = authSlice.actions
 
 export default authSlice

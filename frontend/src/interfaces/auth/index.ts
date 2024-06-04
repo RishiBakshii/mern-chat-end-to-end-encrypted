@@ -4,6 +4,7 @@ export interface IUser {
     username:string
     avatar:string
     email:string
+    publicKey:string
     createdAt:Date
     updatedAt:Date
     verified?:boolean

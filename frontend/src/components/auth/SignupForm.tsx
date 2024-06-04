@@ -1,24 +1,29 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { useSignup } from "../../hooks/useAuth/useSignup"
 import { useUpdateLogin } from "../../hooks/useAuth/useUpdateLogin"
-import { useToast } from "../../hooks/useUI/useToast"
 import { signupSchema, signupSchemaType } from "../../schemas"
 import { FormInput } from "../ui/FormInput"
 import { SubmitButton } from "../ui/SubmitButton"
 import { AuthRedirectLink } from "./AuthRedirectLink"
-import { useSignupMutation } from "../../services/api/authApi"
+import { useGenerateKeyPair } from "../../hooks/useAuth/useGenerateKeyPair"
 
 export const SignupForm = () => {
 
-    const [signup,{data,isSuccess,isError,isLoading,isUninitialized,error}] = useSignupMutation()
-    useToast({error,isError,isLoading,isSuccess,isUninitialized})
+
+    const {signup,isSuccess,data} = useSignup()
     
     useUpdateLogin(isSuccess,data)
-
-    const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
+    
+    
+    const { register, handleSubmit, watch ,formState: { errors } } = useForm<signupSchemaType>({
         resolver:zodResolver(signupSchema)
     })
 
+    const password = watch("password")
+    
+    useGenerateKeyPair(isSuccess,data?._id,password)
+    
     const onSubmit: SubmitHandler<signupSchemaType> = (data) => {
         const {confirmPassword,...credentials}=data
         signup(credentials)

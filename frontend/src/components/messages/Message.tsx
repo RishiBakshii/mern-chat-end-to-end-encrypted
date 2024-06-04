@@ -37,13 +37,3 @@ export const Message = ({content,isEdited}:PropTypes) => {
   )
 }
 
-
-
-
-
-        // editMessageId === message._id ? 
-        // <EditMessageForm 
-        //   setEditMessageId={setEditMessageId}
-        //   prevContentValue={message.content}
-        //   messageId={message._id}
-        // />

@@ -20,7 +20,7 @@ export const verifyToken=asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
             return next(new CustomError("Invalid token please login again",401))
         }
 
-        const existingUser = await User.findOne({_id:decodedInfo._id})
+        const existingUser = await User.findOne({_id:decodedInfo._id}).select('+password')
 
         if(!existingUser){
             return next(new CustomError('Invalid Token, please login again',401))

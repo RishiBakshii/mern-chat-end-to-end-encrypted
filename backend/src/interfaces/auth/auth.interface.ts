@@ -27,6 +27,8 @@ export interface IUser {
     username:string
     avatar?:IAvatar
     email:string
+    publicKey:string
+    privateKey:string
     password:string
     verified?:boolean,
     createdAt?:Date
@@ -46,4 +48,10 @@ export interface IResetPassword {
     user:Types.ObjectId,
     hashedToken:string,
     expiresAt?:Date
+}
+
+export interface IPrivateKeyRecoveryToken {
+    user:Types.ObjectId
+    hashedToken:string
+    expiresAt:Date
 }

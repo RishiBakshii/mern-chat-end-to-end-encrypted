@@ -1,21 +1,32 @@
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Protected } from './components/auth/Protected';
+import { AuthLayout } from './components/layout/AuthLayout';
 import { RootLayout } from './components/layout/RootLayout';
 import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
-import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, ResetPasswordPage, SignupPage, VerificationPage } from './pages';
-import { useCheckAuthQuery } from './services/api/authApi';
+import { useInitializeIndexDb } from './hooks/useUtils/useInitializeIndexDb';
 import { useSetTheme } from './hooks/useUtils/useSetTheme';
-import { AuthLayout } from './components/layout/AuthLayout';
-import { useAppSelector } from './services/redux/store/hooks';
+import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, PrivateKeyRecoveryVerificationPage, ResetPasswordPage, SignupPage, VerificationPage } from './pages';
+import { useCheckAuthQuery } from './services/api/authApi';
 import { selectLoggedInUser } from './services/redux/slices/authSlice';
+import { useAppSelector } from './services/redux/store/hooks';
+import usePrivateKeyCheck from './hooks/useAuth/usePrivateKeyCheck';
+import { selectRecoverPrivateKeyForm } from './services/redux/slices/uiSlice';
+import { RecoverPrivateKeyForm } from './components/auth/RecoverPrivateKeyForm';
+import { Modal } from './components/shared/Modal';
 
 export const App = () => {
+
+  const recoverPrivateKeyForm = useAppSelector(selectRecoverPrivateKeyForm)
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
 
   useSetTheme()
-  
   useUpdateLogin(isSuccess,data)
+  useInitializeIndexDb()
+
+  usePrivateKeyCheck(isSuccess,data)
+
+  
   const loggedInUser = useAppSelector(selectLoggedInUser)
 
   const router = createBrowserRouter(createRoutesFromElements(
@@ -75,8 +86,30 @@ export const App = () => {
 
   ));
 
+  const privateKeyRecoveryRouter = createBrowserRouter(createRoutesFromElements(
+
+    <>
+    <Route path='/auth' element={
+        <Modal isOpen={recoverPrivateKeyForm} onClose={()=>""}>
+          <RecoverPrivateKeyForm/>
+        </Modal>
+      }
+    />
+
+    <Route path='/auth/privatekey-verification/:recoveryToken' element={<PrivateKeyRecoveryVerificationPage/>}/>
+
+    <Route path='*' element={<Navigate to={'/auth'}/>}/>
+    </>
+
+  ))
+
   return (
-    isFetching? <div></div>:
-    <RouterProvider router={router}/>
+    isFetching?''
+    :
+    <RouterProvider router={
+      recoverPrivateKeyForm?
+      privateKeyRecoveryRouter:
+      router
+    }/>
   )
 };

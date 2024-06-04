@@ -9,9 +9,16 @@ const AVATARS = [
     "https://images.pexels.com/photos/10506369/pexels-photo-10506369.jpeg?auto=compress&cs=tinysrgb&w=600"
 ]
 
+const DB_NAME = "Authentication"
+const VERSION = 1
+const OBJECT_STORE = "privateKeys"
+
 export {
     DEFAULT_AVATAR,
     ACCEPTED_IMAGE_TYPES,
     AVATARS,
     ACCEPTED_FILE_MIME_TYPES,
+    DB_NAME,
+    VERSION,
+    OBJECT_STORE
 }

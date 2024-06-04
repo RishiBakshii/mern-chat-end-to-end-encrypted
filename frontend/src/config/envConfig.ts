@@ -10,11 +10,13 @@ let env:envSchemaType = {
 const productionConfig:IConfig = {
     base_url:"",
     absolute_base_url:"",
+    clientUrl:"https://baatchit.online"
 }
 
 const developmentConfig:IConfig = {
     base_url:"http://localhost:8000/api/v1",
-    absolute_base_url:"http://localhost:8000"
+    absolute_base_url:"http://localhost:8000",
+    clientUrl:"http://localhost:5173"
 }
 
 try {

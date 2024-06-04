@@ -31,12 +31,17 @@ const otpVerificationSchema = z.object({
     otp:z.string({required_error:"Otp is required"}).min(4,{message:"OTP must be a minimum of 4 digits"})
 })
 
+const keyRecoverySchema = z.object({
+    password:passwordValidation
+})
+
 export {
     loginSchema,
     signupSchema,
     forgotPasswordSchema,
     resetPasswordSchema,
-    otpVerificationSchema
+    otpVerificationSchema,
+    keyRecoverySchema,
 }
 
 export type signupSchemaType = z.infer<typeof signupSchema>
@@ -44,3 +49,4 @@ export type loginSchemaType = z.infer<typeof loginSchema>
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>
 export type resetPasswordSchemaType = z.infer<typeof resetPasswordSchema>
 export type otpVerificationSchemaType = z.infer<typeof otpVerificationSchema>
+export type keyRecoverySchemaType = z.infer<typeof keyRecoverySchema>

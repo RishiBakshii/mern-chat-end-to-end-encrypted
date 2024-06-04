@@ -3,6 +3,7 @@ import type { IUser } from '../../interfaces/auth'
 import type { IResetPassword } from '../../interfaces/auth'
 import type { IOtp } from '../../interfaces/auth'
 import { config } from '../../config/envConfig'
+import { decryptPrivateKey, deriveKeyFromPassword } from '../../utils/encryption'
 
 export const authApi = createApi({
 
@@ -22,7 +23,7 @@ export const authApi = createApi({
                 body:credentials
             })
         }),
-        signup:builder.mutation<IUser,Omit<IUser,'avatar' | '_id' | 'createdAt' | 'updatedAt'>>({
+        signup:builder.mutation<IUser,Omit<IUser,'avatar' | '_id' | 'createdAt' | 'updatedAt' | 'publicKey'>>({
             query:(credentials)=>({
                 url:"/signup",
                 method:"POST",
@@ -50,6 +51,27 @@ export const authApi = createApi({
                 body:credentials
             })
         }),
+        verifyPassword:builder.mutation<void,{password:string}>({
+            query:({password})=>({
+                url:"/verify-password",
+                method:"POST",
+                body:{password}
+            })
+        }),
+        verifyPrivateKeyToken:builder.mutation<{privateKey:string},{recoveryToken:string}>({
+            query:({recoveryToken})=>({
+                url:"/verify-privatekey-token",
+                method:"POST",
+                body:{recoveryToken}
+            }),
+        }),
+        updateUserKeys:builder.mutation<Pick<IUser , 'publicKey'>,Pick<IUser , 'publicKey'> & {privateKey:string}>({
+            query:({publicKey,privateKey})=>({
+                url:"/user/keys",
+                method:"PATCH",
+                body:{publicKey,privateKey}
+            })
+        }),
         sendOtp:builder.query<void,void>({
             query:()=>"/send-otp"
         }),
@@ -72,5 +94,8 @@ export const {
     useVerifyOtpMutation,
     useLazySendOtpQuery,
     useLazyLogoutQuery,
-    useCheckAuthQuery
+    useCheckAuthQuery,
+    useUpdateUserKeysMutation,
+    useVerifyPasswordMutation,
+    useVerifyPrivateKeyTokenMutation,
 } = authApi

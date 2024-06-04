@@ -1,12 +1,12 @@
 import { transporter } from "../config/nodemailer.config.js"
-import { otpVerificationBody, otpVerificationSubject, resetPasswordBody, resetPasswordSubject } from "../constants/email.constant.js"
+import { otpVerificationBody, otpVerificationSubject, privateKeyRecoveryBody, privateKeyRecoverySubject, resetPasswordBody, resetPasswordSubject } from "../constants/email.constant.js"
 import { env } from "../schemas/env.schema.js"
 
-export const sendMail = async(to:string,username:string,type:"resetPassword" | "OTP",resetUrl?:string,otp?:string)=>{
+export const sendMail = async(to:string,username:string,type:"resetPassword" | "OTP" | "privateKeyRecovery",resetUrl?:string,otp?:string,verificationUrl?:string)=>{
     await transporter.sendMail({
         from:env.EMAIL, 
         to,
-        subject:type==='resetPassword'?resetPasswordSubject:otpVerificationSubject,
-        html:type==='resetPassword'?resetPasswordBody(username,resetUrl!):otpVerificationBody(username,otp!)
+        subject:type==='OTP'?otpVerificationSubject:type==='resetPassword'?resetPasswordSubject:privateKeyRecoverySubject,
+        html:type==='OTP'?otpVerificationBody(username,otp!):type==='resetPassword'?resetPasswordBody(username,resetUrl!):privateKeyRecoveryBody(username,verificationUrl!),
     })
 }

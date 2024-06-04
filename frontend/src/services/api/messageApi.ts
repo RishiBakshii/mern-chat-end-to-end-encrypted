@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../config/envConfig";
 import type { IMessage } from "../../interfaces/messages";
 
+
 export const messageApi = createApi({
     reducerPath:'messageApi',
     baseQuery:fetchBaseQuery({

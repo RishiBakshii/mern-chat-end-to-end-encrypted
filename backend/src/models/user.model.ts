@@ -26,6 +26,14 @@ const userSchema = new Schema<IUser>({
         unique:true,
         required:true
     },
+    publicKey:{
+        type:String,
+        unique:true
+    },
+    privateKey:{
+        type:String,
+        unique:true
+    },
     password:{
         type:String,
         select:false,

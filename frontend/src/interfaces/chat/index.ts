@@ -11,6 +11,7 @@ export interface IChatMember {
     username:string
     avatar:string
     isActive:boolean
+    publicKey: string;
 }
 
 export interface ISpectator extends Omit<IChatMember, 'isActive'> {

@@ -29,8 +29,24 @@ export const verifyOtpSchema = z.object({
     otp:z.string({required_error:"otp is required"})
 })
 
+export const keySchema = z.object({
+    publicKey:z.string({required_error:"Public key is required"}),
+    privateKey:z.string({required_error:"Private key is required"})
+})
+
+export const verifyPasswordSchema = z.object({
+    password:z.string({required_error:"Password is required"})
+})
+
+export const verifyPrivateKeyTokenSchema = z.object({
+    recoveryToken:z.string({required_error:"Recovery token is required"})
+})
+
 export type signupSchemaType = z.infer<typeof signupSchema>
 export type loginSchemaType = z.infer<typeof loginSchema>
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>
 export type resetPasswordSchemaType = z.infer<typeof resetPasswordSchema>
 export type verifyOtpSchemaType = z.infer<typeof verifyOtpSchema>
+export type keySchemaType = z.infer<typeof keySchema>
+export type verifyPasswordSchemaType = z.infer<typeof verifyPasswordSchema>
+export type verifyPrivateKeyTokenSchemaType = z.infer<typeof verifyPrivateKeyTokenSchema>

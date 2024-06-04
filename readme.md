@@ -6,15 +6,18 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 
 ## Features ✨
 
-- **🔒 OAuth Integration**: Sign in easily using social login options like GitHub and Google.
+- **🔒 End-to-End Encryption**: Ensure your private and group chats are secure with advanced encryption, protecting your messages from unauthorized access.
+- **🔑 Private Key Recovery**: Recover your private encryption key securely through a password-protected and MFA email verification process, ensuring you never lose access to your encrypted messages.
 - **💬 Real-time Messaging**: Instantly send and receive messages with other users.
+- **✏️ Edit Messages**: Edit your messages in real-time, with updates reflected instantly for all users and an indication that the message has been edited.
 - **👥 Group Chats**: Create and participate in group chats with multiple users.
 - **🤝 Friends Feature**: Connect with other users and engage in private chats or group conversations after adding them as friends.
 - **🟢 User Presence**: See who's online and available for chat in real-time.
 - **⌨️ Typing Indicators**: See when other users are typing to enhance communication flow.
 - **✔️ Message Seen Status**: Know when your messages have been seen by other users.
-- **📊 Polling**: Send polls with either multiple votes set to true or false, allowing users to gather opinions and feedback.
+- **🔒 OAuth Integration**: Sign in easily using social login options like GitHub and Google.
 - **📁 File Sharing**: Share files and documents securely within chats.
+- **📊 Polling**: Send polls with either multiple votes set to true or false, allowing users to gather opinions and feedback.
 - **🎉 GIF Sending**: Express yourself with animated GIFs using the integrated Tenor GIF library.
 
 ## Technologies Used 🛠️

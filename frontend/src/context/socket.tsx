@@ -19,7 +19,7 @@ export const SocketProvider = ({children}:PropTypes) => {
     const socket = useMemo(()=>{
         
         if(loggedInUser){
-            return io(config.absolute_base_url,{withCredentials:true})
+            return io(config.absolute_base_url,{withCredentials:true,reconnection:true,reconnectionAttempts:10,reconnectionDelay:5000})
         }
         return null
     },[loggedInUser])

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion"
 import { IPollOption, IVoteInEventPayloadData } from "../../interfaces/messages"
 import { Avatar } from "../ui/Avatar"
 
@@ -50,7 +51,7 @@ export const PollOptionCard = ({option,handleVoteIn,handleVoteOut,isMutipleAnswe
 
             <div className="flex gap-x-2">
 
-                <button onClick={handleVoteClick}>
+                <motion.button whileHover={{scale:1.050}} whileTap={{scale:0.950}} onClick={handleVoteClick}>
                     {
                         option.votes.findIndex(vote=>vote._id===loggedInUserId)!==-1
                         ?
@@ -58,7 +59,7 @@ export const PollOptionCard = ({option,handleVoteIn,handleVoteOut,isMutipleAnswe
                         :
                         <div className="bg-background h-6 w-6 rounded-full outline outline-1 outline-secondary-darker"></div>
                     }
-                </button>
+                </motion.button>
 
                 <p className="break-words">{option.option}</p>
 
@@ -67,7 +68,9 @@ export const PollOptionCard = ({option,handleVoteIn,handleVoteOut,isMutipleAnswe
             <div className="flex items-center">
                 {
                     option.votes.slice(0,3).map(({avatar,_id,username})=>(
-                        <Avatar key={_id} imgUrl={avatar} width={6} height={6} alt={username}/>
+                        <motion.span key={_id} initial={{x:-5,opacity:0}} animate={{x:0,opacity:1}}>
+                            <Avatar imgUrl={avatar} width={6} height={6} alt={username}/>
+                        </motion.span>
                     ))
                 }
                 {
@@ -77,8 +80,7 @@ export const PollOptionCard = ({option,handleVoteIn,handleVoteOut,isMutipleAnswe
             </div>
         </div>
 
-        <div style={{width:`${Math.min(calculateVotePercentage(), 100)}%`}} className={`h-2 bg-green-500 self-start transition-all rounded-2xl`}>
-        </div>
+        <div style={{width:`${Math.min(calculateVotePercentage(), 100)}%`}} className={`h-2 bg-green-500 self-start transition-all rounded-2xl`}/>
 
     </div>
   )

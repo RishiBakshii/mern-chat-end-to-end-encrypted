@@ -88,10 +88,10 @@ export const RenderAppropriateMessage = ({isGroupChat,myMessage,selectedChatDeta
     }
 
     {
-        editMessageId === message._id  && message.content ?
+        editMessageId === message._id && descryptedMessage  && message.content ?
         <EditMessageForm
           messageId={message._id}
-          prevContentValue={message.content}
+          prevContentValue={descryptedMessage}
           setEditMessageId={setEditMessageId}
           setOpenContextMenuMessageId={setOpenContextMenuMessageId}
 

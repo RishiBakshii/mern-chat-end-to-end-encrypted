@@ -2,7 +2,7 @@ import { base64ToUint8Array, uint8ArrayToBase64 } from "./helpers";
 
 const crypto = window.crypto.subtle;
 
-
+// key pair generation
 const generateKeyPair = async()=> {
 
     return await crypto.generateKey(
@@ -16,12 +16,12 @@ const generateKeyPair = async()=> {
 
 }
 
-const encryptMessage = async (sharedKey:CryptoKey, message:string) => {
+
+// message encryption and decryption
+const encryptMessage = async (sharedKey:CryptoKey, message:string):Promise<string> => {
 
   const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Generate a new IV for each encryption
   const encoded = new TextEncoder().encode(message); // Assuming getMessageEncoding just encodes to Uint8Array
-
-  console.log(sharedKey);
 
   const encryptedData = await crypto.encrypt(
     { name: "AES-GCM", iv: iv },
@@ -34,10 +34,7 @@ const encryptMessage = async (sharedKey:CryptoKey, message:string) => {
   combinedBuffer.set(iv, 0);
   combinedBuffer.set(new Uint8Array(encryptedData), iv.length);
   
-  console.log(combinedBuffer);
-
   const base64Payload = uint8ArrayToBase64(combinedBuffer)
-  console.log(base64Payload);
 
   return base64Payload
 };
@@ -68,48 +65,6 @@ const decryptMessage = async (sharedKey:CryptoKey, encryptedDataWithIv:string) =
   }
 };
 
-const convertJwkToCryptoKey = async (jwk: JsonWebKey, isPrivate: boolean): Promise<CryptoKey> => {
-  try {
-    console.log(jwk);
-    let key;
-
-    // Determine the algorithm based on the key type
-    if (jwk.kty === "EC") {
-      key = await crypto.importKey(
-        "jwk",
-        jwk,
-        {
-          name: "ECDH",
-          namedCurve: "P-384",
-        },
-        true,
-        isPrivate ? ['deriveKey'] : []
-      );
-    } else if (jwk.kty === "oct") {
-      key = await crypto.importKey(
-        "jwk",
-        jwk,
-        {
-          name: "AES-GCM",
-        },
-        true,
-        ['encrypt', 'decrypt']
-      );
-    } else {
-      throw new Error("Unsupported key type");
-    }
-
-    return key;
-  } catch (error) {
-    console.log(error);
-    throw error; // Ensure that errors are still thrown to the calling context
-  }
-};
-
-const convertCryptoKeyToJwk = async (cryptoKey: CryptoKey): Promise<JsonWebKey> => {
-  return await crypto.exportKey("jwk",cryptoKey);
-};
-
 const deriveSharedSecret = (privateKey:CryptoKey, publicKey:CryptoKey)=> {
     return crypto.deriveKey(
       {
@@ -127,6 +82,7 @@ const deriveSharedSecret = (privateKey:CryptoKey, publicKey:CryptoKey)=> {
 }
 
 
+// private keys encryption and decryption
 export const deriveKeyFromPassword = async (password: string, salt: Uint8Array) => {
   try {
     // Create a TextEncoder to convert the password string into a byte array
@@ -226,6 +182,50 @@ export const decryptPrivateKey = async (password: string, combinedBufferBase64: 
     console.error("Decryption failed:", error);
     return null;
   }
+};
+
+
+// conversion utils
+const convertJwkToCryptoKey = async (jwk: JsonWebKey, isPrivate: boolean): Promise<CryptoKey> => {
+  try {
+    console.log(jwk);
+    let key;
+
+    // Determine the algorithm based on the key type
+    if (jwk.kty === "EC") {
+      key = await crypto.importKey(
+        "jwk",
+        jwk,
+        {
+          name: "ECDH",
+          namedCurve: "P-384",
+        },
+        true,
+        isPrivate ? ['deriveKey'] : []
+      );
+    } else if (jwk.kty === "oct") {
+      key = await crypto.importKey(
+        "jwk",
+        jwk,
+        {
+          name: "AES-GCM",
+        },
+        true,
+        ['encrypt', 'decrypt']
+      );
+    } else {
+      throw new Error("Unsupported key type");
+    }
+
+    return key;
+  } catch (error) {
+    console.log(error);
+    throw error; // Ensure that errors are still thrown to the calling context
+  }
+};
+
+const convertCryptoKeyToJwk = async (cryptoKey: CryptoKey): Promise<JsonWebKey> => {
+  return await crypto.exportKey("jwk",cryptoKey);
 };
 
 

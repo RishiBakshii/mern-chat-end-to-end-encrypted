@@ -63,7 +63,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedCh
             />
         }
         
-        <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} max-w-96 min-w-10 max-md:max-w-80 max-sm:max-w-64 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center`}>
+        <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} max-w-96 min-w-10 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center max-md:max-w-80 max-sm:max-w-64`}>
             
                 <RenderAppropriateMessage
                    editMessageId={editMessageId}

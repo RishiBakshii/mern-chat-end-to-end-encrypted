@@ -80,7 +80,7 @@ export const Navbar = () => {
                   </svg>
                 </div>
               }
-
+{/* 
             <div onClick={()=>callInRequests.length?toggleCallInRequestDisplay():""} className="flex justify-center items-center cursor-pointer relative">
                 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -92,7 +92,7 @@ export const Navbar = () => {
                   <Badge value={callInRequests.length}/>
                 }
 
-            </div>
+            </div> */}
 
               <div className="relative shrink-0">
 

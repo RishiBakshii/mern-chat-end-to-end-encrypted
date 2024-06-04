@@ -34,19 +34,13 @@ export const App = () => {
     <>
 
     
-    <Route path='/' element={
-        <Protected 
-          loggedInUser={loggedInUser}>
-          <RootLayout/>
-        </Protected>
-      }
-    >
+    <Route path='/' element={<Protected loggedInUser={loggedInUser}><RootLayout/></Protected>}>
         <Route index element={<ChatPage/>}/>
     </Route>
 
     <Route path='/auth' element={<AuthLayout />}>
 
-      <Route path='signup' element={
+      <Route index path='signup' element={
         <Protected loggedInUser={loggedInUser} authorized={false}>
           <SignupPage />
         </Protected>
@@ -76,6 +70,7 @@ export const App = () => {
         </Protected>
       } />
 
+      <Route path='/auth' element={<Navigate to={'/auth/login'} replace/>}/>
     </Route>
 
 
@@ -107,9 +102,10 @@ export const App = () => {
     isFetching?''
     :
     <RouterProvider router={
-      recoverPrivateKeyForm?
-      privateKeyRecoveryRouter:
-      router
-    }/>
+        recoverPrivateKeyForm?
+        privateKeyRecoveryRouter:
+        router
+      }
+    />
   )
 };

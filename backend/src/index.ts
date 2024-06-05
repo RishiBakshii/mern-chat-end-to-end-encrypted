@@ -8,7 +8,7 @@ import { Server } from 'socket.io'
 import './config/cloudinary.config.js'
 import { connectDB } from './config/db.config.js'
 import { config } from './config/env.config.js'
-import type { AuthenticatedSocket } from './interfaces/auth/auth.interface.js'
+import type { AuthenticatedSocket, IUser } from './interfaces/auth/auth.interface.js'
 import type { IMessage } from './interfaces/message/message.interface.js'
 import { errorMiddleware } from './middlewares/error.middleware.js'
 import './passport/github.strategy.js'
@@ -24,14 +24,17 @@ import requestRoutes from './routes/request.router.js'
 import userRoutes from './routes/user.router.js'
 
 import { Types } from 'mongoose'
+import { messaging } from './config/firebase.config.js'
 import { Events } from './enums/event/event.enum.js'
+import { ICallAcceptEventReceiveData, ICallInRequestEventPayloadData, ICallOutEventReceiveData } from './interfaces/callIn/callIn.interface.js'
 import { IUnreadMessageEventPayload } from './interfaces/unread-message/unread-message.interface.js'
 import { socketAuthenticatorMiddleware } from './middlewares/socket-auth.middleware.js'
+import { Chat } from './models/chat.model.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
-import { getOtherMembers } from './utils/socket.util.js'
-import { Chat } from './models/chat.model.js'
-import { ICallAcceptEventReceiveData, ICallInRejectEventPayloadData, ICallInRequestEventPayloadData, ICallOutEventReceiveData } from './interfaces/callIn/callIn.interface.js'
+import { User } from './models/user.model.js'
+import { getRandomIndex } from './utils/generic.js'
+import { notificationTitles } from './constants/notification-title.contant.js'
 
 
 const app=express()
@@ -68,6 +71,8 @@ io.use(socketAuthenticatorMiddleware)
 
 // socket
 io.on("connection",async(socket:AuthenticatedSocket)=>{
+
+    await User.findByIdAndUpdate(socket.user?._id,{isActive:true})
 
     userSocketIds.set(socket.user?._id.toString(),socket.id)
 
@@ -177,15 +182,25 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
         io.to(chat).emit(Events.MESSAGE,transformedMessage[0])
 
         // Handle unread messages for receivers
-        const currentChat = await Chat.findById(chat,{members:1,_id:0})
-
+        const currentChat = await Chat.findById(chat,{members:1,_id:0}).populate<{members:Array<IUser>}>('members')
+        
         if(currentChat){
-            const currentChatMembers = currentChat.members.map(member=>member._id.toString()) as Array<string>
-            const memberIds = getOtherMembers({members:currentChatMembers,user:socket.user?._id.toString()!})
+            const currentChatMembers = currentChat.members.filter(member=>member._id.toString()!==socket.user?._id.toString())
             
-            const updateOrCreateUnreadMessagePromise = memberIds.map(async(memberId)=>{
+            const updateOrCreateUnreadMessagePromise = currentChatMembers.map(async(member)=>{
+
+                if(!member.isActive && member.fcmToken){
+                    messaging.send({
+                        token:member.fcmToken,
+                        notification:{
+                            imageUrl:socket.user?.avatar?.secureUrl,
+                            title:`Hey ${member.username} ${notificationTitles[getRandomIndex(notificationTitles.length)]}`,
+                            body:`new message from ${socket.user?.username.toLocaleUpperCase()}`
+                        },
+                    })
+                }
     
-                const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:memberId})
+                const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:member._id})
     
                 if(isExistingUnreadMessage){
                     isExistingUnreadMessage.count? isExistingUnreadMessage.count++ : null
@@ -194,7 +209,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
                     return isExistingUnreadMessage
                 }
     
-               return UnreadMessage.create({chat,user:memberId,sender:socket.user?._id,message:newMessage._id})
+               return UnreadMessage.create({chat,user:member._id,sender:socket.user?._id,message:newMessage._id})
     
             })
 
@@ -397,7 +412,8 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
         io.to(userSocketIds.get(callee._id)).socketsLeave(chat.chatId);
     })
 
-    socket.on("disconnect",()=>{
+    socket.on("disconnect",async()=>{
+        await User.findByIdAndUpdate(socket.user?._id,{isActive:false})
         userSocketIds.delete(socket.user?._id);
         socket.broadcast.emit(Events.OFFLINE,socket.user?._id)
     })

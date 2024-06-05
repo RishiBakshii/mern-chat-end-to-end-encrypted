@@ -1,10 +1,10 @@
 import { Router } from "express";
 import passport from 'passport';
 import { config } from "../config/env.config.js";
-import { checkAuth, forgotPassword, login, logout, redirectHandler, resetPassword, sendOtp, signup, updateUserKeys, verifyOtp, verifyPassword, verifyPrivateKeyToken } from "../controllers/auth.controller.js";
+import { checkAuth, forgotPassword, login, logout, redirectHandler, resetPassword, sendOtp, signup, updateFcmToken, updateUserKeys, verifyOtp, verifyPassword, verifyPrivateKeyToken } from "../controllers/auth.controller.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { verifyToken } from "../middlewares/verify-token.middleware.js";
-import { forgotPasswordSchema, keySchema, loginSchema, resetPasswordSchema, signupSchema, verifyOtpSchema, verifyPasswordSchema, verifyPrivateKeyTokenSchema } from "../schemas/auth.schema.js";
+import { fcmTokenSchema, forgotPasswordSchema, keySchema, loginSchema, resetPasswordSchema, signupSchema, verifyOtpSchema, verifyPasswordSchema, verifyPrivateKeyTokenSchema } from "../schemas/auth.schema.js";
 
 export default Router()
 
@@ -18,6 +18,7 @@ export default Router()
 .post('/verify-privatekey-token',verifyToken,validate(verifyPrivateKeyTokenSchema),verifyPrivateKeyToken)
 .get("/check-auth",verifyToken,checkAuth)
 .patch("/user/keys",verifyToken,validate(keySchema),updateUserKeys)
+.patch("/user/update-fcm-token",verifyToken,validate(fcmTokenSchema),updateFcmToken)
 .get("/logout",logout)
 .get("/google",passport.authenticate("google",{session:false,scope:["email","profile"]}))
 .get("/google/callback",passport.authenticate("google",{session:false,failureRedirect:`${config.clientUrl}/auth/login`}),redirectHandler)

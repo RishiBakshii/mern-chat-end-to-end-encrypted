@@ -27,12 +27,14 @@ export interface IUser {
     username:string
     avatar?:IAvatar
     email:string
+    isActive:boolean
     publicKey:string
     privateKey:string
     password:string
     verified?:boolean,
     createdAt?:Date
     updatedAt?:Date
+    fcmToken?:string
 }
 
 export interface IGithub {

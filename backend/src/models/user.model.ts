@@ -26,6 +26,13 @@ const userSchema = new Schema<IUser>({
         unique:true,
         required:true
     },
+    isActive:{
+        type:Boolean,
+        default:false
+    },
+    fcmToken:{
+        type:String,
+    },
     publicKey:{
         type:String,
         unique:true

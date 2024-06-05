@@ -3,7 +3,7 @@ import { Events } from "../../enums/events"
 import type { IMessageSeenEventPayloadData, IUnreadMessageEventReceiveData } from "../../interfaces/messages"
 import { chatApi } from "../../services/api/chatApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
-import { selectJoinedChats, selectactiveJoinedChat, updateJoinedChatUnreadMessage } from "../../services/redux/slices/uiSlice"
+import { selectJoinedChats } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
 import { useSocketEvent } from "../useSocket/useSocketEvent"
 
@@ -15,20 +15,8 @@ export const useUnreadMessageListener = () => {
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
     
     const joinedChats = useAppSelector(selectJoinedChats)
-    const activeJoinedChat = useAppSelector(selectactiveJoinedChat)
     
     useSocketEvent(Events.UNREAD_MESSAGE,({chatId,message}:IUnreadMessageEventReceiveData)=>{
-
-        if(joinedChats.length>0){
-          const isMessageofJoinedChat =  joinedChats.find(joinedChat=>joinedChat.chatId===chatId)
-
-          if(isMessageofJoinedChat && activeJoinedChat!==isMessageofJoinedChat.chatId){
-            dispatch(updateJoinedChatUnreadMessage({chatId,unreadMesage:message}))
-          }
-
-          return
-
-        }
 
         if(chatId === selectedChatDetails?._id){
     

@@ -1,8 +1,13 @@
 /// <reference types="vite/client" />
 
-import type { envSchemaType } from "./schemas/envSchema"
+import { envSchemaType } from "./schemas/envSchema";
 
-  
+declare global {
+  interface ImportMetaEnv extends envSchemaType {
+    
+  }
+}
+
 interface ImportMeta {
-readonly env: envSchemaType
+  readonly env: ImportMetaEnv;
 }

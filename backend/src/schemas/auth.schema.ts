@@ -42,6 +42,10 @@ export const verifyPrivateKeyTokenSchema = z.object({
     recoveryToken:z.string({required_error:"Recovery token is required"})
 })
 
+export const fcmTokenSchema = z.object({
+    fcmToken:z.string({required_error:"fcm token is required"})
+})
+
 export type signupSchemaType = z.infer<typeof signupSchema>
 export type loginSchemaType = z.infer<typeof loginSchema>
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>
@@ -50,3 +54,4 @@ export type verifyOtpSchemaType = z.infer<typeof verifyOtpSchema>
 export type keySchemaType = z.infer<typeof keySchema>
 export type verifyPasswordSchemaType = z.infer<typeof verifyPasswordSchema>
 export type verifyPrivateKeyTokenSchemaType = z.infer<typeof verifyPrivateKeyTokenSchema>
+export type fcmTokenSchemaType = z.infer<typeof fcmTokenSchema>

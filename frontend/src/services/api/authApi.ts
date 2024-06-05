@@ -72,6 +72,13 @@ export const authApi = createApi({
                 body:{publicKey,privateKey}
             })
         }),
+        updateFcmToken:builder.mutation<void,{fcmToken:string}>({
+            query:({fcmToken})=>({
+                url:"/user/update-fcm-token",
+                method:"PATCH",
+                body:{fcmToken}
+            })
+        }),
         sendOtp:builder.query<void,void>({
             query:()=>"/send-otp"
         }),
@@ -98,4 +105,5 @@ export const {
     useUpdateUserKeysMutation,
     useVerifyPasswordMutation,
     useVerifyPrivateKeyTokenMutation,
+    useUpdateFcmTokenMutation,
 } = authApi

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Helmet } from "react-helmet-async"
 import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
@@ -51,8 +51,11 @@ import { selectSelectedChatDetails, selectSelectedChatId } from "../services/red
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
 import { useMessageDeleteListener } from '../hooks/useEventListeners/useMessageDeleteListener'
+import { useNotificationPermission } from '../hooks/useUtils/useNotificationPermission'
 
 export const ChatPage = () => {
+
+   useNotificationPermission()
 
    const is640 =  useMediaQuery(640)
 
@@ -66,6 +69,7 @@ export const ChatPage = () => {
    const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
    const messageContainerRef = useRef<HTMLDivElement>(null)
    const selectedChatId = useAppSelector(selectSelectedChatId)
+
 
    
    const {messages,fetchMoreMessages,totalMessagePages} = useFetchMessages(selectedChatDetails?._id,1)

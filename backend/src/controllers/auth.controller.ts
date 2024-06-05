@@ -7,7 +7,7 @@ import type { AuthenticatedRequest, IUser } from "../interfaces/auth/auth.interf
 import { Otp } from "../models/otp.model.js";
 import { ResetPassword } from "../models/reset-password.model.js";
 import { User } from "../models/user.model.js";
-import type { forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
+import type { fcmTokenSchemaType, forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
 import { type signupSchemaType } from "../schemas/auth.schema.js";
 import { env } from "../schemas/env.schema.js";
 import { generateOtp, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
@@ -172,6 +172,13 @@ const updateUserKeys = asyncErrorHandler(async(req:AuthenticatedRequest,res:Resp
 
 })
 
+const updateFcmToken = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    const {fcmToken}:fcmTokenSchemaType = req.body
+    await User.findByIdAndUpdate(req.user?._id,{fcmToken})
+    return res.status(200).json()
+})
+
 const verifyPassword = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
     const {password}:verifyPasswordSchemaType = req.body
@@ -264,4 +271,5 @@ export {
     verifyOtp,
     verifyPassword,
     verifyPrivateKeyToken,
+    updateFcmToken
 };

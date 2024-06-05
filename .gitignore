@@ -3,4 +3,5 @@ build
 /frontend/dist
 node_modules
 package-lock.json
+firebase-admin-cred.json
 .env

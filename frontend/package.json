@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@reduxjs/toolkit": "^2.2.3",
+    "firebase": "^10.12.2",
     "framer-motion": "^11.1.5",
     "gif-picker-react": "^1.3.2",
     "lottie-react": "^2.4.0",

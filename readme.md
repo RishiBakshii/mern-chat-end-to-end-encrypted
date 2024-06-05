@@ -6,7 +6,7 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 
 ## Features ✨
 
-- **🔒 End-to-End Encryption**: Ensure your private and group chats are secure with advanced encryption, protecting your messages from unauthorized access.
+- **🔒 End-to-End Encryption**: Ensure your private chats are secure with advanced encryption, protecting your messages from unauthorized access.
 - **🔑 Private Key Recovery**: Recover your private encryption key securely through a password-protected and MFA email verification process, ensuring you never lose access to your encrypted messages.
 - **💬 Real-time Messaging**: Instantly send and receive messages with other users.
 - **✏️ Edit Messages**: Edit your messages in real-time, with updates reflected instantly for all users and an indication that the message has been edited.

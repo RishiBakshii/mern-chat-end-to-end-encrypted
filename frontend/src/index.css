@@ -23,4 +23,25 @@
 
 * {
     @apply transition-colors duration-75 ease-in-out;
+
+      /* width */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: rgba(var(--background));
+      }
+      
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: rgba(var(--secondary-dark));
+        border-radius: 50px;
+      }
+      
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(var(--primary-dark))
+      }
 }

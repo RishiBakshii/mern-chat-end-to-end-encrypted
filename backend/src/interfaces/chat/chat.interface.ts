@@ -8,6 +8,7 @@ export interface IChat {
     members:Array<Types.ObjectId>
     avatar?:IAvatar
     admin?:Types.ObjectId,
+    latestMessage:Types.ObjectId
 }
 
 export interface IMemberDetails {

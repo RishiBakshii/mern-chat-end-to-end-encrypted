@@ -263,6 +263,42 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
           $addFields: {
             "unreadMessages.sender.avatar": "$unreadMessages.sender.avatar.secureUrl"
           }
+        },
+        {
+          $lookup: {
+            from: "messages",
+            localField: "latestMessage",
+            foreignField: "_id",
+            as: "latestMessage"
+          }
+        },
+        {
+          $addFields: {
+            latestMessage:{$arrayElemAt:['$latestMessage',0]}
+          }
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "latestMessage.sender",
+            foreignField: "_id",
+            as: "latestMessage.sender",
+            pipeline: [
+              {
+                $project: {
+                  username: 1,
+                  avatar: "$avatar.secureUrl"
+                }
+              }
+            ]
+          }
+        },
+        {
+          $addFields: {
+            "latestMessage.sender": {
+              $arrayElemAt: ["$latestMessage.sender", 0]
+            }
+          }
         }
     ])
 

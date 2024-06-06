@@ -1,5 +1,5 @@
 
-import type { IUnreadMessage } from "../messages"
+import type { IMessage, IUnreadMessage } from "../messages"
 
 export interface IChatIntitalState {
     selectedChatId:string | null
@@ -30,6 +30,7 @@ export interface IChatWithUnreadMessages {
     seenBy:Array<IChatMember>
     userTyping:Array<IChatMember>
     spectators:Array<ISpectator>
+    latestMessage:IMessage
 }
 
 export interface IUserTypingEventReceiveData {

@@ -28,6 +28,7 @@ export const ChatList = memo(({chats,loggedInUserId,selectedChatDetails,clearExt
               loggedInUserId={loggedInUserId}
               isGroupChat={chat.isGroupChat}
               members={chat.members}
+              latestMessage={chat.latestMessage}
               clearExtraPreviousMessages={clearExtraPreviousMessages}
               isMd={isMd}
               selectedChatDetails={selectedChatDetails}

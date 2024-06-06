@@ -1,8 +1,13 @@
+import { formatDistanceToNow } from "date-fns"
 import { useGetSharedKey } from "../../hooks/useAuth/useGetSharedKey"
-import { IChatWithUnreadMessages } from "../../interfaces/chat"
-import { IUnreadMessage } from "../../interfaces/messages"
+import { IChatMember, IChatWithUnreadMessages } from "../../interfaces/chat"
+import { IMessage, IUnreadMessage } from "../../interfaces/messages"
 import { ActiveDot } from "../ui/ActiveDot"
 import { TypingIndicator } from "../ui/TypingIndicator"
+import { useCallback, useEffect, useState } from "react"
+import { decryptMessage } from "../../utils/encryption"
+import { RenderAppropriateUnreadMessage } from "../messages/RenderAppropriateUnreadMessage"
+import { formatRelativeTime } from "../../utils/helpers"
 
 type PropTypes = {
   chatId:string
@@ -10,8 +15,9 @@ type PropTypes = {
   isGroupChat:boolean
   members:IChatWithUnreadMessages['members']
   avatar:string
-  loggedInUserId:string
   unreadMessage:IUnreadMessage
+  latestMessage:IMessage
+  loggedInUserId:string
   isTyping:boolean
   isMd:boolean
   selectedChatDetails:IChatWithUnreadMessages | undefined | null
@@ -20,11 +26,64 @@ type PropTypes = {
   clearExtraPreviousMessages: (chatId: string) => void
 }
 
-export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPreviousMessages,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clearExtraPreviousMessages,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+  
+  const getSharedKey =  useGetSharedKey()
 
-  useGetSharedKey()
+  const [decryptedMessage,setDecryptedMessage] = useState<string>()
+  const [unreadDecryptedMessage,setUnreadDecryptedMessage] = useState<string>()
 
-  const handleChatCardClick = (chatId:string) =>{
+  const [sharedKey,setSharedKey] = useState<CryptoKey>()
+
+  const otherMember = members.filter(member=>member._id!==loggedInUserId)[0]
+  
+  const handleSetSharedKey = useCallback(async(otherMember:IChatMember)=>{
+    const key = await getSharedKey(loggedInUserId,otherMember)
+    if(key){
+      setSharedKey(key)
+    }
+  },[])
+
+  const handleSetDecryptMessage = async(sharedKey:CryptoKey)=>{
+
+    if(latestMessage.content?.length){
+      const msg = await decryptMessage(sharedKey,latestMessage.content)
+      if(msg){
+        setDecryptedMessage(msg)
+      }
+    }
+  }
+
+  const handleSetUnreadDecryptedMessage = async(message:string)=>{
+    if(sharedKey){
+      const msg = await decryptMessage(sharedKey,message)
+      if(msg){
+        setUnreadDecryptedMessage(msg)
+      }
+    }
+  }
+
+
+  useEffect(()=>{
+    if((!isGroupChat && unreadMessage?.message?.content && otherMember) || (!isGroupChat && latestMessage.content?.length)){
+      handleSetSharedKey(otherMember)
+    }
+  },[isGroupChat,otherMember])
+
+  useEffect(()=>{
+    if(sharedKey){
+      handleSetDecryptMessage(sharedKey)
+    }
+  },[sharedKey])
+
+  useEffect(()=>{
+    if(!isGroupChat && unreadMessage?.message?.content){
+      handleSetUnreadDecryptedMessage(unreadMessage.message.content)
+    }
+  },[unreadMessage?.message?.content,isGroupChat])
+
+
+  const handleChatCardClick = useCallback((chatId:string) =>{
 
     if(selectedChatDetails?._id!==chatId){
       if(selectedChatDetails){
@@ -37,7 +96,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPrevious
       toggleChatBar()
     }
 
-  }
+  },[])
 
   const renderOnlineStatus = () => {
 
@@ -48,7 +107,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPrevious
       return onlineMembers > 0 ? 
         <div className="text-sm text-secondary-darker flex items-center gap-x-1 ml-1">
           <ActiveDot/>
-          <p>{onlineMembers} online</p>
+          <p>{onlineMembers}</p>
         </div>
         : 
        null;
@@ -86,26 +145,53 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPrevious
                     }
                 </div>
                 
-                <p className="text-sm text-secondary-darker">{1}m</p>
+                {
+                  latestMessage.createdAt && 
+                  <p className="text-sm text-secondary-darker">{formatRelativeTime(new Date(latestMessage.createdAt))}</p>
+                }
 
             </div>
-
+            
             <div className="flex justify-between items-center">
                 
                   <p className="text-sm text-secondary-darker">
                     {
-                      unreadMessage?.message?.poll?
-                      "Sent a poll"
+                      unreadMessage.count===0?
+
+                          // latest message display
+                          isGroupChat?  // for group chat
+                            RenderAppropriateUnreadMessage({
+                              attachments:latestMessage.attachments?.length?true:false,
+                              content:latestMessage.content,
+                              poll:latestMessage.isPoll,
+                              url:latestMessage.url?true:false
+                            })
+                          :
+                          RenderAppropriateUnreadMessage({  // for private chat
+                            attachments:latestMessage.attachments?.length?true:false,
+                            content:decryptedMessage,
+                            poll:latestMessage.isPoll,
+                            url:latestMessage.url?true:false
+                          })
                       :
-                      unreadMessage?.message?.url ? 
-                      "Sent a gif"
-                      :
-                      unreadMessage?.message?.attachments ? 
-                      "Sent an attachment"
-                      :
-                      unreadMessage?.message?.content ?
-                      `${unreadMessage.message.content}...`:""
+                      // unread Message display
+                      isGroupChat ?   // for group chat
+                      RenderAppropriateUnreadMessage({
+                        attachments:unreadMessage?.message?.attachments,
+                        content:unreadMessage?.message?.content,
+                        poll:unreadMessage?.message?.poll,
+                        url:unreadMessage?.message?.url
+                      })
+                      : // for private chat
+                      RenderAppropriateUnreadMessage({
+                        attachments:unreadMessage?.message?.attachments,
+                        content:unreadDecryptedMessage,
+                        poll:unreadMessage?.message?.poll,
+                        url:unreadMessage?.message?.url
+                      })
                     }
+                    
+                    
                   </p>
                 { 
                   unreadMessage?.count > 0 && 

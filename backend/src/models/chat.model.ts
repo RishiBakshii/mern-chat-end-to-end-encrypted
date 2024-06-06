@@ -30,6 +30,10 @@ const chatSchema = new Schema<IChat>({
     admin:{
         type:Schema.ObjectId,
         ref:"User"
+    },
+    latestMessage:{
+        type:Schema.ObjectId,
+        ref:"Message"
     }
 },{versionKey:false,timestamps:true})
 

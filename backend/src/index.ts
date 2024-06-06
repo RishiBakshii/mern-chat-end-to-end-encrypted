@@ -90,6 +90,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
 
         // save to db
         const newMessage = await Message.create({chat,content,sender:socket.user?._id,url,isPoll,pollQuestion,pollOptions,isMultipleAnswers})
+        await Chat.findByIdAndUpdate(chat,{latestMessage:newMessage._id})
         
         const transformedMessage  = await Message.aggregate([
             {
@@ -226,7 +227,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
             }
     
             if(newMessage.content?.length){
-                messageData.content=newMessage.content.substring(0,25)
+                messageData.content=newMessage.content
             }
 
             const unreadMessageData:IUnreadMessageEventPayload = {

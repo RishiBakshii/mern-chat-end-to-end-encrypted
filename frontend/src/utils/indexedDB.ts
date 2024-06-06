@@ -26,7 +26,7 @@ const initializeIndexDb = ()=>{
     };
     
     request.onsuccess = function () {
-        console.log("Database opened successfully");
+
     };
 
     request.onerror = function (event) {
@@ -47,7 +47,6 @@ const storePrivateKey = async (userId:string,key:JsonWebKey) => {
         const putRequest = store.put({_id:userId,privateKey:key});
 
         putRequest.onsuccess = function () {
-            console.log("Private key added successfully");
         };
 
         putRequest.onerror = function () {
@@ -117,7 +116,6 @@ const storeSharedKey = async (userId1: string, userId2: string, sharedKey: Crypt
         });
 
         putRequest.onsuccess = function () {
-            console.log("Shared key added successfully");
         };
 
         putRequest.onerror = function () {

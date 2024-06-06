@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { IMessage } from "../../interfaces/messages"
 import { Gif } from "../ui/Gif"
 import { AttachmentList } from "./AttachmentList"
-import { EditMessageForm } from "./EditMessageForm"
 import { Message } from "./Message"
 import { PollCardForm } from "./PollCardForm"
-import { decryptMessage } from "../../utils/encryption"
 import { useGetSharedKey } from "../../hooks/useAuth/useGetSharedKey"
-import { IChatWithUnreadMessages } from "../../interfaces/chat"
 
 type PropTypes = {
     isGroupChat:boolean
@@ -23,42 +21,17 @@ type PropTypes = {
 export const RenderAppropriateMessage = ({isGroupChat,myMessage,selectedChatDetails,loggedInUserId,message,editMessageId,setEditMessageId,setOpenContextMenuMessageId}:PropTypes) => {
   
   const getSharedKey = useGetSharedKey()
-
-  const [descryptedMessage,setDecryptedMessage] = useState<string>()
+  const otherMember = selectedChatDetails.members.filter(member=>member._id!==loggedInUserId)[0]
   const [sharedKey, setSharedKey] = useState<CryptoKey>()
 
-  const otherMember = selectedChatDetails.members.filter(member=>member._id!==loggedInUserId)[0]
+  const handleSetSharedKey = async()=>{
+    const key = await getSharedKey(loggedInUserId,otherMember)
+    key?setSharedKey(key):null
+  }
 
-    
   useEffect(()=>{
-
-    const handleSetSharedKey = async()=>{
-      const key = await getSharedKey(loggedInUserId,otherMember)
-      console.log(key);
-      if(key){
-        setSharedKey(key)
-      }
-    }
-
     handleSetSharedKey()
   },[])
-
-  useEffect(()=>{
-
-    const handleDecryptMessage = async(sharedKey:CryptoKey,encryptedMessage:string)=>{
-  
-      const msg = await decryptMessage(sharedKey,encryptedMessage)
-
-      if(msg){
-        setDecryptedMessage(msg)
-      }
-
-    }
-
-    if(message.content?.length && sharedKey){
-      handleDecryptMessage(sharedKey,message.content)
-    }
-  },[message.content,sharedKey])
 
   return (
     <>
@@ -88,18 +61,15 @@ export const RenderAppropriateMessage = ({isGroupChat,myMessage,selectedChatDeta
     }
 
     {
-        editMessageId === message._id && descryptedMessage  && message.content ?
-        <EditMessageForm
-          messageId={message._id}
-          prevContentValue={descryptedMessage}
-          setEditMessageId={setEditMessageId}
-          setOpenContextMenuMessageId={setOpenContextMenuMessageId}
-
-        />
-        :
-        message.content && descryptedMessage && 
-        <Message 
-         content={descryptedMessage} 
+        message.content &&
+        <Message
+         messageId={message._id}
+         editMessageId={editMessageId}
+         setEditMessageId={setEditMessageId}
+         setOpenContextMenuMessageId={setOpenContextMenuMessageId}
+         content={message.content}
+         isGroupChat={isGroupChat}
+         sharedKey={sharedKey}
          isEdited={message.isEdited}
         />
 

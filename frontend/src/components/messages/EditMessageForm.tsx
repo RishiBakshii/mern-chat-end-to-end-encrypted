@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useEditMessage } from "../../hooks/useMessages/useEditMessage"
+import { MotionConfig, motion } from "framer-motion"
 
 type PropTypes = {
     prevContentValue:string
@@ -31,17 +32,24 @@ export const EditMessageForm = ({prevContentValue,messageId,setEditMessageId,set
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-y-3 flex-col ">
+    <motion.form initial={{x:3}} animate={{x:0}} onSubmit={handleSubmit} className="flex items-center gap-y-3 flex-col ">
         <textarea cols={30} value={updatedContentValue} onChange={e=>setUpdatedContentValue(e.target.value)} className="p-4 text-text bg-background outline outline-1 outline-secondary-dark"/>
         
         <div className="flex items-center gap-x-2">
-          <button  disabled={updatedContentValue.trim()===prevContentValue.trim() || !updatedContentValue.trim()} type="submit" className="bg-secondary-dark text-text px-6 py-2 rounded-md disabled:bg-secondary">
-            Update
-          </button>
-          <button onClick={handleCancel} type="button" className="bg-red-500 text-white px-6 py-2 rounded-md">
-            Cancel
-          </button>
+          
+              <motion.button whileHover={{scale:1.050}} whileTap={{scale:0.950}} disabled={updatedContentValue.trim()===prevContentValue.trim() || !updatedContentValue.trim()} type="submit" className="bg-green-500 text-text p-2 rounded-full disabled:bg-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+              </motion.button>
+
+              <motion.button whileHover={{scale:1.050}} whileTap={{scale:0.950}} onClick={handleCancel} type="button" className="bg-red-500 text-white p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </motion.button>
+
         </div>
-    </form>
+    </motion.form>
   )
 }

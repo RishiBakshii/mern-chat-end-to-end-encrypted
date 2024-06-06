@@ -56,7 +56,6 @@ const decryptMessage = async (sharedKey:CryptoKey, encryptedDataWithIv:string) =
     );
 
     const decryptedMessage = new TextDecoder().decode(decryptedArrayBuffer);
-    console.log(decryptedMessage);
     return decryptedMessage;
 
   } catch (error) {
@@ -188,7 +187,6 @@ export const decryptPrivateKey = async (password: string, combinedBufferBase64: 
 // conversion utils
 const convertJwkToCryptoKey = async (jwk: JsonWebKey, isPrivate: boolean): Promise<CryptoKey> => {
   try {
-    console.log(jwk);
     let key;
 
     // Determine the algorithm based on the key type

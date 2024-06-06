@@ -1,3 +1,4 @@
+import { useGetSharedKey } from "../../hooks/useAuth/useGetSharedKey"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { IUnreadMessage } from "../../interfaces/messages"
 import { ActiveDot } from "../ui/ActiveDot"
@@ -13,19 +14,21 @@ type PropTypes = {
   unreadMessage:IUnreadMessage
   isTyping:boolean
   isMd:boolean
-  selectedChatId:string | undefined
+  selectedChatDetails:IChatWithUnreadMessages | undefined | null
   updateSelectedChatId:(chatId:string)=>void
   toggleChatBar:()=>void
   clearExtraPreviousMessages: (chatId: string) => void
 }
 
-export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPreviousMessages,members,selectedChatId,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPreviousMessages,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+
+  useGetSharedKey()
 
   const handleChatCardClick = (chatId:string) =>{
 
-    if(selectedChatId!==chatId){
-      if(selectedChatId){
-        clearExtraPreviousMessages(selectedChatId)
+    if(selectedChatDetails?._id!==chatId){
+      if(selectedChatDetails){
+        clearExtraPreviousMessages(selectedChatDetails._id)
       }
       updateSelectedChatId(chatId)
     }
@@ -62,7 +65,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPrevious
 
 
   return (
-    <div onClick={()=>handleChatCardClick(chatId)} className={` ${selectedChatId===chatId?"bg-secondary-dark":""}  text-text p-1 flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3`}>
+    <div onClick={()=>handleChatCardClick(chatId)} className={` ${selectedChatDetails?._id===chatId?"bg-secondary-dark":""}  text-text p-1 flex items-center w-full hover:bg-secondary-dark hover:cursor-pointer gap-x-3`}>
 
         <img className="aspect-square w-16 rounded-full object-cover max-md:w-14" src={avatar} />
 
@@ -105,7 +108,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,clearExtraPrevious
                     }
                   </p>
                 { 
-                  unreadMessage.count > 0 && 
+                  unreadMessage?.count > 0 && 
                   <p className="bg-primary flex items-center justify-center text-white rounded-full h-5 w-5 p-2">
                     { unreadMessage?.count }
                   </p>

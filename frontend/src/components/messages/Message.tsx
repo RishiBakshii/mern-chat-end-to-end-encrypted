@@ -1,39 +1,73 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { decryptMessage } from "../../utils/encryption"
+import { EditMessageForm } from "./EditMessageForm"
 
 type PropTypes = {
-    content:string
     isEdited:boolean | undefined
+    sharedKey: CryptoKey | undefined
+    content:string
+    messageId:string
+    isGroupChat:boolean
+    editMessageId:string | undefined,
+    setEditMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
+    setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export const Message = ({content,isEdited}:PropTypes) => {
+export const Message = ({content,isEdited,sharedKey,isGroupChat,messageId,editMessageId,setEditMessageId,setOpenContextMenuMessageId}:PropTypes) => {
 
-  const isMessageLong = content.length>500
-  const [readMore,setReadMore] = useState<boolean>(false)
+    const [decryptedMessage,setDecryptedMessage] = useState<string>('')
+    const isMessageLong = content.length>500
+    const [readMore,setReadMore] = useState<boolean>(false)
 
-  const toggleReadMore = ()=>{
-    setReadMore(prev=>!prev)
-  }
+    
+    useEffect(()=>{
+        if(isGroupChat){
+            setDecryptedMessage(content)
+        }
+        else if(sharedKey){
+            handleDecryptMessage(sharedKey,content)
+        }
+    },[content,sharedKey,isGroupChat])
+    
+    const handleDecryptMessage = useCallback(async(sharedKey:CryptoKey,encryptedMessage:string)=>{
+        const message = await decryptMessage(sharedKey,encryptedMessage)
+        message?setDecryptedMessage(message):null
+    },[])
+
+    const toggleReadMore = useCallback(()=>{
+        setReadMore(prev=>!prev)
+    },[])
 
   return (
-    <>
-    <span className="break-words">
+
+    
+        editMessageId === messageId ? 
+        <EditMessageForm
+            messageId={messageId}
+            prevContentValue={decryptedMessage}
+            setEditMessageId={setEditMessageId}
+            setOpenContextMenuMessageId={setOpenContextMenuMessageId}
+        />
+        :
+        <>
+        <span className="break-words">
+            {
+                readMore?decryptedMessage:decryptedMessage.substring(0,400)
+            }
+            {
+                isMessageLong && 
+                <span className="font-medium cursor-pointer" onClick={toggleReadMore}>
+                    {
+                        readMore?" Read less":" Read more"
+                    }...
+                </span>
+            }
+        </span>
         {
-            readMore?content:content.substring(0,400)
+            isEdited && <p className="text-secondary self-end font-medium text-sm">Edited</p>
         }
-        {
-            isMessageLong && 
-            <span className="font-medium cursor-pointer" onClick={toggleReadMore}>
-                {
-                    readMore?" Read less":" Read more"
-                }...
-            </span>
-        }
-    </span>
-    {
-        isEdited && 
-        <p className="text-secondary self-end font-medium text-sm">Edited</p>
-    }
-    </>
+        </>
+    
   )
 }
 

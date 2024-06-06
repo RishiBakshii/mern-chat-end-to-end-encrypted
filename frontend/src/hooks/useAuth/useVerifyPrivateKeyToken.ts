@@ -19,9 +19,6 @@ export const useVerifyPrivateKeyToken = () => {
         const handleDecrptPrivateKey = async()=>{
 
             if(isSuccess && data?.privateKey && loggedInUserId){
-    
-                console.log("encrypted private Key",data.privateKey);
-
                 const privateKeyInJwk = await decryptPrivateKey("helloWorld@123",data.privateKey)
                 storePrivateKey(loggedInUserId,privateKeyInJwk)
             }

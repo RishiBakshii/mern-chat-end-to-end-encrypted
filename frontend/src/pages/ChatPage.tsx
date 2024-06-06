@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { Helmet } from "react-helmet-async"
 import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
@@ -20,6 +20,7 @@ import { useCallInAcceptListener } from "../hooks/useEventListeners/useCallinAcc
 import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
 import { useFriendRequestListener } from "../hooks/useEventListeners/useFriendRequestListener"
 import { useMemberRemovedListener } from "../hooks/useEventListeners/useMemberRemovedListener"
+import { useMessageDeleteListener } from '../hooks/useEventListeners/useMessageDeleteListener'
 import { useMessageEditListener } from "../hooks/useEventListeners/useMessageEditListener"
 import { useMessageListener } from "../hooks/useEventListeners/useMessageListener"
 import { useMessageSeenListener } from "../hooks/useEventListeners/useMessageSeenListener"
@@ -43,6 +44,7 @@ import { useTogglePoolForm } from "../hooks/useUI/useTogglePoolForm"
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
 import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
+import { useNotificationPermission } from '../hooks/useUtils/useNotificationPermission'
 import { useScrollToBottomOnChatChange } from "../hooks/useUtils/useScrollToBottomOnChatChange"
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 import { ICallOutEventPayloadData } from "../interfaces/callIn"
@@ -50,8 +52,6 @@ import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails, selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
-import { useMessageDeleteListener } from '../hooks/useEventListeners/useMessageDeleteListener'
-import { useNotificationPermission } from '../hooks/useUtils/useNotificationPermission'
 
 export const ChatPage = () => {
 
@@ -156,12 +156,12 @@ export const ChatPage = () => {
                     className={`flex-[.5] min-w-[15rem] p-2 bg-background max-md:fixed overflow-y-auto h-full z-10`}>
                     
                     {
-                        !isChatsFetching && chats && loggedInUser ?
+                        !isChatsFetching && chats && loggedInUser?
 
                         <ChatListWithSearch
                             clearExtraPreviousMessages={clearExtraPreviousMessages}
                             chats={chats}
-                            selectedChatId={selectedChatDetails?._id}
+                            selectedChatDetails={selectedChatDetails}
                             loggedInUserId={loggedInUser._id}
                             toggleChatBar={toggleChatBar}
                             updateSelectedChatId={updateSelectedChatId}

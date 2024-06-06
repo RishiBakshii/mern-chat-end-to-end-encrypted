@@ -28,7 +28,6 @@ export const useSendMessage = () => {
             if(sharedSecretKey){
                 encryptedMessage = await encryptMessage(sharedSecretKey,messageVal)
             }
-
         }
 
         if(selectedChatDetails && (messageVal || url || pollOptions || pollQuestion || isMultipleAnswers)){
@@ -36,7 +35,7 @@ export const useSendMessage = () => {
             const newMessage:IMessageEventPayloadData =  
             {
                 chat:selectedChatDetails._id,
-                content:encryptedMessage?encryptedMessage:undefined,
+                content:encryptedMessage?encryptedMessage:messageVal?messageVal:undefined,
                 url:url?url:undefined,
                 isPoll:(pollOptions?.length && pollQuestion?.length)?true:undefined,
                 pollOptions:pollOptions?.map(option=>{

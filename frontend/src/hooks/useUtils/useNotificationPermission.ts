@@ -19,7 +19,6 @@ export const useNotificationPermission = () => {
             }
         }
         else if(permission==='denied'){
-            console.log('permission denied');
         }
      }
 

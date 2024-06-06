@@ -6,7 +6,7 @@ import { ChatList } from "./ChatList"
 type PropTypes = {
     chats:Array<IChatWithUnreadMessages>
     loggedInUserId:string
-    selectedChatId:string | undefined
+    selectedChatDetails:IChatWithUnreadMessages | undefined | null
     updateSelectedChatId:(chatId: string) => void
     toggleChatBar:()=>void
     getChatName: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
@@ -14,7 +14,7 @@ type PropTypes = {
     clearExtraPreviousMessages: (chatId: string) => void
 }
 
-export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatId,clearExtraPreviousMessages,getChatAvatar,getChatName,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatDetails,clearExtraPreviousMessages,getChatAvatar,getChatName,updateSelectedChatId,toggleChatBar}:PropTypes) => {
 
 
     const [searchVal,setSearchVal] = useState<string>("")
@@ -41,7 +41,7 @@ export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatId,clearExt
 
         <ChatList
             clearExtraPreviousMessages={clearExtraPreviousMessages}
-            selectedChatId={selectedChatId}
+            selectedChatDetails={selectedChatDetails}
             chats={filteredChats} 
             updateSelectedChatId={updateSelectedChatId}
             toggleChatBar={toggleChatBar}

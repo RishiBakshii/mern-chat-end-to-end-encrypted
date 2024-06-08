@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react"
 import { useMediaQuery } from "../../hooks/useUtils/useMediaQuery"
 import { ICallOutEventPayloadData } from "../../interfaces/callIn"
-import { ISpectator } from "../../interfaces/chat"
+import { IChatWithUnreadMessages, ISpectator } from "../../interfaces/chat"
 import { formatRelativeTime } from "../../utils/helpers"
+import { ActiveDot } from "../ui/ActiveDot"
 import { Avatar } from "../ui/Avatar"
 
 type PropTypes = {
@@ -14,13 +16,28 @@ type PropTypes = {
   isGroupChat:boolean
   spectators:Array<ISpectator>
   lastSeen:Date | null
+  selectedChatDetails:IChatWithUnreadMessages
   toggleChatDetailsBar: () => void
 }
 
-export const ChatHeader = ({loggedInUserId,totalMembers,lastSeen,chatName,chatAvatar,isGroupChat,spectators,toggleChatDetailsBar}:PropTypes) => {
+export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,lastSeen,chatName,chatAvatar,isGroupChat,spectators,toggleChatDetailsBar}:PropTypes) => {
   
   const is2xl = useMediaQuery(1536)
+
+  const [onlineUsers,setOnlineUsers] = useState<number>(0)
+  console.log(selectedChatDetails);
   
+  useEffect(()=>{
+    if(isGroupChat){
+      setOnlineUsers(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId && member.isActive).length)
+    }
+    else{
+      console.log(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId));
+      setOnlineUsers(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId)[0].isActive ? 1 : 0)
+    }
+  },[isGroupChat])
+
+
   return (
     <div className="flex items-center justify-between text-text bg-background">
 
@@ -33,10 +50,30 @@ export const ChatHeader = ({loggedInUserId,totalMembers,lastSeen,chatName,chatAv
 
                   <div className="flex flex-col gap-y-1">
                       <h4 className="font-medium text-4xl text-fluid-h4">{chatName}</h4>
-                      {
-                        !isGroupChat && lastSeen && 
-                        <p className="text-secondary-darker">last seen {formatRelativeTime(lastSeen)}</p>
-                      }
+
+                      <div className="flex items-center gap-x-2">
+                        {
+                          !isGroupChat && lastSeen && 
+                          <p className="text-secondary-darker">last seen {formatRelativeTime(lastSeen)}</p>
+                        }
+                        
+                        {
+                          onlineUsers>0 ?
+                            isGroupChat ? 
+                              <div className="flex items-center gap-x-2">
+                                <ActiveDot/>
+                                <p>{onlineUsers} {onlineUsers===1?"member":"members"}</p>
+                              </div>
+                              :
+                              <div className="flex items-center gap-x-2">
+                                <ActiveDot/>
+                                <p className="text-secondary-darker">Active</p>
+                              </div>
+                          :
+                          null
+                        }
+
+                      </div>
                   </div>
                   {
                     isGroupChat && 

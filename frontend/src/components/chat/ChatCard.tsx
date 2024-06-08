@@ -145,8 +145,8 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
                 </div>
                 
                 {
-                  latestMessage.createdAt && 
-                  <p className="text-sm text-secondary-darker">{formatRelativeTime(new Date(latestMessage.createdAt))}</p>
+                  latestMessage?.createdAt && 
+                  <p className="text-sm text-secondary-darker">{formatRelativeTime(new Date(latestMessage?.createdAt))}</p>
                 }
 
             </div>

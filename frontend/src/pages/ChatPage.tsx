@@ -179,6 +179,7 @@ export const ChatPage = () => {
                                     loggedInUserId={loggedInUser._id}
                                     chatName={chatName}
                                     spectators={selectedChatDetails.spectators}
+                                    selectedChatDetails={selectedChatDetails}
                                     totalMembers={selectedChatDetails.members.length}
                                     toggleChatDetailsBar={toggleChatDetailsBar}
                                     handleCallOut={handleCallOut}

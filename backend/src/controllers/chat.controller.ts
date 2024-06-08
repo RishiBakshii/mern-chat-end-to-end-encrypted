@@ -50,7 +50,8 @@ export const populateMembersStage = {
           username: 1,
           avatar: 1,
           publicKey:1,
-          lastSeen:1
+          lastSeen:1,
+          isActive:1
         },
       },
     ],

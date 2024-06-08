@@ -1,4 +1,3 @@
-import { formatDistanceToNow } from "date-fns"
 import { useGetSharedKey } from "../../hooks/useAuth/useGetSharedKey"
 import { IChatMember, IChatWithUnreadMessages } from "../../interfaces/chat"
 import { IMessage, IUnreadMessage } from "../../interfaces/messages"

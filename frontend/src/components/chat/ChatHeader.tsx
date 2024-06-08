@@ -1,6 +1,7 @@
 import { useMediaQuery } from "../../hooks/useUtils/useMediaQuery"
 import { ICallOutEventPayloadData } from "../../interfaces/callIn"
 import { ISpectator } from "../../interfaces/chat"
+import { formatRelativeTime } from "../../utils/helpers"
 import { Avatar } from "../ui/Avatar"
 
 type PropTypes = {
@@ -12,10 +13,11 @@ type PropTypes = {
   chatAvatar:string
   isGroupChat:boolean
   spectators:Array<ISpectator>
+  lastSeen:Date | null
   toggleChatDetailsBar: () => void
 }
 
-export const ChatHeader = ({loggedInUserId,selectedChatName,totalMembers,chatName,chatAvatar,isGroupChat,spectators,handleCallOut,toggleChatDetailsBar}:PropTypes) => {
+export const ChatHeader = ({loggedInUserId,totalMembers,lastSeen,chatName,chatAvatar,isGroupChat,spectators,toggleChatDetailsBar}:PropTypes) => {
   
   const is2xl = useMediaQuery(1536)
   
@@ -28,7 +30,14 @@ export const ChatHeader = ({loggedInUserId,selectedChatName,totalMembers,chatNam
               <Avatar imgUrl={chatAvatar} height={14} width={14} alt={`${chatName} avatar`} />
 
               <div className="flex flex-col gap-y-1">
-                  <h4 className="font-medium text-4xl text-fluid-h4">{chatName}</h4>
+
+                  <div className="flex flex-col gap-y-1">
+                      <h4 className="font-medium text-4xl text-fluid-h4">{chatName}</h4>
+                      {
+                        !isGroupChat && lastSeen && 
+                        <p className="text-secondary-darker">last seen {formatRelativeTime(lastSeen)}</p>
+                      }
+                  </div>
                   {
                     isGroupChat && 
                     <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
@@ -51,10 +60,10 @@ export const ChatHeader = ({loggedInUserId,selectedChatName,totalMembers,chatNam
                               spec.callerId === loggedInUserId && 
 
                                 <svg onClick={()=>{
-                                  handleCallOut({
-                                    callee:{_id:spec._id,avatar:spec.avatar,username:spec.username},
-                                    chat:{chatId:spec.chatId,name:selectedChatName}
-                                  })
+                                  // handleCallOut({
+                                  //   callee:{_id:spec._id,avatar:spec.avatar,username:spec.username},
+                                  //   chat:{chatId:spec.chatId,name:selectedChatName}
+                                  // })
                                 }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 absolute cursor-pointer">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                                 </svg>

@@ -8,6 +8,7 @@ export interface IUser {
     createdAt:Date
     updatedAt:Date
     verified?:boolean
+    lastSeen:Date
 }
 
 export interface IAuth {

@@ -46,6 +46,9 @@ const userSchema = new Schema<IUser>({
         select:false,
         required:true
     },
+    lastSeen:{
+        type:Date
+    },
     verified:{
         type:Boolean,
         default:false

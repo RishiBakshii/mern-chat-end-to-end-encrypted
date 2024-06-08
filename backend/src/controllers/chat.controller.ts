@@ -49,7 +49,8 @@ export const populateMembersStage = {
         $project: {
           username: 1,
           avatar: 1,
-          publicKey:1
+          publicKey:1,
+          lastSeen:1
         },
       },
     ],

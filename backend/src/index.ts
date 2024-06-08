@@ -414,7 +414,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
     })
 
     socket.on("disconnect",async()=>{
-        await User.findByIdAndUpdate(socket.user?._id,{isActive:false})
+        await User.findByIdAndUpdate(socket.user?._id,{isActive:false,lastSeen:new Date})
         userSocketIds.delete(socket.user?._id);
         socket.broadcast.emit(Events.OFFLINE,socket.user?._id)
     })

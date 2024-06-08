@@ -178,6 +178,7 @@ export const ChatPage = () => {
                                 selectedChatDetails && chatName && loggedInUser && chatName && chatAvatar && 
 
                                 <ChatHeader
+                                    lastSeen={selectedChatDetails.isGroupChat?null:selectedChatDetails.members.filter(member=>member._id!==loggedInUser._id)[0].lastSeen}
                                     isGroupChat={selectedChatDetails.isGroupChat}
                                     chatAvatar={chatAvatar}
                                     selectedChatName={chatName}

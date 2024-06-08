@@ -13,6 +13,7 @@ export const useMessageSeenListener = () => {
 
     useSocketEvent(Events.MESSAGE_SEEN,({chat:chatId,user}:IMessageSeenEventReceiveData)=>{
 
+      console.log({chat:chatId,user});
         const isOwnMessageSeenUpdate = user._id === loggedInUser?._id
 
         dispatch(

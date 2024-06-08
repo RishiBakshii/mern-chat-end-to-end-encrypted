@@ -9,7 +9,6 @@ import { MessageList } from "../components/messages/MessageList"
 import { ChatListWithSearchSkeleton } from "../components/ui/skeleton/ChatListWithSearchSkeleton"
 import { useFetchAttachments } from "../hooks/useAttachment/useFetchAttachments"
 import { useCallOut } from "../hooks/useCallIn/useCallOut"
-import { useDispatchRemoveSpectatorById } from "../hooks/useCallIn/useDispatchRemoveSpectatorById"
 import { useFetchChats } from "../hooks/useChat/useFetchChats"
 import { useUpdateChatSelection } from "../hooks/useChat/useUpdateChatSelection"
 import { useUpdateUnreadChatAsSeen } from "../hooks/useChat/useUpdateUnreadChatAsSeen"
@@ -45,11 +44,10 @@ import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
 import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
 import { useNotificationPermission } from '../hooks/useUtils/useNotificationPermission'
-import { useScrollToBottomOnChatChange } from "../hooks/useUtils/useScrollToBottomOnChatChange"
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 import { ICallOutEventPayloadData } from "../interfaces/callIn"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
-import { selectSelectedChatDetails, selectSelectedChatId } from "../services/redux/slices/chatSlice"
+import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
 
@@ -67,7 +65,6 @@ export const ChatPage = () => {
     const chatDetailsBar = useAppSelector(selectChatDetailsBar)
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
     const messageContainerRef = useRef<HTMLDivElement>(null)
-    const selectedChatId = useAppSelector(selectSelectedChatId)
     
     
     
@@ -81,9 +78,6 @@ export const ChatPage = () => {
     
     const clearExtraPreviousMessages = useClearAdditionalMessagesOnChatChange()
     
-    useScrollToBottomOnChatChange(messageContainerRef,[selectedChatId])
-    
-    const removeSpectatorById  = useDispatchRemoveSpectatorById()
     
     useNotificationPermission()
 
@@ -110,7 +104,7 @@ export const ChatPage = () => {
    useSpectatorJoinedListener()
    useMessageDeleteListener()
    
-   useUpdateUnreadChatAsSeen(selectedChatDetails)
+   useUpdateUnreadChatAsSeen()
    
    const toggleGif = useToggleGif()
    const togglePoolForm = useTogglePoolForm()
@@ -125,7 +119,7 @@ export const ChatPage = () => {
 
    const handleCallOut = (payload: ICallOutEventPayloadData)=>{
     callOut(payload)
-    removeSpectatorById({spectatorChatId:payload.chat.chatId,spectatorId:payload.callee._id})
+    // removeSpectatorById({spectatorChatId:payload.chat.chatId,spectatorId:payload.callee._id})
 
    }
 
@@ -172,7 +166,7 @@ export const ChatPage = () => {
 
                 <div className="flex-[1.6]">
 
-                        <div className="flex flex-col gap-y-3 h-full justify-between">
+                        <div className="flex flex-col gap-y-3 h-full justify-between relative">
                             
                             {
                                 selectedChatDetails && chatName && loggedInUser && chatName && chatAvatar && 

@@ -50,6 +50,8 @@ import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
+import Lottie from 'lottie-react'
+import { fishAnimation } from '../assets'
 
 export const ChatPage = () => {
 
@@ -206,6 +208,17 @@ export const ChatPage = () => {
                                 toggleGif={toggleGif}
                                 togglePoolForm={togglePoolForm}
                                 />  
+                            }
+
+                            {
+                                !selectedChatDetails && 
+                                <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:1}} className='w-96 max-sm:w-full self-center justify-self-center flex flex-col justify-center items-center relative'>
+                                    <Lottie animationData={fishAnimation} loop={false}/>
+                                    <div className='absolute bottom-0 flex flex-col items-center'>
+                                        <motion.h4 initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.5}} className='text-text text-fluid-h6'>Select a chat</motion.h4>
+                                        <motion.h4 initial={{opacity:0}} animate={{opacity:1}} transition={{delay:2.5}} className='text-text text-fluid-h6'>and start the conversation</motion.h4>
+                                    </div>
+                                </motion.div>
                             }
 
                         </div>

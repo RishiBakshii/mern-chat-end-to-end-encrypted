@@ -3,20 +3,18 @@ import { useLogout } from "../../hooks/useAuth/useLogout"
 import { useOpenAddFriendForm } from "../../hooks/useUI/useOpenAddFriendForm"
 import { useOpenFriendRequestForm } from "../../hooks/useUI/useOpenFriendRequestForm"
 import { useOpenProfileForm } from "../../hooks/useUI/useOpenProfileForm"
-import { useToggleCallInRequestDisplay } from "../../hooks/useUI/useToggleCallInRequestDisplay"
 import { useToggleChatBar } from "../../hooks/useUI/useToggleChatBar"
+import { useToggleGroupChatForm } from '../../hooks/useUI/useToggleGroupChatForm'
 import { useToggleNavMenu } from "../../hooks/useUI/useToggleNavMenu"
 import { useUpdateTheme } from "../../hooks/useUtils/useUpdateTheme"
 import { useGetUserFriendRequestsQuery } from "../../services/api/requestApi"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
-import { selectCallInRequests, selectNavMenu, selectisDarkMode } from "../../services/redux/slices/uiSlice"
+import { selectNavMenu, selectisDarkMode } from "../../services/redux/slices/uiSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
 import { ChatBarHamburger } from "../chat/ChatBarHamburger"
 import { Avatar } from "../ui/Avatar"
-import { Badge } from "../ui/Badge"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
-import { useToggleGroupChatForm } from '../../hooks/useUI/useToggleGroupChatForm'
 
 export const Navbar = () => {
 
@@ -25,13 +23,12 @@ export const Navbar = () => {
 
   const {data:friendRequests} = useGetUserFriendRequestsQuery()
 
-  const callInRequests = useAppSelector(selectCallInRequests)
 
   const isDarkMode = useAppSelector(selectisDarkMode)
   const toggleNavMenu = useToggleNavMenu()
 
 
-  const toggleCallInRequestDisplay = useToggleCallInRequestDisplay()
+
 
   const openNewGroupChatForm = useToggleGroupChatForm()
   const openAddFriendForm = useOpenAddFriendForm()
@@ -100,8 +97,8 @@ export const Navbar = () => {
                    cursor="pointer"
                    onClick={toggleNavMenu}
                    imgUrl={loggedInUser?.avatar!}
-                   width={12}
-                   height={12}
+                   width={10}
+                   height={10}
                    alt={`${loggedInUser?.username} avatar`}
                   />
                   

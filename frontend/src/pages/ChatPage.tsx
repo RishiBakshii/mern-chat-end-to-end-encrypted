@@ -55,37 +55,37 @@ import { useAppSelector } from "../services/redux/store/hooks"
 
 export const ChatPage = () => {
 
-   useNotificationPermission()
-
-   const is640 =  useMediaQuery(640)
-
-   const {isChatsFetching,chats} = useFetchChats()
-   useFetchFriends()
-   useFetchFriendRequest()
-   
-   const loggedInUser = useAppSelector(selectLoggedInUser)
-   const chatBar = useAppSelector(selectChatBar)
-   const chatDetailsBar = useAppSelector(selectChatDetailsBar)
-   const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
-   const messageContainerRef = useRef<HTMLDivElement>(null)
-   const selectedChatId = useAppSelector(selectSelectedChatId)
-
-
-   
-   const {messages,fetchMoreMessages,totalMessagePages} = useFetchMessages(selectedChatDetails?._id,1)
-   
-   const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()
-   
-   const updateSelectedChatId = useUpdateChatSelection()
-   const toggleChatBar = useToggleChatBar()
-   const toggleChatDetailsBar = useToggleChatDetailsBar()
-
-   const clearExtraPreviousMessages = useClearAdditionalMessagesOnChatChange()
-      
-   useScrollToBottomOnChatChange(messageContainerRef,[selectedChatId])
-
-   const removeSpectatorById  = useDispatchRemoveSpectatorById()
-
+    
+    const is640 =  useMediaQuery(640)
+    
+    const {isChatsFetching,chats} = useFetchChats()
+    useFetchFriends()
+    useFetchFriendRequest()
+    
+    const loggedInUser = useAppSelector(selectLoggedInUser)
+    const chatBar = useAppSelector(selectChatBar)
+    const chatDetailsBar = useAppSelector(selectChatDetailsBar)
+    const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
+    const messageContainerRef = useRef<HTMLDivElement>(null)
+    const selectedChatId = useAppSelector(selectSelectedChatId)
+    
+    
+    
+    const {totalMessagePages,messages} = useFetchMessages(selectedChatDetails?._id,1)
+    
+    const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()
+    
+    const updateSelectedChatId = useUpdateChatSelection()
+    const toggleChatBar = useToggleChatBar()
+    const toggleChatDetailsBar = useToggleChatDetailsBar()
+    
+    const clearExtraPreviousMessages = useClearAdditionalMessagesOnChatChange()
+    
+    useScrollToBottomOnChatChange(messageContainerRef,[selectedChatId])
+    
+    const removeSpectatorById  = useDispatchRemoveSpectatorById()
+    
+    useNotificationPermission()
 
    // listeners
    useFriendRequestListener()
@@ -131,10 +131,6 @@ export const ChatPage = () => {
 
    const handleFetchMoreAttachments = (chatId:string,page:number)=>{
         fetchMoreAttachments({chatId,page})
-   }
-
-   const handleFetchMoreMessages = (_id:string,page:number)=>{
-        fetchMoreMessages({_id,page})
    }
    
 
@@ -198,13 +194,12 @@ export const ChatPage = () => {
                                 selectedChatDetails && messages && loggedInUser && totalMessagePages &&
 
                                 <MessageList
+                                    messages={messages}
+                                    totalPages={totalMessagePages}
                                     messageContainerRef={messageContainerRef}
                                     selectedChatDetails={selectedChatDetails}
                                     isGroupChat={selectedChatDetails.isGroupChat} 
-                                    messages={messages} 
-                                    totalPages={totalMessagePages}
                                     loggedInUserId={loggedInUser._id}
-                                    fetchMoreMessages={handleFetchMoreMessages}
                                 />
                             }
                             

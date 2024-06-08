@@ -13,5 +13,10 @@ export const useFetchMessages = (chatId:string | undefined,page:number) => {
 
     },[chatId])
 
-    return {isMessagesFetching:isFetching,messages:data?.messages,fetchMoreMessages:getMessages,totalMessagePages:data?.totalPages}
+    return {
+        isMessagesFetching:isFetching,
+        messages:data?.messages,
+        fetchMoreMessages:getMessages,
+        totalMessagePages:data?.totalPages
+    }
 }

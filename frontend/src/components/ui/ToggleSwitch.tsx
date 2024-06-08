@@ -6,8 +6,11 @@ type PropTypes = {
 
 export const ToggleSwitch = ({initialValue,toggle}:PropTypes) => {
   return (
-    <div onClick={toggle} className="bg-background w-14 h-10 rounded-lg relative p-2 cursor-pointer">
-        <div className={`w-5 h-5 rounded-full absolute ${initialValue?"right-0 bg-primary":"left-0 bg-secondary-dark"} top-2`}></div>
-    </div>
+    <>
+    <label className="inline-flex items-center cursor-pointer">
+      <input onClick={toggle} type="checkbox" checked={initialValue} className="sr-only peer"/>
+      <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+    </label>
+    </>
   )
 }

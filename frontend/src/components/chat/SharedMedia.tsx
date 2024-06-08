@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IAttachment } from "../../interfaces/attachment";
+import { CircleLoading } from "../shared/CircleLoading";
 
 type PropTypes = {
     attachments:IAttachment
@@ -25,10 +26,17 @@ export const SharedMedia = ({attachments,selectedChatId,fetchMoreAttachments}:Pr
 
     const handleScroll = ()=>{
         const container = containerRef.current;
+        
+        if(container){
 
-        if(container && container.scrollHeight - container.scrollTop === container.clientHeight && hasMore){
-            setPage(prev=>prev+1)
+            const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 120;
+
+            if(isAtBottom && hasMore){
+                setPage(prev=>prev+1)
+            }
+
         }
+
     }
 
   return (

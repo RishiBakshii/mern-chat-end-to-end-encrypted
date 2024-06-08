@@ -35,6 +35,7 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat,att
         <div className="flex flex-col gap-y-4 items-center">
 
             <ChatDetailsHeader
+              isGroupChat={isGroupChat}
               isAdmin={isAdmin}
               avatar={chatAvatar}
               chatName={chatName}

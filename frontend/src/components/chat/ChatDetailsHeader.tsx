@@ -4,11 +4,12 @@ import { Avatar } from "../ui/Avatar"
 type PropTypes = {
     isAdmin:boolean
     avatar:string
+    isGroupChat:boolean
     chatName:string
     membersLength:number
 }
 
-export const ChatDetailsHeader = ({avatar,chatName,membersLength,isAdmin}:PropTypes) => {
+export const ChatDetailsHeader = ({avatar,chatName,membersLength,isAdmin,isGroupChat}:PropTypes) => {
 
   const toggleChatUpdateForm = useToggleChatUpdateForm()
 
@@ -44,8 +45,21 @@ export const ChatDetailsHeader = ({avatar,chatName,membersLength,isAdmin}:PropTy
 
       <div className="flex flex-col justify-center items-center">
             <h4 className="text-lg font-medium">{chatName}</h4>
-          
-          <p className="text-secondary-darker">{membersLength} members</p>
+
+            {
+              isGroupChat && 
+              <p className="text-secondary-darker">{membersLength} members</p>
+            }
+
+            {
+              !isGroupChat && 
+              <div className="flex items-center gap-x-1">
+                  <p className="text-secondary-darker">End to end encrypted</p>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                  </svg>
+              </div>
+            }
       </div>
     
     </>

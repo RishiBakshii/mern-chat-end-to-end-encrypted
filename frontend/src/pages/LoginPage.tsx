@@ -2,7 +2,6 @@ import { Helmet } from "react-helmet-async"
 import { LoginForm } from "../components/auth/LoginForm"
 import { SocialLogin } from "../components/auth/SocialLogin"
 import { config } from "../config/envConfig"
-import { PreReleaseHeader } from "../components/shared/PreReleaseHeader"
 
 export const LoginPage = () => {    
 
@@ -17,14 +16,14 @@ export const LoginPage = () => {
       </Helmet>
 
         <div className="flex flex-col gap-y-8">
-          {/* <h3 className="text-4xl font-bold text-fluid-h3">Login</h3> */}
-          <PreReleaseHeader/>
+          <h3 className="text-4xl font-bold text-fluid-h3">Login</h3>
+
           <SocialLogin 
               googleLink={`${config.base_url}/auth/google`}
               githubLink={`${config.base_url}/auth/github`}
               />
         </div>
-            
+
         <LoginForm/>
       </>
 

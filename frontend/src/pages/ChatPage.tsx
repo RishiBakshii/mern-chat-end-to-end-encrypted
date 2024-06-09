@@ -180,7 +180,6 @@ export const ChatPage = () => {
                                     selectedChatName={chatName}
                                     loggedInUserId={loggedInUser._id}
                                     chatName={chatName}
-                                    spectators={selectedChatDetails.spectators}
                                     selectedChatDetails={selectedChatDetails}
                                     totalMembers={selectedChatDetails.members.length}
                                     toggleChatDetailsBar={toggleChatDetailsBar}
@@ -205,8 +204,8 @@ export const ChatPage = () => {
                                 selectedChatDetails &&
 
                                 <MessageForm 
-                                toggleGif={toggleGif}
-                                togglePoolForm={togglePoolForm}
+                                    toggleGif={toggleGif}
+                                    togglePoolForm={togglePoolForm}
                                 />  
                             }
 

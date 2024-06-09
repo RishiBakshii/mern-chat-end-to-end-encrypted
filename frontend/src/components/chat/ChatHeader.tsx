@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react"
 import { useMediaQuery } from "../../hooks/useUtils/useMediaQuery"
 import { ICallOutEventPayloadData } from "../../interfaces/callIn"
-import { IChatWithUnreadMessages, ISpectator } from "../../interfaces/chat"
+import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { formatRelativeTime } from "../../utils/helpers"
 import { ActiveDot } from "../ui/ActiveDot"
 import { Avatar } from "../ui/Avatar"
@@ -14,28 +13,40 @@ type PropTypes = {
   chatName:string
   chatAvatar:string
   isGroupChat:boolean
-  spectators:Array<ISpectator>
   lastSeen:Date | null
   selectedChatDetails:IChatWithUnreadMessages
   toggleChatDetailsBar: () => void
 }
 
-export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,lastSeen,chatName,chatAvatar,isGroupChat,spectators,toggleChatDetailsBar}:PropTypes) => {
+export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,lastSeen,chatName,chatAvatar,isGroupChat,toggleChatDetailsBar}:PropTypes) => {
   
   const is2xl = useMediaQuery(1536)
-
-  const [onlineUsers,setOnlineUsers] = useState<number>(0)
-  console.log(selectedChatDetails);
   
-  useEffect(()=>{
+  const renderOnlineStatus = ()=>{
+
     if(isGroupChat){
-      setOnlineUsers(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId && member.isActive).length)
+
+      const onlineMembers = selectedChatDetails.members.filter((member) => member._id !== loggedInUserId && member.isActive).length
+      
+      return <div className="flex items-center gap-x-2">
+                <ActiveDot/>
+                <p className="text-secondary-darker">{onlineMembers} {onlineMembers===1?"online":"online"}</p>
+              </div>
     }
+
     else{
-      console.log(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId));
-      setOnlineUsers(selectedChatDetails.members.filter(member=>member._id!==loggedInUserId)[0].isActive ? 1 : 0)
+
+      const otherMember = selectedChatDetails.members.filter((member) => member._id !== loggedInUserId)[0];
+
+      return otherMember.isActive ? 
+        <div className="flex items-center gap-x-2">
+        <ActiveDot/>
+        <p className="text-secondary-darker">Active</p>
+        </div>
+        :
+        null
     }
-  },[isGroupChat])
+  }
 
 
   return (
@@ -56,66 +67,18 @@ export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,last
                           !isGroupChat && lastSeen && 
                           <p className="text-secondary-darker">last seen {formatRelativeTime(lastSeen)}</p>
                         }
-                        
                         {
-                          onlineUsers>0 ?
-                            isGroupChat ? 
-                              <div className="flex items-center gap-x-2">
-                                <ActiveDot/>
-                                <p>{onlineUsers} {onlineUsers===1?"member":"members"}</p>
-                              </div>
-                              :
-                              <div className="flex items-center gap-x-2">
-                                <ActiveDot/>
-                                <p className="text-secondary-darker">Active</p>
-                              </div>
-                          :
-                          null
+                          isGroupChat && 
+                          <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
                         }
-
+                        {renderOnlineStatus()}
                       </div>
                   </div>
-                  {
-                    isGroupChat && 
-                    <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
-                  }
               </div>
           </div>
 
-          <div className="flex items-center gap-x-4">
-              {
-                spectators?.length>0 &&
-                <div className="flex items-center gap-x-2">
-                    <p className="text-secondary-darker">Spectators</p>
-
-                    <div className="flex items-center">
-                      {
-                        spectators.map(spec=>(
-                          <div key={spec._id} className="relative">
-                            <Avatar imgUrl={spec.avatar} alt={spec.username} width={6} height={6}/>
-                            {
-                              spec.callerId === loggedInUserId && 
-
-                                <svg onClick={()=>{
-                                  // handleCallOut({
-                                  //   callee:{_id:spec._id,avatar:spec.avatar,username:spec.username},
-                                  //   chat:{chatId:spec.chatId,name:selectedChatName}
-                                  // })
-                                }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 absolute cursor-pointer">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                </svg>
-                            }
-                          </div>
-                        ))
-                      }
-                    </div>
-                </div>
-              }
-          </div>
-        
         </div>
 
-        
     </div>
 
   )

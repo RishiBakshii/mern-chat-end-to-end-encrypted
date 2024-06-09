@@ -26,7 +26,7 @@ type PropTypes = {
 }
 
 export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clearExtraPreviousMessages,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
-  console.log('rendercaht');
+
   const getSharedKey =  useGetSharedKey()
 
   const [decryptedMessage,setDecryptedMessage] = useState<string>()
@@ -41,7 +41,6 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
   },[loggedInUserId,otherMember])
 
   const handleSetDecryptMessage = useCallback(async(sharedKey:CryptoKey)=>{
-    console.log('handleSetDecryptMessage');
     if(latestMessage?.content?.length){
       const msg = await decryptMessage(sharedKey,latestMessage.content)
       if(msg) setDecryptedMessage(msg)
@@ -64,14 +63,10 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
 
   useEffect(()=>{
     if(sharedKey){
-      console.log('shared key',sharedKey);
       if(unreadMessage.message?.content){
-        console.log(unreadMessage.message?.content);
-        console.log('case 1');
         handleSetUnreadDecryptedMessage(unreadMessage.message?.content)
       }
       if(latestMessage?.content?.length){
-        console.log('case 2');
         handleSetDecryptMessage(sharedKey)
       }
     }

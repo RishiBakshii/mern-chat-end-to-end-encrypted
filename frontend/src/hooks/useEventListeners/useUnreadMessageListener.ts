@@ -5,6 +5,7 @@ import { chatApi } from "../../services/api/chatApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
 import { selectJoinedChats } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
+import { printDraft } from "../../utils/helpers"
 import { useSocketEvent } from "../useSocket/useSocketEvent"
 
 export const useUnreadMessageListener = () => {
@@ -18,6 +19,8 @@ export const useUnreadMessageListener = () => {
     
     useSocketEvent(Events.UNREAD_MESSAGE,({chatId,message}:IUnreadMessageEventReceiveData)=>{
 
+        console.log({chatId,message});
+
         if(chatId === selectedChatDetails?._id){
     
           const payload:IMessageSeenEventPayloadData = {
@@ -28,13 +31,14 @@ export const useUnreadMessageListener = () => {
         }
 
         else{
+          console.log('a message came in else condition');
           dispatch(
             chatApi.util.updateQueryData('getChats',undefined,(draft)=>{
       
               const chat = draft.find(draft=>draft._id===chatId)
-      
-              if(chat){
 
+              if(chat){
+                printDraft(chat)
                 chat.unreadMessages.message.url=false
                 chat.unreadMessages.message.attachments = false
                 chat.unreadMessages.message.poll = false
@@ -46,6 +50,7 @@ export const useUnreadMessageListener = () => {
                 }
 
                 if(message.content?.length){
+                  console.log('condition hit');
                   chat.unreadMessages.message.content = message.content
                 }
                 else if(message.attachments){

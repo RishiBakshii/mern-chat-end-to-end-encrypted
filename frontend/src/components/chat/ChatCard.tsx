@@ -26,60 +26,56 @@ type PropTypes = {
 }
 
 export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clearExtraPreviousMessages,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
-  
+  console.log('rendercaht');
   const getSharedKey =  useGetSharedKey()
 
   const [decryptedMessage,setDecryptedMessage] = useState<string>()
   const [unreadDecryptedMessage,setUnreadDecryptedMessage] = useState<string>()
-
   const [sharedKey,setSharedKey] = useState<CryptoKey>()
 
   const otherMember = members.filter(member=>member._id!==loggedInUserId)[0]
   
   const handleSetSharedKey = useCallback(async(otherMember:IChatMember)=>{
     const key = await getSharedKey(loggedInUserId,otherMember)
-    if(key){
-      setSharedKey(key)
+    if(key) setSharedKey(key)
+  },[loggedInUserId,otherMember])
+
+  const handleSetDecryptMessage = useCallback(async(sharedKey:CryptoKey)=>{
+    console.log('handleSetDecryptMessage');
+    if(latestMessage?.content?.length){
+      const msg = await decryptMessage(sharedKey,latestMessage.content)
+      if(msg) setDecryptedMessage(msg)
     }
   },[])
 
-  const handleSetDecryptMessage = async(sharedKey:CryptoKey)=>{
-
-    if(latestMessage.content?.length){
-      const msg = await decryptMessage(sharedKey,latestMessage.content)
-      if(msg){
-        setDecryptedMessage(msg)
-      }
-    }
-  }
-
-  const handleSetUnreadDecryptedMessage = async(message:string)=>{
+  const handleSetUnreadDecryptedMessage = useCallback(async(message:string)=>{
     if(sharedKey){
       const msg = await decryptMessage(sharedKey,message)
-      if(msg){
-        setUnreadDecryptedMessage(msg)
-      }
+      if(msg) setUnreadDecryptedMessage(msg)
     }
-  }
+  },[sharedKey])
 
 
   useEffect(()=>{
-    if((!isGroupChat && unreadMessage?.message?.content && otherMember) || (!isGroupChat && latestMessage.content?.length)){
+    if(!isGroupChat && otherMember){
       handleSetSharedKey(otherMember)
     }
   },[isGroupChat,otherMember])
 
   useEffect(()=>{
     if(sharedKey){
-      handleSetDecryptMessage(sharedKey)
+      console.log('shared key',sharedKey);
+      if(unreadMessage.message?.content){
+        console.log(unreadMessage.message?.content);
+        console.log('case 1');
+        handleSetUnreadDecryptedMessage(unreadMessage.message?.content)
+      }
+      if(latestMessage?.content?.length){
+        console.log('case 2');
+        handleSetDecryptMessage(sharedKey)
+      }
     }
-  },[sharedKey])
-
-  useEffect(()=>{
-    if(!isGroupChat && unreadMessage?.message?.content){
-      handleSetUnreadDecryptedMessage(unreadMessage.message.content)
-    }
-  },[unreadMessage?.message?.content,isGroupChat])
+  },[sharedKey,unreadMessage.message?.content,latestMessage?.content])
 
 
   const handleChatCardClick = useCallback((chatId:string) =>{
@@ -160,17 +156,17 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
                           // latest message display
                           isGroupChat?  // for group chat
                             RenderAppropriateUnreadMessage({
-                              attachments:latestMessage.attachments?.length?true:false,
-                              content:latestMessage.content,
-                              poll:latestMessage.isPoll,
-                              url:latestMessage.url?true:false
+                              attachments:latestMessage?.attachments?.length?true:false,
+                              content:latestMessage?.content,
+                              poll:latestMessage?.isPoll,
+                              url:latestMessage?.url?true:false
                             })
                           :
                           RenderAppropriateUnreadMessage({  // for private chat
-                            attachments:latestMessage.attachments?.length?true:false,
+                            attachments:latestMessage?.attachments?.length?true:false,
                             content:decryptedMessage,
-                            poll:latestMessage.isPoll,
-                            url:latestMessage.url?true:false
+                            poll:latestMessage?.isPoll,
+                            url:latestMessage?.url?true:false
                           })
                       :
                       // unread Message display

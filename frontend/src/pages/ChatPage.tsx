@@ -69,7 +69,7 @@ export const ChatPage = () => {
     const messageContainerRef = useRef<HTMLDivElement>(null)
     
     
-    
+
     const {totalMessagePages,messages} = useFetchMessages(selectedChatDetails?._id,1)
     
     const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()

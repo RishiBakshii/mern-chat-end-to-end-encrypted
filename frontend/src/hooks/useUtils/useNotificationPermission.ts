@@ -14,17 +14,23 @@ export const useNotificationPermission = () => {
  
         if(permission==="granted"){
             if(env && env.VITE_FIREBASE_VAPID_KEY){
+                console.log(env.VITE_FIREBASE_VAPID_KEY);
                 const token  = await getToken(messaging,{vapidKey:env.VITE_FIREBASE_VAPID_KEY})
+                console.log('token',token);
                 updateFcmToken({fcmToken:token})
             }
-        }
-        else if(permission==='denied'){
         }
      }
 
     useEffect(()=>{
-        if(env && env.VITE_FIREBASE_VAPID_KEY){
-            requestPermission()
+
+        const permissionStatus = localStorage.getItem("notificationPermission")
+
+        if(!permissionStatus ||  permissionStatus!=='granted'){
+            if(env && env.VITE_FIREBASE_VAPID_KEY){
+                requestPermission()
+            }
         }
+
     },[env])
 }

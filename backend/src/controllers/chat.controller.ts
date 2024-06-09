@@ -266,6 +266,70 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
             "unreadMessages.sender.avatar": "$unreadMessages.sender.avatar.secureUrl"
           }
         },
+      //   export interface IUnreadMessage {
+      //     count:number
+      //     message:{
+      //         content?:string
+      //         url?:boolean
+      //         attachments?:boolean
+      //         poll?:boolean
+      //     },
+      //     sender:IChatMember
+      // }
+      {
+        $addFields: {
+          "unreadMessages": {
+            $cond: {
+              if: {
+                $or: [
+                  { $eq: ["$unreadMessages", {}] },
+                  { $eq: ["$unreadMessages", null] },
+                  { $not: ["$unreadMessages"] }
+                ]
+              },
+              then: {
+                count: 0,
+                message: {
+                  content: "",
+                  url: false,
+                  attachments: false,
+                  poll: false
+                },
+                sender: {
+                  _id: "",
+                  username: "",
+                  avatar: ""
+                }
+              },
+              else: {
+                $cond: {
+                  if: {
+                    $or: [
+                      { $eq: ["$unreadMessages.message", null] },
+                      { $not: ["$unreadMessages.message"] }
+                    ]
+                  },
+                  then: {
+                    count: 0,
+                    message: {
+                      content: "",
+                      url: false,
+                      attachments: false,
+                      poll: false
+                    },
+                    sender: {
+                      _id: "",
+                      username: "",
+                      avatar: ""
+                    }
+                  },
+                  else: "$unreadMessages"
+                }
+              }
+            }
+          }
+        }
+      },
         {
           $lookup: {
             from: "messages",
@@ -277,6 +341,23 @@ const getUserChats = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respon
         {
           $addFields: {
             latestMessage:{$arrayElemAt:['$latestMessage',0]}
+          }
+        },
+        {
+          $addFields: {
+            "latestMessage.content": {
+              $cond: {
+                if: {
+                  $or: [
+                    { $eq: ["$latestMessage", {}] },
+                    { $eq: ["$latestMessage", null] },
+                    { $not: ["$latestMessage"] }
+                  ]
+                },
+                then: "hello world",
+                else: "$latestMessage.content"
+              }
+            }
           }
         },
         {

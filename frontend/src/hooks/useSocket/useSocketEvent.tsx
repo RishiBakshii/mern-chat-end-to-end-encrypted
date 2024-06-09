@@ -5,7 +5,7 @@ import { useAppSelector } from "../../services/redux/store/hooks"
 import { selectSelectedChatDetails, selectSelectedChatId } from "../../services/redux/slices/chatSlice"
 
 
-export const useSocketEvent = (eventName:Events,callback:any,dependency?:any) => {
+export const useSocketEvent = (eventName:Events,callback:any) => {
 
     const socket = getSocket()
     const selectedChatId = useAppSelector(selectSelectedChatId)
@@ -20,5 +20,5 @@ export const useSocketEvent = (eventName:Events,callback:any,dependency?:any) =>
         return ()=>{
           socket?.off(eventName,callback)
         }
-      },[socket,selectedChatId,selectedChatDetails,dependency])
+      },[socket,selectedChatId,selectedChatDetails])
 }

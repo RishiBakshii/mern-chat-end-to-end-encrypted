@@ -20,7 +20,7 @@ type PropTypes = {
 export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,selectedChatDetails,messageContainerRef}:PropTypes) => {
 
   const [fetchMoreMessages,{isFetching}] = useLazyGetMessagesByChatIdQuery()
-
+  console.log('messages',messages);
 
   const [page,setPage] = useState<number>(1)
   const [hasMore,setHasMore] = useState<boolean>(true)
@@ -145,7 +145,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
         isFetching &&
         <CircleLoading/>
       }
-      {messages?.map((message,index) => (
+      {messages.map((message,index) => (
 
         <MessageCard
           key={index}
@@ -166,7 +166,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
 
       <AnimatePresence>
       {
-        isNearBottom && selectedChatDetails.userTyping?.length > 0 && 
+        isNearBottom && selectedChatDetails.userTyping?.length && 
         <motion.div className="w-fit" variants={{hide:{opacity:0,x:-10},show:{opacity:1,x:0}}} initial="hide" animate="show" exit="hide">
             <TypingIndicatorWithUserList
               isGroupChat={selectedChatDetails.isGroupChat}

@@ -40,6 +40,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
     setOpenContextMenuMessageId(messageId)
   },[])
 
+
   useEffect(()=>{
     const container = messageContainerRef.current
 
@@ -51,12 +52,21 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
 
       return ()=> {
         setPage(1)
-        setHasMore(true)
         clearTimeout(timeoutId)
       }
 
     }
   },[])
+
+  useEffect(()=>{
+    if(totalPages===1){
+      setHasMore(false)
+    }
+    else{
+      setHasMore(true)
+    }
+  },[totalPages])
+
 
   const handleScroll = useCallback(() => {
     const container = messageContainerRef.current;
@@ -134,10 +144,10 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
 
   return (
     <>
-    {/* <p className='text-text'> total page {totalPages}</p>
+    <p className='text-text'> total page {totalPages}</p>
     <p className='text-text'>page {page}</p>
     <p className='text-text'>isFetcing {isFetching?"true":"false"}</p>
-    <p className='text-text'>bottom {isNearBottom?"true":"false"}</p> */}
+    <p className='text-text'>bottom {isNearBottom?"true":"false"}</p>
     <div ref={messageContainerRef} onScroll={handleScroll} className="relative flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto overflow-x-hidden">
       
       

@@ -65,45 +65,15 @@ To get started with Baatchit, follow these steps:
 4. Start the development server: `npm run dev`
 5. Visit `http://localhost:5173` in your browser to access the application.
 
-### Setting Up Environment Variables 🌐
 
-#### Backend
+## Setting Up Environment Variables 🌐
 
-Before running the backend server, you need to set up the following environment variables. Create a `.env` file in the root directory of the `backend` folder and add the following variables:
+Both the frontend and backend have a `.env.example` file provided. Follow these steps to set up the environment variables:
 
-```plaintext
-NODE_ENV=DEVELOPMENT
-PORT=8000
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-JWT_TOKEN_EXPIRATION_DAYS=1
-EMAIL=your_email_address
-PASSWORD=your_email_password
-OTP_EXPIRATION_MINUTES=5
-PASSWORD_RESET_TOKEN_EXPIRATION_MINUTES=5
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-```
+1. Copy the provided `.env.example` file to create your own `.env` file:
+2. Open the `.env` file and replace the placeholder values with your actual credentials and secrets.
 
-Make sure to replace placeholder values with your actual credentials and secrets.
-
-#### Frontend
-
-For the frontend application, you need to set up the following environment variable. Create a `.env` file in the root directory of the `frontend` folder and add the following variable:
-
-```plaintext
-VITE_ENV=DEVELOPMENT
-VITE_TENOR_API_KEY=your_tenor_api_key
-```
-
-Replace the `VITE_TENOR_API_KEY` value with your Tenor API key.
-
-By setting up these environment variables, you ensure that your backend and frontend applications have access to the required configurations for seamless operation.
+This ensures that both the frontend and backend applications have the necessary configurations for seamless operation.
 
 ## Contributing 🤝
 

@@ -1,9 +1,6 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import type { IUser } from '../../interfaces/auth'
-import type { IResetPassword } from '../../interfaces/auth'
-import type { IOtp } from '../../interfaces/auth'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { config } from '../../config/envConfig'
-import { decryptPrivateKey, deriveKeyFromPassword } from '../../utils/encryption'
+import type { IOtp, IResetPassword, IUser } from '../../interfaces/auth'
 
 export const authApi = createApi({
 
@@ -23,7 +20,7 @@ export const authApi = createApi({
                 body:credentials
             })
         }),
-        signup:builder.mutation<IUser,Omit<IUser,'avatar' | '_id' | 'createdAt' | 'updatedAt' | 'publicKey'>>({
+        signup:builder.mutation<IUser,Omit<IUser,'avatar' | '_id' | 'createdAt' | 'updatedAt' | 'publicKey' | "lastSeen">>({
             query:(credentials)=>({
                 url:"/signup",
                 method:"POST",

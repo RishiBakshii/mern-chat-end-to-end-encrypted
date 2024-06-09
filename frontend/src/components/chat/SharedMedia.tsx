@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { IAttachment } from "../../interfaces/attachment";
-import { CircleLoading } from "../shared/CircleLoading";
 
 type PropTypes = {
     attachments:IAttachment

@@ -28,7 +28,7 @@ export const GroupChatForm = () => {
 
   useEffect(()=>{
 
-    let timeout:number
+    let timeout:NodeJS.Timeout
 
     if(isSuccess){
       timeout = setTimeout(() => {

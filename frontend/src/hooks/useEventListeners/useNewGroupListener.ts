@@ -25,7 +25,10 @@ export const useNewGroupListener = () => {
               avatar:member.avatar,
               createdAt: new Date,
               isActive:true,
-              username:member.username
+              username:member.username,
+              lastSeen:member.lastSeen,
+              publicKey:member.publicKey
+
             }
 
             dispatch(

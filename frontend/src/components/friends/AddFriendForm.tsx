@@ -15,7 +15,7 @@ export const AddFriendForm = () => {
 
 
     useEffect(()=>{
-        let timeoutId:number
+        let timeoutId:NodeJS.Timeout
 
         if(inputVal?.trim().length){
             timeoutId = setTimeout(()=>{

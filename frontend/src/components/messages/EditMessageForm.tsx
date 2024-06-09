@@ -1,6 +1,6 @@
+import { motion } from "framer-motion"
 import { useState } from "react"
 import { useEditMessage } from "../../hooks/useMessages/useEditMessage"
-import { MotionConfig, motion } from "framer-motion"
 
 type PropTypes = {
     prevContentValue:string

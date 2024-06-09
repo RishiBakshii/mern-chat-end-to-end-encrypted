@@ -5,7 +5,6 @@ import { ACCEPTED_FILE_MIME_TYPES } from "../../constants"
 import { useEmitTypingEvent } from "../../hooks/useChat/useEmitTypingEvent"
 import { useSendMessage } from "../../hooks/useMessages/useSendMessage"
 import { useToast } from "../../hooks/useUI/useToast"
-import { useToggleCallInForm } from "../../hooks/useUI/useToggleCallInForm"
 import { useDebounce } from "../../hooks/useUtils/useDebounce"
 import { useSendAttachmentsMutation } from "../../services/api/attachmentApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
@@ -20,8 +19,6 @@ type PropTypes = {
 export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
 
     const [messageVal,setMessageVal] = useState<string>('')
-
-    const toggleCallInForm = useToggleCallInForm()
 
     const [selectedAttachments,setSelectedAttachments] = useState<Array<Blob>>()
     const [attachmentsPreview,setAttachmentsPreview] = useState<Array<string>>()
@@ -172,7 +169,6 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
         </AnimatePresence>
 
         <MessageInput
-         toggleCallInForm={toggleCallInForm}
          handleFileChange={handleFileChange} 
          toggleGif={toggleGif} 
          messageVal={messageVal} 

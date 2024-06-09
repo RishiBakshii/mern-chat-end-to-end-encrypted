@@ -46,7 +46,7 @@ export const chatApi = createApi({
                 }
               },
         }),
-        updateChat:builder.mutation<Partial<Pick<IChatWithUnreadMessages, 'name' | 'avatar'>>,{chatId:string,avatar?:Blob,name?:string}>({
+        updateChat:builder.mutation<void,{chatId:string,avatar?:Blob,name?:string}>({
             query:({avatar,name,chatId})=>{
                 
                 const formData = new FormData()

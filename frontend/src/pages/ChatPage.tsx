@@ -52,6 +52,7 @@ import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/ui
 import { useAppSelector } from "../services/redux/store/hooks"
 import Lottie from 'lottie-react'
 import { fishAnimation } from '../assets'
+import { useGroupUpdateEventListener } from '../hooks/useEventListeners/useGroupUpdateEventListener'
 
 export const ChatPage = () => {
 
@@ -105,6 +106,7 @@ export const ChatPage = () => {
    useCallOutListener()
    useSpectatorJoinedListener()
    useMessageDeleteListener()
+   useGroupUpdateEventListener()
    
    useUpdateUnreadChatAsSeen()
    

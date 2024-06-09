@@ -56,6 +56,20 @@ const chatSlice = createSlice({
             if(state.selectedChatDetails && state.selectedChatDetails.spectators){
                 state.selectedChatDetails.spectators = state.selectedChatDetails.spectators.filter(spec=>spec._id!==action.payload.spectatorId)
             }
+        },
+        updateChatNameOrAvatar:(state,action:PayloadAction<{name?:string,avatar?:string}>)=>{
+
+
+            if(state.selectedChatDetails){
+
+                const {name,avatar} = action.payload
+
+                if(name) state.selectedChatDetails.name = name
+                if(avatar) state.selectedChatDetails.avatar = avatar
+
+            }
+
+            
         }
 
     },
@@ -77,6 +91,7 @@ export const {
     removeSelectedChatMembers,
     updateSpectators,
     removeSpectators,
+    updateChatNameOrAvatar,
 } = chatSlice.actions
 
 export default chatSlice

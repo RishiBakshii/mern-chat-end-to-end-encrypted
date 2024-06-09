@@ -10,7 +10,7 @@ import { User } from "../models/user.model.js";
 import type { addMemberToChatType, createChatSchemaType, removeMemberfromChatType, updateChatSchemaType } from "../schemas/chat.schema.js";
 import { deleteFilesFromCloudinary, uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
+import { emitEvent, emitEventToRoom, getOtherMembers } from "../utils/socket.util.js";
 
 
 export const addUnreadMessagesAndSpectatorStage = {
@@ -520,14 +520,12 @@ const updateChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
 
     const chat = await Chat.findOne({_id:id})
 
-    console.log(chat);
+    if (!chat) {
+        return next(new CustomError("chat not found",404))
+    }
 
     if(!chat?.isGroupChat){
       return next(new CustomError("You cannot update a private chat",400))
-    }
-
-    if (!chat) {
-        return next(new CustomError("chat not found",404))
     }
 
     if (name) chat.name = name;
@@ -557,8 +555,17 @@ const updateChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
     if(avatar){
       updatedChatInfo.secureUrl = chat.avatar?.secureUrl
     }
+    
+    const payload:{_id:string,name?:string,avatar?:string} = {
+      _id:chat._id.toString()
+    }
 
-    return res.status(200).json(updatedChatInfo)
+    if(name) payload.name = chat.name
+    if(avatar) payload.avatar = chat.avatar?.secureUrl
+
+    emitEventToRoom(req,Events.GROUP_UPDATE,chat._id.toString(),payload)
+
+    return res.status(200).json({})
 })
 
 export { addMemberToChat, createChat, getUserChats, removeMemberFromChat, updateChat };

@@ -13,7 +13,6 @@ export const useUpdateUnreadChatAsSeen = () => {
     
     useEffect(()=>{
         if(selectedChatDetails && selectedChatDetails.unreadMessages.count > 0){
-            console.log('asd');
 
             const data:IMessageSeenEventPayloadData = 
             {
@@ -21,7 +20,6 @@ export const useUpdateUnreadChatAsSeen = () => {
             }
 
             socket?.emit(Events.MESSAGE_SEEN,data)
-            console.log('message seen event emitted');
         }
     },[selectedChatDetails])
 

@@ -20,7 +20,6 @@ type PropTypes = {
 export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,selectedChatDetails,messageContainerRef}:PropTypes) => {
 
   const [fetchMoreMessages,{isFetching}] = useLazyGetMessagesByChatIdQuery()
-  console.log('messages',messages);
 
   const [page,setPage] = useState<number>(1)
   const [hasMore,setHasMore] = useState<boolean>(true)

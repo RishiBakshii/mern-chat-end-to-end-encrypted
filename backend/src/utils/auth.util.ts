@@ -5,14 +5,17 @@ import { env } from '../schemas/env.schema.js'
 import {v2 as cloudinary} from 'cloudinary'
 import { config } from '../config/env.config.js'
 
+export const cookieOptions:CookieOptions = {
+    maxAge:parseInt(env.JWT_TOKEN_EXPIRATION_DAYS) * 24 * 60 * 60 * 1000,
+    httpOnly:true,
+    path:"/",
+    priority:"high",
+    secure:true,
+    sameSite:env.NODE_ENV==='DEVELOPMENT'?"lax":"none"
+}
+
 export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:Omit<IUser, 'password'>,OAuth:boolean=false)=>{
 
-    const cookieOptions:CookieOptions = {
-        maxAge:parseInt(env.JWT_TOKEN_EXPIRATION_DAYS) * 24 * 60 * 60 * 1000,
-        httpOnly:true,
-        secure:true,
-        sameSite:env.NODE_ENV==='DEVELOPMENT'?"lax":"none"
-    }
 
     const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
     

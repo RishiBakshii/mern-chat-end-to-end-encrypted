@@ -10,7 +10,7 @@ import { User } from "../models/user.model.js";
 import type { fcmTokenSchemaType, forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
 import { type signupSchemaType } from "../schemas/auth.schema.js";
 import { env } from "../schemas/env.schema.js";
-import { generateOtp, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
+import { cookieOptions, generateOtp, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
 import { sendMail } from "../utils/email.util.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { PrivateKeyRecoveryToken } from '../models/private-key-recovery-token.model.js';
@@ -254,7 +254,7 @@ const redirectHandler = asyncErrorHandler(async(req:AuthenticatedRequest,res:Res
 })
 
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
-    res.clearCookie("token").status(200).json({message:"Logout successful"})
+    res.clearCookie("token",cookieOptions).status(200).json({message:"Logout successful"})
 })
 
 

@@ -1,7 +1,18 @@
-RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*/)?(favicon\.ico|robots\.txt|manifest\.json|apple-touch-icon\.png|[^.]+\.(css|js|jpg|png|gif|svg))$ - [L]
-RewriteRule . /index.html [L]
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Serve existing files directly
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # Serve existing directories directly
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Rewrite all other requests to index.html
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Ensure correct MIME types for JavaScript
+AddType application/javascript .js

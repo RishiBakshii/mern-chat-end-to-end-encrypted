@@ -24,7 +24,10 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedCh
     const contextOptions = [
         {
             name:"Edit",
-            handlerFunc:()=>setEditMessageId(message._id)
+            handlerFunc:()=> {
+                setOpenContextMenuMessageId(undefined)
+                setEditMessageId(message._id)
+            }
         },
         {
             name:"Delete",
@@ -43,14 +46,15 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedCh
     }
 
   return (
-    <motion.div initial={{x:-2}} animate={{x:0}} className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative`} onContextMenu={e=>handleContextMenuClick(e)}>
+    <motion.div initial={{x:-2}} animate={{x:0}} className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative select-none`} onContextMenu={e=>handleContextMenuClick(e)}>
 
         <AnimatePresence>
             {
                 isContextMenuOpen &&
-                <motion.div variants={{hide:{opacity:0,y:-10},show:{opacity:1,y:0}}} initial="hide" exit="hide" animate="show" >
-                    <ContextMenu options={contextOptions}/>
-                </motion.div>
+                    <ContextMenu 
+                        options={contextOptions}
+                        setOpenContextMenuMessageId={setOpenContextMenuMessageId}
+                    />
             }
         </AnimatePresence>
 
@@ -63,7 +67,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedCh
             />
         }
         
-        <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} max-w-96 min-w-10 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center max-md:max-w-80 max-sm:max-w-64`}>
+        <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} ${isContextMenuOpen?"border-2 border-double  border-spacing-4 border-":null} max-w-96 min-w-10 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center max-md:max-w-80 max-sm:max-w-64`}>
             
                 <RenderAppropriateMessage
                    editMessageId={editMessageId}

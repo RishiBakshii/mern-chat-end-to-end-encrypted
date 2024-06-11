@@ -64,7 +64,7 @@ export const Message = ({content,isEdited,sharedKey,isGroupChat,messageId,editMe
             }
         </span>
         {
-            isEdited && <p className="text-secondary self-end font-medium text-sm">Edited</p>
+            isEdited && <p className="text-secondary self-end font-medim text-sm max-sm:text-xs">Edited</p>
         }
         </>
     

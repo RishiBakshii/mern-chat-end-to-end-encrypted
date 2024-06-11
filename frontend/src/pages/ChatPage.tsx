@@ -141,7 +141,7 @@ export const ChatPage = () => {
             <link rel="canonical" href={`${window.location.origin}`} />
         </Helmet>
         
-        <div className="h-full w-full flex p-4 gap-x-6 bg-background">
+        <div className="h-full w-full flex p-4 max-md:p-2 gap-x-6 bg-background">
 
                 <motion.div 
                     variants={{hide:{right:"50rem"},show:{left:0,right:0}}} 

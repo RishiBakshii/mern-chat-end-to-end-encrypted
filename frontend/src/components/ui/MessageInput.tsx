@@ -50,7 +50,7 @@ export const MessageInput = ({ messageVal, setMessageVal,toggleGif,toggleAttachm
       <input
         value={messageVal}
         onChange={(e) => {setMessageVal(e.target.value)}}
-        className="px-3 py-5 outline-none bg-secondary rounded-sm w-full"
+        className="px-3 py-5 outline-none bg-secondary rounded-sm w-full max-sm:text-sm"
         type="text"
         placeholder="Your message"
       />

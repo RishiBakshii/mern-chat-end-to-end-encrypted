@@ -18,7 +18,7 @@ export const RenderAppropriateUnreadMessage = ({attachments,content,poll,url}:Pr
         "Sent an attachment"
         :
         content?.length ?
-        `${content}...`
+        content.length>25 ? `${content.substring(0,25)}...` : content
         :
         null
       )

@@ -3,7 +3,6 @@ import { ICallOutEventPayloadData } from "../../interfaces/callIn"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { formatRelativeTime } from "../../utils/helpers"
 import { ActiveDot } from "../ui/ActiveDot"
-import { Avatar } from "../ui/Avatar"
 
 type PropTypes = {
   handleCallOut: (payload: ICallOutEventPayloadData) => void

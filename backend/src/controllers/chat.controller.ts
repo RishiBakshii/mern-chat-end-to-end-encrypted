@@ -121,6 +121,7 @@ const createChat = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response
         const otherMembers = getOtherMembers({members:membersIdsInString,user:req.user?._id.toString()!})
         
         emitEvent(req,Events.NEW_GROUP,otherMembers,transformedChat[0])
+        emitEvent(req,Events.JOIN_NEW_CHAT,membersIdsInString,newGroupChat._id)
         
         return res.status(201).json(transformedChat[0])
 

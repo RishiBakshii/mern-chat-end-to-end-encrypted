@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
+import Lottie from 'lottie-react'
 import { useRef } from "react"
 import { Helmet } from "react-helmet-async"
+import { fishAnimation } from '../assets'
 import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
 import { ChatListWithSearch } from "../components/chat/ChatListWithSearch"
@@ -18,6 +20,8 @@ import { useCallOutListener } from "../hooks/useEventListeners/useCallOutListene
 import { useCallInAcceptListener } from "../hooks/useEventListeners/useCallinAcceptListener"
 import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
 import { useFriendRequestListener } from "../hooks/useEventListeners/useFriendRequestListener"
+import { useGroupUpdateEventListener } from '../hooks/useEventListeners/useGroupUpdateEventListener'
+import { useJoinNewChatListener } from '../hooks/useEventListeners/useJoinNewChatListener'
 import { useMemberRemovedListener } from "../hooks/useEventListeners/useMemberRemovedListener"
 import { useMessageDeleteListener } from '../hooks/useEventListeners/useMessageDeleteListener'
 import { useMessageEditListener } from "../hooks/useEventListeners/useMessageEditListener"
@@ -43,17 +47,12 @@ import { useTogglePoolForm } from "../hooks/useUI/useTogglePoolForm"
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
 import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
-import { useNotificationPermission } from '../hooks/useUtils/useNotificationPermission'
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 import { ICallOutEventPayloadData } from "../interfaces/callIn"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppSelector } from "../services/redux/store/hooks"
-import Lottie from 'lottie-react'
-import { fishAnimation } from '../assets'
-import { useGroupUpdateEventListener } from '../hooks/useEventListeners/useGroupUpdateEventListener'
-import { useJoinNewChatListener } from '../hooks/useEventListeners/useJoinNewChatListener'
 
 export const ChatPage = () => {
 

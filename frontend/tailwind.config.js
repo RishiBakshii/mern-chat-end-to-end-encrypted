@@ -5,6 +5,9 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    fontFamily:{
+      'Shantell-Sans':['Shantell Sans','cursive']
+    },
     extend: {
       colors:{
         primary:"rgba(var(--primary))",

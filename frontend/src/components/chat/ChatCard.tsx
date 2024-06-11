@@ -139,7 +139,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
                   <p className="text-sm text-secondary-darker">
                     
                     {
-                      !isTyping ? 
+                      isTyping ? 
                         <div className="w-12">
                           <TypingIndicator/>
                         </div>

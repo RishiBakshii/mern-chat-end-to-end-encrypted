@@ -30,7 +30,7 @@ export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,last
       
       return <div className="flex items-center gap-x-2">
                 <ActiveDot/>
-                <p className="text-secondary-darker">{onlineMembers} {onlineMembers===1?"online":"online"}</p>
+                <p className="text-secondary-darker max-sm:text-sm">{onlineMembers} {onlineMembers===1?"online":"online"}</p>
               </div>
     }
 
@@ -41,7 +41,7 @@ export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,last
       return otherMember.isActive ? 
         <div className="flex items-center gap-x-2">
         <ActiveDot/>
-        <p className="text-secondary-darker">Active</p>
+        <p className="text-secondary-darker max-sm:text-sm">Active</p>
         </div>
         :
         null
@@ -50,26 +50,27 @@ export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,last
 
 
   return (
-    <div className="flex items-center justify-between text-text bg-background">
+    <div className="flex items-center justify-between text-text">
 
         <div onClick={()=>is2xl?toggleChatDetailsBar():""} className="flex flex-col gap-y-1">
 
           <div className="flex gap-x-3">
-              <Avatar imgUrl={chatAvatar} height={14} width={14} alt={`${chatName} avatar`} />
+
+              <img className="w-14 h-14 rounded-full max-sm:w-10 max-sm:h-10" src={chatAvatar} alt={`${chatName} avatar`} />
 
               <div className="flex flex-col gap-y-1">
 
-                  <div className="flex flex-col gap-y-1">
-                      <h4 className="font-medium text-4xl text-fluid-h4">{chatName}</h4>
+                  <div className="flex flex-col gap-y-1 max-sm:gap-y-[.5px]">
+                      <h4 className="font-medium text-4xl max-sm:text-2xl">{chatName}</h4>
 
                       <div className="flex items-center gap-x-2">
                         {
                           !isGroupChat && lastSeen && 
-                          <p className="text-secondary-darker">last seen {formatRelativeTime(lastSeen)}</p>
+                          <p className="text-secondary-darker max-sm:text-sm">last seen {formatRelativeTime(lastSeen)}</p>
                         }
                         {
                           isGroupChat && 
-                          <p className="text-secondary-darker text-fluid-p">{totalMembers} Members</p>
+                          <p className="text-secondary-darker max-sm:text-sm">{totalMembers} Members</p>
                         }
                         {renderOnlineStatus()}
                       </div>

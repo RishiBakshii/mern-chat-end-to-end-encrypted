@@ -190,7 +190,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
             
             const updateOrCreateUnreadMessagePromise = currentChatMembers.map(async(member)=>{
 
-                if(!member.isActive && member.fcmToken){
+                if(!member.isActive && member.notificationsEnabled && member.fcmToken){
                     messaging.send({
                         token:member.fcmToken,
                         notification:{

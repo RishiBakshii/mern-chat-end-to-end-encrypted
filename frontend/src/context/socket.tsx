@@ -44,7 +44,7 @@ export const SocketProvider = ({ children }: PropTypes) => {
                 socket = null; // Clean up the socket instance on unmount
             };
         }
-    }, [loggedInUser]);
+    }, [loggedInUser?.email]);
 
     const socketValue = useMemo(() => socket, [isConnected]);
 

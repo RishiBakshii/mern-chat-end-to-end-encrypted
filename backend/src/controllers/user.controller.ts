@@ -4,6 +4,7 @@ import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { User } from "../models/user.model.js";
 import { deleteFilesFromCloudinary, getSecureUserInfo, uploadFilesToCloudinary } from "../utils/auth.util.js";
 import type { IUser } from "../interfaces/auth/auth.interface.js";
+import { notificationsSchemaType } from "../schemas/user.schema.js";
 
 const getUserDetails = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     return res.status(200).json(req.user)
@@ -83,5 +84,15 @@ const udpateUser  = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respons
     }
 })
 
+const updateNotifications = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
-export { getUserDetails ,getUserByUsername, udpateUser };
+    const {isEnabled}:notificationsSchemaType = req.body
+
+    const user = await User.findByIdAndUpdate(req.user?._id,{notificationsEnabled:isEnabled},{new:true})
+
+    return res.status(200).json({notificationsEnabled:user?.notificationsEnabled})
+
+})
+
+
+export { getUserDetails ,getUserByUsername, udpateUser, updateNotifications };

@@ -8,6 +8,7 @@ export interface IUser {
     createdAt:Date
     updatedAt:Date
     verified?:boolean
+    notificationsEnabled:boolean
     lastSeen:Date
 }
 

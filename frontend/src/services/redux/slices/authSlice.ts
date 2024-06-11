@@ -18,6 +18,11 @@ const authSlice = createSlice({
                 state.loggedInUser.publicKey = action.payload.publicKey
             }
         },
+        updateLoggedInUserNotificationStatus:(state,action:PayloadAction<boolean>)=>{
+            if(state.loggedInUser){
+                state.loggedInUser.notificationsEnabled = action.payload
+            }
+        },
         logout:(state)=>{
             state.loggedInUser=null
         }
@@ -31,6 +36,7 @@ export const selectLoggedInUser = ((state:RootState)=>state.authSlice.loggedInUs
 export const {
     updateLoggedInUser,
     updateLoggedInUserPublicKey,
+    updateLoggedInUserNotificationStatus,
     logout
 
 } = authSlice.actions

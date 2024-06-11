@@ -28,7 +28,8 @@ const initialState:IUi = {
     joinedChats:[],
     activeJoinedChat:null,
     callOutForm:false,
-    recoverPrivateKeyForm:false
+    recoverPrivateKeyForm:false,
+    settingsForm:false
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -128,6 +129,9 @@ const uiSlice = createSlice({
         },
         setRecoverPrivateKeyForm:(state,action:PayloadAction<boolean>)=>{
             state.recoverPrivateKeyForm=action.payload
+        },
+        setSettingsForm:(state,action:PayloadAction<boolean>)=>{
+            state.settingsForm=action.payload
         }
 
     }
@@ -157,6 +161,7 @@ export const selectJoinedChats = (state:RootState)=>state.uiSlice.joinedChats
 export const selectactiveJoinedChat = (state:RootState)=>state.uiSlice.activeJoinedChat
 export const selectCallOutForm = (state:RootState)=>state.uiSlice.callOutForm
 export const selectRecoverPrivateKeyForm = (state:RootState)=>state.uiSlice.recoverPrivateKeyForm
+export const selectSettingsForm = (state:RootState)=>state.uiSlice.settingsForm
 
 // exporting actions
 export const {
@@ -188,6 +193,7 @@ export const {
     removeJoinedChat,
     setCallOutForm,
     setRecoverPrivateKeyForm,
+    setSettingsForm,
 } = uiSlice.actions
 
 export default uiSlice

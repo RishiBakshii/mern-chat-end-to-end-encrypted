@@ -33,6 +33,10 @@ const userSchema = new Schema<IUser>({
     fcmToken:{
         type:String,
     },
+    notificationsEnabled:{
+        type:Boolean,
+        default:false
+    },
     publicKey:{
         type:String,
         unique:true

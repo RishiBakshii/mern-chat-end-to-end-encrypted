@@ -15,6 +15,7 @@ import { ChatBarHamburger } from "../chat/ChatBarHamburger"
 import { Avatar } from "../ui/Avatar"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
+import { useToggleSettingsForm } from '../../hooks/useUI/useToggleSettingsForm'
 
 export const Navbar = () => {
 
@@ -36,6 +37,7 @@ export const Navbar = () => {
   const openProfileForm = useOpenProfileForm()
   const logoutUser = useLogout()
   const toggleChatBar = useToggleChatBar()
+  const toggleSettingsForm = useToggleSettingsForm()
 
   const loggedInUser = useAppSelector(selectLoggedInUser)
 
@@ -77,19 +79,6 @@ export const Navbar = () => {
                   </svg>
                 </div>
               }
-{/* 
-            <div onClick={()=>callInRequests.length?toggleCallInRequestDisplay():""} className="flex justify-center items-center cursor-pointer relative">
-                
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
-                </svg>
-
-                {
-                  callInRequests.length >0 && 
-                  <Badge value={callInRequests.length}/>
-                }
-
-            </div> */}
 
               <div className="relative shrink-0">
 
@@ -109,6 +98,7 @@ export const Navbar = () => {
                       <motion.div variants={{hide:{y:-5,opacity:0},show:{y:0,opacity:1}}} initial="hide" animate="show" exit="hide"  className="bg-secondary-dark w-[15rem] max-lg:md:right-28 max-md:right-1 self-end fixed rounded-lg shadow-2xl p-4 z-50">
 
                         <NavMenu 
+                        openSettingsForm={toggleSettingsForm}
                         openProfileForm={openProfileForm}
                         openAddFriendForm={openAddFriendForm}
                         openNewGroupChatForm={openNewGroupChatForm}

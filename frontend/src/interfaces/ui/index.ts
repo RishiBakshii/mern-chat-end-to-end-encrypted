@@ -25,4 +25,5 @@ export interface IUi {
     activeJoinedChat:string | null
     callOutForm:boolean
     recoverPrivateKeyForm:boolean
+    settingsForm:boolean
 }

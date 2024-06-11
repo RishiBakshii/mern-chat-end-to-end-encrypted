@@ -83,7 +83,7 @@ export const ChatPage = () => {
     const clearExtraPreviousMessages = useClearAdditionalMessagesOnChatChange()
     
     
-    useNotificationPermission()
+    // useNotificationPermission()
 
    // listeners
    useFriendRequestListener()

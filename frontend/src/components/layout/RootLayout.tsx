@@ -13,6 +13,7 @@ import {
   selectPollForm,
   selectProfileForm,
   selectRemoveMemberForm,
+  selectSettingsForm,
   selectViewVotes,
   setAddFriendForm,
   setAddMemberForm,
@@ -25,6 +26,7 @@ import {
   setPollForm,
   setProfileForm,
   setRemoveMemberForm,
+  setSettingsForm,
   setViewVotes
 } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../../services/redux/store/hooks"
@@ -43,6 +45,7 @@ import { Navbar } from "../navbar/Navbar"
 import { Modal } from "../shared/Modal"
 import { AttachmentPreview } from "../ui/AttachmentPreview"
 import { ProfileForm } from "../user/ProfileForm"
+import { SettingsForm } from "../user/SettingsForm"
 
 export const RootLayout = () => {
 
@@ -108,6 +111,10 @@ export const RootLayout = () => {
 
       <Modal isOpen={useAppSelector(selectCallInRequestDisplay)} onClose={()=>dispatch(setCallInRequestDisplay(false))}>
         <CallInRequestDisplay/>
+      </Modal>
+
+      <Modal isOpen={useAppSelector(selectSettingsForm)} onClose={()=>dispatch(setSettingsForm(false))}>
+        <SettingsForm/>
       </Modal>
     </>
   )

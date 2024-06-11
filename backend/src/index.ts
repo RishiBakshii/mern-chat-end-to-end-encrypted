@@ -204,7 +204,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
                 const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:member._id})
     
                 if(isExistingUnreadMessage){
-                    isExistingUnreadMessage.count? isExistingUnreadMessage.count++ : null
+                    isExistingUnreadMessage.count+=1
                     isExistingUnreadMessage.message = newMessage._id
                     isExistingUnreadMessage.save()
                     return isExistingUnreadMessage

@@ -6,7 +6,7 @@ export interface IUnreadMessage {
     sender:Types.ObjectId
     message:Types.ObjectId
     readAt?:Date
-    count?:number
+    count:number
 }
 
 

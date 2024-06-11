@@ -413,6 +413,10 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
         io.to(userSocketIds.get(callee._id)).socketsLeave(chat.chatId);
     })
 
+    socket.on(Events.JOIN_NEW_CHAT,(chatId:string)=>{
+        socket.join(chatId)
+    })
+
     socket.on("disconnect",async()=>{
         await User.findByIdAndUpdate(socket.user?._id,{isActive:false,lastSeen:new Date})
         userSocketIds.delete(socket.user?._id);

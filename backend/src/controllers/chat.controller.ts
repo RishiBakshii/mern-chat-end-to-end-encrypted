@@ -27,9 +27,9 @@ export const addUnreadMessagesAndSpectatorStage = {
         avatar: "",
       },
     },
-    userTyping: Array<[]>,
-    seenBy: Array<[]>,
-    spectators:Array<[]>
+    userTyping: [],
+    seenBy: [],
+    spectators:[]
   },
 }
 

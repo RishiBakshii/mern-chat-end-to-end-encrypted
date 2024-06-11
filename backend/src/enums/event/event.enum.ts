@@ -1,5 +1,6 @@
-export enum Events {
+export enum  Events {
     MESSAGE="MESSAGE",
+    JOIN_NEW_CHAT="JOIN_NEW_CHAT",
     MESSAGE_SEEN="MESSAGE_SEEN",
     MESSAGE_DELETE="MESSAGE_DELETE",
     NEW_GROUP="NEW_GROUP",

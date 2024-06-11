@@ -9,6 +9,7 @@ import { emitEvent } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
 import { addUnreadMessagesAndSpectatorStage, populateMembersStage } from "./chat.controller.js";
 import { Friend } from "../models/friend.model.js";
+import { userSocketIds } from "../index.js";
 
 
 const requestPipeline = [
@@ -132,7 +133,7 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
         const members = [isExistingRequest.sender,isExistingRequest.receiver]
         const newChat = await Chat.create({members})
 
-        const friends = await Friend.insertMany([
+        await Friend.insertMany([
           {user:isExistingRequest.receiver,friend:isExistingRequest.sender},
           {user:isExistingRequest.sender,friend:isExistingRequest.receiver}
         ])
@@ -150,6 +151,7 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
         
         const membersStringIds = [isExistingRequest.sender.toString(),isExistingRequest.receiver.toString()]
 
+        emitEvent(req,Events.JOIN_NEW_CHAT,membersStringIds,newChat._id.toString())
         emitEvent(req,Events.NEW_GROUP,membersStringIds,transformedChat[0])
 
         await isExistingRequest.deleteOne()

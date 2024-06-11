@@ -8,6 +8,7 @@ export const emitEvent = (req:AuthenticatedRequest,event:Events,users:Array<stri
     io.to(getMemberSockets(users)).emit(event,data)
 }
 
+
 export const emitEventToRoom = (req:AuthenticatedRequest,event:Events,room:string,data:unknown)=>{
     const io:Server = req.app.get("io")
     io.to(room).emit(event,data)

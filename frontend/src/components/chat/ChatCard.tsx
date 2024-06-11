@@ -122,17 +122,9 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
 
             <div className="flex items-center gap-x-2 justify-between w-full">
 
-                <div className="flex items-center gap-x-2">
-                    <div className="flex items-center gap-x-1">
-                        <p className="font-medium">{chatName}</p>
-                        {renderOnlineStatus()}
-                    </div>
-                    {
-                      isTyping && 
-                      <div className="w-14 max-lg:w-12">
-                        <TypingIndicator/>
-                      </div>
-                    }
+                <div className="flex items-center gap-x-1">
+                    <p className="font-medium">{chatName}</p>
+                    {renderOnlineStatus()}
                 </div>
                 
                 {
@@ -145,8 +137,14 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
             <div className="flex justify-between items-center">
                 
                   <p className="text-sm text-secondary-darker">
+                    
                     {
-                      unreadMessage.count===0?
+                      !isTyping ? 
+                        <div className="w-12">
+                          <TypingIndicator/>
+                        </div>
+                      :
+                       unreadMessage.count===0?
 
                           // latest message display
                           isGroupChat?  // for group chat

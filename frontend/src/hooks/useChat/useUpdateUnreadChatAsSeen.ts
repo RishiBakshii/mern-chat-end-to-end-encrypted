@@ -2,25 +2,32 @@ import { useEffect } from "react"
 import { getSocket } from "../../context/socket"
 import { Events } from "../../enums/events"
 import { IMessageSeenEventPayloadData } from "../../interfaces/messages"
-import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
+import { useGetChatsQuery } from "../../services/api/chatApi"
+import { selectSelectedChatId } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
 
 export const useUpdateUnreadChatAsSeen = () => {
 
     const socket=getSocket()
-    const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
+    const selectedChatId = useAppSelector(selectSelectedChatId)
 
+    const {data:chatData} = useGetChatsQuery()
     
     useEffect(()=>{
-        if(selectedChatDetails && selectedChatDetails.unreadMessages.count > 0){
+        if(selectedChatId && chatData){
 
-            const data:IMessageSeenEventPayloadData = 
-            {
-                chatId:selectedChatDetails._id
+            const chat = chatData.find(chat=>chat._id===selectedChatId)
+
+            if(chat && chat.unreadMessages.count > 0){
+
+                const data:IMessageSeenEventPayloadData = {
+                    chatId:selectedChatId                
+                }
+    
+                socket?.emit(Events.MESSAGE_SEEN,data)
+
             }
-
-            socket?.emit(Events.MESSAGE_SEEN,data)
         }
-    },[selectedChatDetails])
+    },[selectedChatId,chatData])
 
 }

@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js";
 import { deleteFilesFromCloudinary, getSecureUserInfo, uploadFilesToCloudinary } from "../utils/auth.util.js";
 import type { IUser } from "../interfaces/auth/auth.interface.js";
 import { notificationsSchemaType } from "../schemas/user.schema.js";
+import { sendMail } from "../utils/email.util.js";
 
 const getUserDetails = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     return res.status(200).json(req.user)
@@ -94,5 +95,30 @@ const updateNotifications = asyncErrorHandler(async(req:AuthenticatedRequest,res
 
 })
 
+const testEmailHandler = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
-export { getUserDetails ,getUserByUsername, udpateUser, updateNotifications };
+    const {emailType} = req.query
+
+    if(emailType === 'welcome'){
+        await sendMail(req.user?.email!,req.user?.username!,'welcome',undefined,undefined,undefined)
+        return res.status(200).json({message:`sent ${emailType}`})
+    }
+
+    if(emailType==='resetPassword'){
+        await sendMail(req.user?.email!,req.user?.username!,'resetPassword','https://baatchit.online',undefined,undefined)
+        return res.status(200).json({message:`sent ${emailType}`})
+    }
+
+    if(emailType==='otpVerification'){
+        await sendMail(req.user?.email!,req.user?.username!,'OTP',undefined,"3412",undefined)
+        return res.status(200).json({message:`sent ${emailType}`})
+    }
+    if(emailType==='privateKeyRecovery'){
+        await sendMail(req.user?.email!,req.user?.username!,'privateKeyRecovery',undefined,undefined,'https://baatchit.online')
+        return res.status(200).json({message:`sent ${emailType}`})
+    }
+
+    res.status(200).json({})
+})
+
+export { getUserDetails ,getUserByUsername, udpateUser, updateNotifications , testEmailHandler};

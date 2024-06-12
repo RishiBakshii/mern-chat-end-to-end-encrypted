@@ -1,0 +1,1 @@
+export type EmailType = "resetPassword" | "OTP" | "privateKeyRecovery" | "welcome"

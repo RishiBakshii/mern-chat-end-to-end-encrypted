@@ -11,6 +11,7 @@ export interface IUser {
     notificationsEnabled:boolean
     verificationBadge:boolean
     lastSeen:Date
+    fcmTokenExists:boolean
 }
 
 export interface IAuth {

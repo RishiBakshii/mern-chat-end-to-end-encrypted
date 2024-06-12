@@ -20,7 +20,7 @@ export const authApi = createApi({
                 body:credentials
             })
         }),
-        signup:builder.mutation<IUser,Omit<IUser,'avatar' | '_id' | 'createdAt' | 'updatedAt' | 'publicKey' | "lastSeen" | "notificationsEnabled" | "verificationBadge">>({
+        signup:builder.mutation<IUser,Pick<IUser, 'name' | 'username' | "email"> & {password:string}>({
             query:(credentials)=>({
                 url:"/signup",
                 method:"POST",

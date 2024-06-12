@@ -1,10 +1,8 @@
+import { getToken } from "firebase/messaging"
 import { useEffect, useState } from "react"
 import { env } from "../../config/envConfig"
-import { getToken } from "firebase/messaging"
 import { messaging } from "../../config/firebaseConfig"
 import { useUpdateFcmToken } from "../../hooks/useAuth/useUpdateFcmToken"
-import { useLocalStorage } from "../../hooks/useUtils/useLocalStorage"
-import { LocalStorageKeys } from "../../enums/localStorage"
 import { useUpdateNotificationsFlag } from "../../hooks/useUser/useUpdateNotificationsFlag"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
@@ -16,48 +14,48 @@ export const SettingsForm = () => {
 
     const loggedInUser = useAppSelector(selectLoggedInUser)
 
-    const [notificationsEnabled,setNotificationsEnabled] = useState<boolean | undefined>(loggedInUser?.notificationsEnabled)
+    const [notificationsEnabled,setNotificationsEnabled] = useState<boolean | undefined>()
 
     useEffect(()=>{
-        setNotificationsEnabled(loggedInUser?.notificationsEnabled)
+        if(loggedInUser){
+            setNotificationsEnabled(loggedInUser?.notificationsEnabled)
+        }
     },[loggedInUser])
-
-    const fmcTokenExists =  useLocalStorage(LocalStorageKeys.FCM_TOKEN_EXISTS)
-
 
     const handleNotificationChange = async()=>{
 
-        if(!notificationsEnabled){
+            if(!notificationsEnabled){
 
-            updateNotificationsFlag({isEnabled:true})
-
-            if(fmcTokenExists==='false'){
-
-                const permission = await Notification.requestPermission()
     
-                if(permission==='granted'){
+                if(!loggedInUser?.fcmTokenExists){
     
-                    setNotificationsEnabled(true);
-
-                    if(env && env.VITE_FIREBASE_VAPID_KEY) {
-                        try {
-                            const token = await getToken(messaging, { vapidKey: env.VITE_FIREBASE_VAPID_KEY });
-                            updateFcmToken({ fcmToken: token });
-                            console.log("FCM token obtained and stored.");
-                        } 
-                        catch (error) {
-                            console.error("Error obtaining FCM token:", error);
+                    const permission = await Notification.requestPermission()
+        
+                    if(permission==='granted'){
+        
+                        setNotificationsEnabled(true);
+    
+                        if(env && env.VITE_FIREBASE_VAPID_KEY) {
+                            try {
+                                const token = await getToken(messaging, { vapidKey: env.VITE_FIREBASE_VAPID_KEY });
+                                updateFcmToken({ fcmToken: token });
+                                console.log("FCM token obtained and stored.");
+                            } 
+                            catch (error) {
+                                console.error("Error obtaining FCM token:", error);
+                            }
                         }
+                        
                     }
-                    
                 }
+
+                updateNotificationsFlag({isEnabled:true})
+    
             }
-
-        }
-
-        else{
-            updateNotificationsFlag({isEnabled:false})
-        }
+            else{
+                updateNotificationsFlag({isEnabled:false})
+            }
+        
     }
 
   return (

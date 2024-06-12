@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import Lottie from 'lottie-react'
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Helmet } from "react-helmet-async"
 import { fishAnimation } from '../assets'
 import { ChatDetails } from "../components/chat/ChatDetails"
@@ -52,7 +52,7 @@ import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendReques
 import { ICallOutEventPayloadData } from "../interfaces/callIn"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
-import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar } from "../services/redux/slices/uiSlice"
+import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar, setNotificationPermissionForm } from "../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 
 export const ChatPage = () => {
@@ -76,7 +76,11 @@ export const ChatPage = () => {
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
     const messageContainerRef = useRef<HTMLDivElement>(null)
 
-    
+    useEffect(()=>{
+        if(loggedInUser && !loggedInUser.fcmTokenExists){
+            dispatch(setNotificationPermissionForm(true))
+        }
+    },[loggedInUser])
     
     const chatLeftSwipe = ()=>{
         dispatch(setChatDetailsBar(true))

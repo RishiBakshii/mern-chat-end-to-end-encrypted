@@ -10,6 +10,7 @@ import {
   selectFriendRequestForm,
   selectGifForm,
   selectGroupChatForm,
+  selectNotificationPermissionForm,
   selectPollForm,
   selectProfileForm,
   selectRemoveMemberForm,
@@ -23,6 +24,7 @@ import {
   setFriendRequestForm,
   setGifForm,
   setNewgroupChatForm,
+  setNotificationPermissionForm,
   setPollForm,
   setProfileForm,
   setRemoveMemberForm,
@@ -46,6 +48,7 @@ import { Modal } from "../shared/Modal"
 import { AttachmentPreview } from "../ui/AttachmentPreview"
 import { ProfileForm } from "../user/ProfileForm"
 import { SettingsForm } from "../user/SettingsForm"
+import { NotificationPermissionForm } from "../user/NotificationPermissionForm"
 
 export const RootLayout = () => {
 
@@ -115,6 +118,10 @@ export const RootLayout = () => {
 
       <Modal isOpen={useAppSelector(selectSettingsForm)} onClose={()=>dispatch(setSettingsForm(false))}>
         <SettingsForm/>
+      </Modal>
+
+      <Modal isOpen={useAppSelector(selectNotificationPermissionForm)} onClose={()=>dispatch(setNotificationPermissionForm(false))}>
+        <NotificationPermissionForm/>
       </Modal>
     </>
   )

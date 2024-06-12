@@ -63,6 +63,7 @@ export const getSecureUserInfo = (user:any)=>{
         verified:user.verified,
         publicKey:user?.publicKey,
         notificationsEnabled:user.notificationsEnabled,
-        verificationBadge:user.verificationBadge
+        verificationBadge:user.verificationBadge,
+        fcmTokenExists:user.fcmToken?.length?true:false
     }
 }

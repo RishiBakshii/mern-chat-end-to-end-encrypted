@@ -26,4 +26,5 @@ export interface IUi {
     callOutForm:boolean
     recoverPrivateKeyForm:boolean
     settingsForm:boolean
+    notificationPermissionForm:boolean
 }

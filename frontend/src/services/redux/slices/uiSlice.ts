@@ -29,7 +29,8 @@ const initialState:IUi = {
     activeJoinedChat:null,
     callOutForm:false,
     recoverPrivateKeyForm:false,
-    settingsForm:false
+    settingsForm:false,
+    notificationPermissionForm:false
 }
 const uiSlice = createSlice({
     name:"uiSlice",
@@ -132,6 +133,9 @@ const uiSlice = createSlice({
         },
         setSettingsForm:(state,action:PayloadAction<boolean>)=>{
             state.settingsForm=action.payload
+        },
+        setNotificationPermissionForm:(state,action:PayloadAction<boolean>)=>{
+            state.notificationPermissionForm=action.payload
         }
 
     }
@@ -162,6 +166,7 @@ export const selectactiveJoinedChat = (state:RootState)=>state.uiSlice.activeJoi
 export const selectCallOutForm = (state:RootState)=>state.uiSlice.callOutForm
 export const selectRecoverPrivateKeyForm = (state:RootState)=>state.uiSlice.recoverPrivateKeyForm
 export const selectSettingsForm = (state:RootState)=>state.uiSlice.settingsForm
+export const selectNotificationPermissionForm = (state:RootState)=>state.uiSlice.notificationPermissionForm
 
 // exporting actions
 export const {
@@ -194,6 +199,7 @@ export const {
     setCallOutForm,
     setRecoverPrivateKeyForm,
     setSettingsForm,
+    setNotificationPermissionForm,
 } = uiSlice.actions
 
 export default uiSlice

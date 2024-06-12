@@ -39,7 +39,7 @@ const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
         secureUrl:DEFAULT_AVATAR
     }}) as IUser
 
-    const secureInfo = getSecureUserInfo(newUser) as IUser
+    const secureInfo = getSecureUserInfo(newUser)
 
     sendToken(res,newUser._id,201,secureInfo)
     
@@ -52,7 +52,7 @@ const login = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction
 
     if(isExistingUser && await bcrypt.compare(password,isExistingUser.password)){
 
-        const secureInfo = getSecureUserInfo(isExistingUser) as IUser
+        const secureInfo = getSecureUserInfo(isExistingUser)
 
         sendToken(res,isExistingUser['_id'],200,secureInfo)
         return 
@@ -245,7 +245,7 @@ const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,
 const redirectHandler = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
     if(req.user){
-        sendToken(res,req.user?._id,200,getSecureUserInfo(req.user) as IUser,true)
+        sendToken(res,req.user?._id,200,getSecureUserInfo(req.user),true)
         res.redirect(config.clientUrl)
     }
     else{

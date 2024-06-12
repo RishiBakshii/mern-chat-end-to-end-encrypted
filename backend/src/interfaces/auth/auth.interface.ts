@@ -40,6 +40,21 @@ export interface IUser {
     lastSeen:Date
 }
 
+export interface ISecureInfo {
+    _id: Types.ObjectId;
+    name: string;
+    username: string;
+    avatar: string | undefined;
+    email: string;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
+    verified: boolean | undefined;
+    publicKey: string;
+    notificationsEnabled: boolean | undefined;
+    verificationBadge: boolean;
+    fcmTokenExists: boolean;
+}
+
 export interface IGithub {
     id:string
     displayName:string

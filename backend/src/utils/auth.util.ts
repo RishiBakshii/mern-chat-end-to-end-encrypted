@@ -62,6 +62,7 @@ export const getSecureUserInfo = (user:any)=>{
         updatedAt:user.updatedAt,
         verified:user.verified,
         publicKey:user?.publicKey,
-        notificationsEnabled:user.notificationsEnabled
+        notificationsEnabled:user.notificationsEnabled,
+        verificationBadge:user.verificationBadge
     }
 }

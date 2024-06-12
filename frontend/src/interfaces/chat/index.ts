@@ -13,6 +13,7 @@ export interface IChatMember {
     isActive:boolean
     publicKey: string;
     lastSeen:Date
+    verificationBadge:boolean
 }
 
 export interface ISpectator extends Omit<IChatMember, 'isActive'> {

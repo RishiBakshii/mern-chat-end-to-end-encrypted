@@ -51,7 +51,8 @@ export const populateMembersStage = {
           avatar: 1,
           publicKey:1,
           lastSeen:1,
-          isActive:1
+          isActive:1,
+          verificationBadge:1
         },
       },
     ],

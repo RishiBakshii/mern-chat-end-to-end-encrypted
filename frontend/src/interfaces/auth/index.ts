@@ -9,6 +9,7 @@ export interface IUser {
     updatedAt:Date
     verified?:boolean
     notificationsEnabled:boolean
+    verificationBadge:boolean
     lastSeen:Date
 }
 

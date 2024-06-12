@@ -56,6 +56,10 @@ const userSchema = new Schema<IUser>({
     verified:{
         type:Boolean,
         default:false
+    },
+    verificationBadge:{
+        type:Boolean,
+        default:false
     }
 },{versionKey:false,timestamps:true})
 

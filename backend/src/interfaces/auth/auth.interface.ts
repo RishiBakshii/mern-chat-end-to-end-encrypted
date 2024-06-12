@@ -35,6 +35,7 @@ export interface IUser {
     createdAt?:Date
     updatedAt?:Date
     fcmToken?:string
+    verificationBadge:boolean
     notificationsEnabled?:boolean
     lastSeen:Date
 }

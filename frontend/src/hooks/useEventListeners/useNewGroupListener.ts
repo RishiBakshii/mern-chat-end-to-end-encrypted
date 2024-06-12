@@ -27,7 +27,8 @@ export const useNewGroupListener = () => {
               isActive:true,
               username:member.username,
               lastSeen:member.lastSeen,
-              publicKey:member.publicKey
+              publicKey:member.publicKey,
+              verificationBadge:member.verificationBadge
 
             }
 

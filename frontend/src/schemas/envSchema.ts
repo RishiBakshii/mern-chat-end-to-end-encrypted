@@ -1,7 +1,6 @@
 import {z} from 'zod'
 
 export const envSchema = z.object({
-    VITE_ENV:z.enum(["PRODUCTION","DEVELOPMENT"]),
     VITE_TENOR_API_KEY:z.string({required_error:"Tenor api key is required"}),
     VITE_FIREBASE_API_KEY:z.string({required_error:"FIREBASE_API_KEY is required"}),
     VITE_FIREBASE_AUTH_DOMAIN: z.string({required_error:"FIREBASE_AUTH_DOMAIN is required"}),

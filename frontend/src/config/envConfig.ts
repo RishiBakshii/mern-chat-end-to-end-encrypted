@@ -2,7 +2,7 @@ import { ZodError } from "zod";
 import type { IConfig } from "../interfaces/config";
 import { envSchema, envSchemaType } from "../schemas/envSchema";
 
-let env: envSchemaType | null = null; // Initialize env to null
+let env: envSchemaType | null = null;
 
 const productionConfig: IConfig = {
   base_url: "https://stangchatbackend.online/api/v1",
@@ -31,6 +31,6 @@ if (!env) {
   throw new Error("Environment variables validation failed. Application cannot start.");
 }
 
-export const config = env.VITE_ENV === "PRODUCTION" ? productionConfig : developmentConfig;
+export const config = import.meta.env.MODE === "production" ? productionConfig : developmentConfig;
 
 export { env };

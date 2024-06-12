@@ -49,9 +49,12 @@ export const MessageInput = ({ messageVal, setMessageVal,toggleGif,toggleAttachm
 
       <input
         value={messageVal}
+        autoFocus
         onChange={(e) => {setMessageVal(e.target.value)}}
         className="px-3 py-5 outline-none bg-secondary rounded-sm w-full max-sm:text-sm"
         type="text"
+        aria-autocomplete='none'
+        autoComplete='off'
         placeholder="Your message"
       />
 

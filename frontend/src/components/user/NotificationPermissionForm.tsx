@@ -5,36 +5,56 @@ import { messaging } from "../../config/firebaseConfig"
 import { useUpdateFcmToken } from "../../hooks/useAuth/useUpdateFcmToken"
 import { setNotificationPermissionForm } from "../../services/redux/slices/uiSlice"
 import { useAppDispatch } from "../../services/redux/store/hooks"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useUpdateNotificationsFlag } from "../../hooks/useUser/useUpdateNotificationsFlag"
+import toast from "react-hot-toast"
 
 export const NotificationPermissionForm = () => {
 
     const dispatch = useAppDispatch()
-    const {updateFcmToken,isSuccess} = useUpdateFcmToken()
 
+    const {updateFcmToken,isSuccess} = useUpdateFcmToken()
     const {updateNotificationsFlag} = useUpdateNotificationsFlag()
 
+    const [loading, setLoading] = useState<boolean>(false)
+    const [token, setToken] = useState<string>("")
+
+
     useEffect(()=>{
-        if(isSuccess) handleDeny()
+        if(isSuccess) {
+            handleDeny()
+            setLoading(false)
+        } 
     },[isSuccess])
+
+    useEffect(()=>{
+        if(token){
+            updateFcmToken({ fcmToken: token });
+            updateNotificationsFlag({isEnabled:true})
+        }
+    },[token])
+
+    useEffect(()=>{
+        if(loading) toast.loading("Please wait")
+        else if(!loading) toast.dismiss()
+    },[loading])
 
     const handleDeny = ()=>{
         dispatch(setNotificationPermissionForm(false))
     }
 
     const handleAllow = async()=>{
-            
+
         const permission = await Notification.requestPermission()
         
         if(permission==='granted'){
 
+            setLoading(true)
+
             if(env && env.VITE_FIREBASE_VAPID_KEY) {
                 try {
-                    const token = await getToken(messaging, { vapidKey: env.VITE_FIREBASE_VAPID_KEY });
-                    updateFcmToken({ fcmToken: token });
-                    updateNotificationsFlag({isEnabled:true})
-                    console.log("FCM token obtained and stored.");
+                    const fcmToken = await getToken(messaging, { vapidKey: env.VITE_FIREBASE_VAPID_KEY });
+                    setToken(fcmToken)
                 } 
                 catch (error) {
                     console.error("Error obtaining FCM token:", error);

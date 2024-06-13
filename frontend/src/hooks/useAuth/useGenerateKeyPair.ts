@@ -6,7 +6,7 @@ import { storePrivateKey } from "../../utils/indexedDB"
 import { useUpdateUserKeys } from "./useUpdateUserKeys"
 import {} from 'react-cookie'
 
-export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string | undefined,password:string,OAuthSignup:boolean=false,removeCookie:CallableFunction) => {
+export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string | undefined,password:string,OAuthSignup:boolean=false,removeCookie?:CallableFunction) => {
 
     const dispatch = useAppDispatch()
     const {updateUserKeys,addedPublicKey,updateUserKeysSuccess} = useUpdateUserKeys()
@@ -24,7 +24,7 @@ export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string
             storePrivateKey(loggedInUserId,privateJwkKey)
         }
 
-        if(OAuthSignup){
+        if(OAuthSignup && removeCookie){
             removeCookie()
         }
     }

@@ -1,25 +1,24 @@
+import { useCookies } from 'react-cookie';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Protected } from './components/auth/Protected';
+import { RecoverPrivateKeyForm } from './components/auth/RecoverPrivateKeyForm';
 import { AuthLayout } from './components/layout/AuthLayout';
 import { RootLayout } from './components/layout/RootLayout';
+import { Modal } from './components/shared/Modal';
+import { useGenerateKeyPair } from './hooks/useAuth/useGenerateKeyPair';
+import usePrivateKeyCheck from './hooks/useAuth/usePrivateKeyCheck';
 import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
 import { useInitializeIndexDb } from './hooks/useUtils/useInitializeIndexDb';
 import { useSetTheme } from './hooks/useUtils/useSetTheme';
 import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, PrivateKeyRecoveryVerificationPage, ResetPasswordPage, SignupPage, VerificationPage } from './pages';
 import { useCheckAuthQuery } from './services/api/authApi';
 import { selectLoggedInUser } from './services/redux/slices/authSlice';
-import { useAppSelector } from './services/redux/store/hooks';
-import usePrivateKeyCheck from './hooks/useAuth/usePrivateKeyCheck';
 import { selectRecoverPrivateKeyForm } from './services/redux/slices/uiSlice';
-import { RecoverPrivateKeyForm } from './components/auth/RecoverPrivateKeyForm';
-import { Modal } from './components/shared/Modal';
-import { useEffect } from 'react';
-import {useCookies} from 'react-cookie'
-import { useGenerateKeyPair } from './hooks/useAuth/useGenerateKeyPair';
+import { useAppSelector } from './services/redux/store/hooks';
 
 export const App = () => {
 
-  const [cookie, setCookie, removeCookie] = useCookies(['newUserViaOAuth']);
+  const [cookie, _, removeCookie] = useCookies(['newUserViaOAuth']);
   const recoverPrivateKeyForm = useAppSelector(selectRecoverPrivateKeyForm)
   const loggedInUser = useAppSelector(selectLoggedInUser)
 

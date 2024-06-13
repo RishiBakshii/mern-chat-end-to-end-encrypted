@@ -1,16 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from "react-hook-form";
-import { keyRecoverySchema, keyRecoverySchemaType } from '../../schemas/auth';
-import { FormInput } from '../ui/FormInput';
-import { useVerifyPassword } from '../../hooks/useAuth/useVerifyPassword';
-import { useAppDispatch, useAppSelector } from '../../services/redux/store/hooks';
-import { selectLoggedInUser } from '../../services/redux/slices/authSlice';
-import { useSendPrivateKeyRecoveryEmail } from '../../hooks/useAuth/useSendPrivateKeyRecoveryEmail';
 import { useEffect } from 'react';
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useSendPrivateKeyRecoveryEmail } from '../../hooks/useAuth/useSendPrivateKeyRecoveryEmail';
+import { useVerifyPassword } from '../../hooks/useAuth/useVerifyPassword';
+import { keyRecoverySchema, keyRecoverySchemaType } from '../../schemas/auth';
+import { selectLoggedInUser } from '../../services/redux/slices/authSlice';
+import { useAppSelector } from '../../services/redux/store/hooks';
+import { FormInput } from '../ui/FormInput';
 
 export const RecoverPrivateKeyForm = () => {
-
-  const dispatch = useAppDispatch()
 
   const loggedInUser = useAppSelector(selectLoggedInUser)
   const {sendPrivateKeyRecoveryEmail} = useSendPrivateKeyRecoveryEmail()

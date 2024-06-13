@@ -85,7 +85,7 @@ export const App = () => {
 
 
     {/* Catch-all route for 404 page */}
-    <Route path='*' element={<NotFoundPage />} />
+    {/* <Route path='*' element={<NotFoundPage />} /> */}
 
     </>
 

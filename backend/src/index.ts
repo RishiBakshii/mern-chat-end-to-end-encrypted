@@ -39,7 +39,7 @@ import { notificationTitles } from './constants/notification-title.contant.js'
 
 const app=express()
 const server=createServer(app)
-const io=new Server(server,{cors:{credentials:true,origin:config.clientUrl}})
+const io=new Server(server,{cors:{credentials:true,origin:['http://localhost:5173']}})
 
 // database connection
 connectDB()
@@ -434,5 +434,8 @@ app.use(errorMiddleware)
     
 server.listen(env.PORT,()=>{
     console.log(`server [STARTED] ~ http://localhost:${env.PORT}`);
+    if(env.NODE_ENV==='PRODUCTION'){
+        console.log('Started in PRODUCTION mode');
+    }
 })
 

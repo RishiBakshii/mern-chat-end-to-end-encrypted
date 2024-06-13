@@ -9,13 +9,13 @@ import { env } from '../schemas/env.schema.js';
 passport.use(new GoogleStrategy({
     clientID: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `${config.callbackUrl}/google/callback`
+    callbackURL:config.callbackUrl
   },
 
   async function (accessToken, refreshToken, profile, done){
 
     try {
-
+      console.log('flowwwwwwwwwwwwww CAMEEEEEEE HERE');
       if(profile.emails && profile.emails[0].value && profile.displayName){
 
           const isExistingUser = await User.findOne({email:profile.emails[0].value})

@@ -28,7 +28,9 @@ passport.use(new GoogleStrategy({
               name:isExistingUser.name,
               avatar:isExistingUser.avatar?.secureUrl,
               email:isExistingUser.email,
-              verified:isExistingUser.verified
+              verified:isExistingUser.verified,
+              newUser:false,
+              googleId:profile.id
             }
 
             done(null,transformedUser)
@@ -50,7 +52,9 @@ passport.use(new GoogleStrategy({
               },
               email:profile.emails[0].value,
               password:await bcrypt.hash(profile.id,10),
-              verified:true
+              verified:true,
+              oAuthSignup:true,
+              googleId:profile.id
             })
 
             const transformedUser = {
@@ -59,7 +63,9 @@ passport.use(new GoogleStrategy({
               name:newUser.name,
               avatar:newUser.avatar?.secureUrl,
               email:newUser.email,
-              verified:newUser.verified
+              verified:newUser.verified,
+              newUser:true,
+              googleId:profile.id
             }
 
             done(null,transformedUser)

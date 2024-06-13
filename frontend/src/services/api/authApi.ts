@@ -55,12 +55,15 @@ export const authApi = createApi({
                 body:{password}
             })
         }),
-        verifyPrivateKeyToken:builder.mutation<{privateKey:string},{recoveryToken:string}>({
+        verifyPrivateKeyToken:builder.mutation<{privateKey:string,combinedSecret?:string},{recoveryToken:string}>({
             query:({recoveryToken})=>({
                 url:"/verify-privatekey-token",
                 method:"POST",
                 body:{recoveryToken}
             }),
+        }),
+        sendPrivateKeyRecoveryEmail:builder.query<void,void>({
+            query:()=>"/send-private-key-recovery-email"
         }),
         updateUserKeys:builder.mutation<Pick<IUser , 'publicKey'>,Pick<IUser , 'publicKey'> & {privateKey:string}>({
             query:({publicKey,privateKey})=>({
@@ -103,4 +106,5 @@ export const {
     useVerifyPasswordMutation,
     useVerifyPrivateKeyTokenMutation,
     useUpdateFcmTokenMutation,
+    useLazySendPrivateKeyRecoveryEmailQuery,
 } = authApi

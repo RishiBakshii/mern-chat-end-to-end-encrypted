@@ -13,22 +13,26 @@ import usePrivateKeyCheck from './hooks/useAuth/usePrivateKeyCheck';
 import { selectRecoverPrivateKeyForm } from './services/redux/slices/uiSlice';
 import { RecoverPrivateKeyForm } from './components/auth/RecoverPrivateKeyForm';
 import { Modal } from './components/shared/Modal';
+import { useEffect } from 'react';
+import {useCookies} from 'react-cookie'
+import { useGenerateKeyPair } from './hooks/useAuth/useGenerateKeyPair';
 
 export const App = () => {
 
+  const [cookie, setCookie, removeCookie] = useCookies(['newUserViaOAuth']);
   const recoverPrivateKeyForm = useAppSelector(selectRecoverPrivateKeyForm)
+  const loggedInUser = useAppSelector(selectLoggedInUser)
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
+
+  useGenerateKeyPair(cookie.newUserViaOAuth?true:false,loggedInUser?._id,cookie.newUserViaOAuth,true,()=>removeCookie('newUserViaOAuth'))
 
   useSetTheme()
   useUpdateLogin(isSuccess,data)
   useInitializeIndexDb()
 
   usePrivateKeyCheck(isSuccess,data)
-
   
-  const loggedInUser = useAppSelector(selectLoggedInUser)
-
   const router = createBrowserRouter(createRoutesFromElements(
 
     <>

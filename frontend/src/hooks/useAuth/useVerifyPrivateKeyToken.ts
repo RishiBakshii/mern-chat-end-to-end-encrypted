@@ -5,6 +5,7 @@ import { useAppSelector } from "../../services/redux/store/hooks"
 import { decryptPrivateKey } from "../../utils/encryption"
 import { useToast } from "../useUI/useToast"
 import { storePrivateKey } from "../../utils/indexedDB"
+import toast from "react-hot-toast"
 
 export const useVerifyPrivateKeyToken = () => {
 
@@ -14,21 +15,40 @@ export const useVerifyPrivateKeyToken = () => {
     const [verifyRecoveryToken,{error,isError,isLoading,isSuccess,isUninitialized,data}] = useVerifyPrivateKeyTokenMutation()
     useToast({error,isError,isLoading,isSuccess,isUninitialized,successMessage:"Verification successful",successToast:true})
 
-    useEffect(()=>{
+    const handleDecrptPrivateKey = async()=>{
 
-        const handleDecrptPrivateKey = async()=>{
+        if(isSuccess && (data?.privateKey || data?.combinedSecret) && loggedInUserId){
 
-            if(isSuccess && data?.privateKey && loggedInUserId){
-                const privateKeyInJwk = await decryptPrivateKey("helloWorld@123",data.privateKey)
-                storePrivateKey(loggedInUserId,privateKeyInJwk)
+            let password
+
+            if(data.combinedSecret) password = data.combinedSecret
+
+            else {
+                const passRef = localStorage.getItem("tempPassRef")
+
+                if(passRef){
+                    password = passRef
+                }
+
+                else{
+                    toast.error("Some error occured")
+                }
             }
+
+            if(password) {
+                const privateKeyInJwk = await decryptPrivateKey(password,data.privateKey)
+                storePrivateKey(loggedInUserId,privateKeyInJwk)
+                localStorage.removeItem("tempPassRef")
+            }
+            else{
+                toast.error("Some error occured while recovering")
+            }
+
         }
+    }
 
-        if(isSuccess && data){
-            handleDecrptPrivateKey()
-        }
-
-
+    useEffect(()=>{
+        if(isSuccess && data) handleDecrptPrivateKey()
     },[isSuccess,data])
 
     return {

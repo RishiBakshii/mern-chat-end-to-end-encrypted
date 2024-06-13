@@ -9,5 +9,6 @@ export const useVerifyPassword = () => {
     return {
         verifyPassword,
         isLoading,
+        isSuccess
     }
 }

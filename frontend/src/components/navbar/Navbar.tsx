@@ -52,7 +52,7 @@ export const Navbar = () => {
       />
 
 
-      <h4 className="text-3xl font-Shantell-Sans font-medium">Baatchit</h4>
+      <h4 className="text-3xl font-Shantell-Sans font-medium select-none">Baatchit</h4>
 
       <div className="flex item-center gap-x-10">
               {

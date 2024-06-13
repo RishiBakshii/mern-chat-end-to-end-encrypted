@@ -4,7 +4,7 @@ import type { IUser } from "../../../interfaces/auth";
 import { RootState } from "../store/store";
 
 const initialState:IAuth = {
-    loggedInUser:null
+    loggedInUser:null,
 }
 const authSlice = createSlice({
     name:"authSlice",

@@ -20,7 +20,11 @@ const usePrivateKeyCheck = (isSuccess:boolean,loggedInUser:IUser | undefined | n
   useEffect(() => {
 
     if(loggedInUser && isSuccess){
+
+      setTimeout(()=>{
         checkPrivateKey()
+      },1500)
+
     }
 
   }, [isSuccess,loggedInUser]);

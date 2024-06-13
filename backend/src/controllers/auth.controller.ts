@@ -3,14 +3,14 @@ import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import { config } from "../config/env.config.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
-import type { AuthenticatedRequest, IUser } from "../interfaces/auth/auth.interface.js";
+import type { AuthenticatedRequest, IUser, OAuthAuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
 import { Otp } from "../models/otp.model.js";
 import { ResetPassword } from "../models/reset-password.model.js";
 import { User } from "../models/user.model.js";
 import type { fcmTokenSchemaType, forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
 import { type signupSchemaType } from "../schemas/auth.schema.js";
 import { env } from "../schemas/env.schema.js";
-import { cookieOptions, generateOtp, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
+import { cookieOptions, generateOtp, generatePrivateKeyRecoveryToken, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
 import { sendMail } from "../utils/email.util.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import { PrivateKeyRecoveryToken } from '../models/private-key-recovery-token.model.js';
@@ -185,17 +185,7 @@ const verifyPassword = asyncErrorHandler(async(req:AuthenticatedRequest,res:Resp
 
     if(req.user?.password && (await bcrypt.compare(password,req.user.password))){
 
-        const token = jwt.sign({user:req.user._id.toString()},env.JWT_SECRET)
-        const hashedToken = await bcrypt.hash(token,10)
-
-        const privateKeyPromise = [
-            PrivateKeyRecoveryToken.deleteMany({user:req.user._id}),
-            PrivateKeyRecoveryToken.create({user:req.user._id,hashedToken})
-        ]
-
-        await Promise.all(privateKeyPromise)
-
-        const verificationUrl = `${config.clientUrl}/auth/privatekey-verification/${token}`
+        const {verificationUrl} = await generatePrivateKeyRecoveryToken(req.user._id.toString())
 
         await sendMail(req.user.email,req.user.username,'privateKeyRecovery',undefined,undefined,verificationUrl)
 
@@ -231,8 +221,27 @@ const verifyPrivateKeyToken = asyncErrorHandler(async(req:AuthenticatedRequest,r
         return next(new CustomError('Verification link is not valid',400))
     }
 
-    return res.status(200).json({privateKey:req.user.privateKey})
+    const payload:{privateKey:string,combinedSecret?:string} = {
+        privateKey:req.user.privateKey
+    }
 
+    if(req.user.oAuthSignup){
+        payload['combinedSecret'] = req.user.googleId+env.PRIVATE_KEY_RECOVERY_SECRET
+    }
+
+    return res.status(200).json(payload)
+
+})
+
+const sendPrivateKeyRecoveryEmail = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+
+    if(req.user){
+
+        const {verificationUrl} = await generatePrivateKeyRecoveryToken(req.user._id.toString())
+    
+        await sendMail(req.user.email,req.user.username,'privateKeyRecovery',undefined,undefined,verificationUrl)
+        return res.status(200).json({message:"We have sent you an email with verification link, please check spam if not received"})
+    }
 })
 
 const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
@@ -242,11 +251,10 @@ const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,
     return next(new CustomError("Token missing, please login again",401))
 })
 
-const redirectHandler = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
+const redirectHandler = asyncErrorHandler(async(req:OAuthAuthenticatedRequest,res:Response,next:NextFunction)=>{
 
     if(req.user){
-        sendToken(res,req.user?._id,200,getSecureUserInfo(req.user),true)
-        res.redirect(config.clientUrl)
+        sendToken(res,req.user?._id,200,getSecureUserInfo(req.user),true,req.user.newUser,req.user.newUser?req.user.googleId:undefined)
     }
     else{
         return res.redirect(`${config.clientUrl}/auth/login`)
@@ -271,5 +279,6 @@ export {
     verifyOtp,
     verifyPassword,
     verifyPrivateKeyToken,
-    updateFcmToken
+    updateFcmToken,
+    sendPrivateKeyRecoveryEmail
 };

@@ -6,6 +6,10 @@ export interface AuthenticatedRequest extends Request {
     user?:IUser
 }
 
+export interface OAuthAuthenticatedRequest extends Request {
+    user?:IUser & {newUser:boolean,googleId:string}
+}
+
 export interface AuthenticatedSocket extends Socket {
     user?:IUser
 }
@@ -38,6 +42,8 @@ export interface IUser {
     verificationBadge:boolean
     notificationsEnabled?:boolean
     lastSeen:Date
+    oAuthSignup:boolean
+    googleId:string
 }
 
 export interface ISecureInfo {
@@ -53,6 +59,7 @@ export interface ISecureInfo {
     notificationsEnabled: boolean | undefined;
     verificationBadge: boolean;
     fcmTokenExists: boolean;
+    oAuthSignup:boolean
 }
 
 export interface IGithub {

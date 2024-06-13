@@ -4,6 +4,8 @@ import type { ISecureInfo, IUser } from '../interfaces/auth/auth.interface.js'
 import { env } from '../schemas/env.schema.js'
 import {v2 as cloudinary} from 'cloudinary'
 import { config } from '../config/env.config.js'
+import bcrypt from 'bcryptjs'
+import { PrivateKeyRecoveryToken } from '../models/private-key-recovery-token.model.js'
 
 export const cookieOptions:CookieOptions = {
     maxAge:parseInt(env.JWT_TOKEN_EXPIRATION_DAYS) * 24 * 60 * 60 * 1000,
@@ -14,12 +16,20 @@ export const cookieOptions:CookieOptions = {
     sameSite:env.NODE_ENV==='DEVELOPMENT'?"lax":"none"
 }
 
-export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:ISecureInfo,OAuth:boolean=false)=>{
+export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:ISecureInfo,OAuth:boolean=false,OAuthNewUser:boolean=false,googleId?:string)=>{
 
 
     const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
     
     if(OAuth){
+
+        if(OAuthNewUser){
+            console.log('User getting created for the first time');
+            console.log(`User's googleId`,googleId);
+            console.log('recovery secret',env.PRIVATE_KEY_RECOVERY_SECRET);
+            res.cookie("newUserViaOAuth",googleId+env.PRIVATE_KEY_RECOVERY_SECRET,{...cookieOptions,httpOnly:false})
+        }
+
         return res.cookie('token',token,cookieOptions).redirect(config.clientUrl)
     }
 
@@ -51,6 +61,23 @@ export const deleteFilesFromCloudinary = async(publicIds:Array<string>)=>{
     return uploadResult
 }
 
+export const generatePrivateKeyRecoveryToken = async(userId:string)=>{
+
+    const token = jwt.sign({user:userId},env.JWT_SECRET)
+    const hashedToken = await bcrypt.hash(token,10)
+
+    const privateKeyPromise = [
+        PrivateKeyRecoveryToken.deleteMany({user:userId}),
+        PrivateKeyRecoveryToken.create({user:userId,hashedToken})
+    ]
+
+    await Promise.all(privateKeyPromise)
+
+    const verificationUrl = `${config.clientUrl}/auth/privatekey-verification/${token}`
+
+    return {verificationUrl}
+}
+
 export const getSecureUserInfo = (user:IUser):ISecureInfo=>{
     return {
         _id:user._id,
@@ -64,6 +91,7 @@ export const getSecureUserInfo = (user:IUser):ISecureInfo=>{
         publicKey:user?.publicKey,
         notificationsEnabled:user.notificationsEnabled,
         verificationBadge:user.verificationBadge,
-        fcmTokenExists:user.fcmToken?.length?true:false
+        fcmTokenExists:user.fcmToken?.length?true:false,
+        oAuthSignup:user.oAuthSignup
     }
 }

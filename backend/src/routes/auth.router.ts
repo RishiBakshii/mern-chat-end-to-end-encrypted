@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from 'passport';
 import { config } from "../config/env.config.js";
-import { checkAuth, forgotPassword, login, logout, redirectHandler, resetPassword, sendOtp, signup, updateFcmToken, updateUserKeys, verifyOtp, verifyPassword, verifyPrivateKeyToken } from "../controllers/auth.controller.js";
+import { checkAuth, forgotPassword, login, logout, redirectHandler, resetPassword, sendOtp, sendPrivateKeyRecoveryEmail, signup, updateFcmToken, updateUserKeys, verifyOtp, verifyPassword, verifyPrivateKeyToken } from "../controllers/auth.controller.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { verifyToken } from "../middlewares/verify-token.middleware.js";
 import { fcmTokenSchema, forgotPasswordSchema, keySchema, loginSchema, resetPasswordSchema, signupSchema, verifyOtpSchema, verifyPasswordSchema, verifyPrivateKeyTokenSchema } from "../schemas/auth.schema.js";
@@ -24,3 +24,4 @@ export default Router()
 .get("/google/callback",passport.authenticate("google",{session:false,failureRedirect:`${config.clientUrl}/auth/login`}),redirectHandler)
 .get("/github",passport.authenticate("github",{session:false,scope:["user"]}))
 .get("/github/callback",passport.authenticate("github",{session:false,failureRedirect:"/"}),redirectHandler)
+.get("/send-private-key-recovery-email",verifyToken,sendPrivateKeyRecoveryEmail)

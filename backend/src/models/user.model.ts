@@ -60,6 +60,12 @@ const userSchema = new Schema<IUser>({
     verificationBadge:{
         type:Boolean,
         default:false
+    },
+    googleId:{
+        type:String
+    },
+    oAuthSignup:{
+        type:Boolean
     }
 },{versionKey:false,timestamps:true})
 

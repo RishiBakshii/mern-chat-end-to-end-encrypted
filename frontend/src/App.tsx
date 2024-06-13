@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Protected } from './components/auth/Protected';
 import { RecoverPrivateKeyForm } from './components/auth/RecoverPrivateKeyForm';
@@ -22,10 +22,11 @@ export const App = () => {
   const newUserViaOAuth = Cookies.get("newUserViaOAuth20")
   const recoverPrivateKeyForm = useAppSelector(selectRecoverPrivateKeyForm)
   const loggedInUser = useAppSelector(selectLoggedInUser)
+  const [getCookieSucess,setGetCookieSuccess] = useState<boolean>(false)
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
 
-  useGenerateKeyPair(newUserViaOAuth?.length?true:false,loggedInUser?._id,newUserViaOAuth,true,()=>Cookies.remove("newUserViaOAuth20"))
+  useGenerateKeyPair(getCookieSucess,loggedInUser?._id,newUserViaOAuth,true,()=>Cookies.remove("newUserViaOAuth20"))
 
   useSetTheme()
   useUpdateLogin(isSuccess,data)
@@ -34,10 +35,15 @@ export const App = () => {
   usePrivateKeyCheck(isSuccess,data)
   
   useEffect(()=>{
-    if(newUserViaOAuth){
-      console.log(`cookie came -> ${newUserViaOAuth}`);
-    }
-  },[newUserViaOAuth])
+    setTimeout(() => {
+      console.log('out ran logic');
+      if(Cookies.get("newUserViaOAuth20")){
+        console.log('logic ran');
+        console.log('cookie found',Cookies.get("newUserViaOAuth20"));
+        setGetCookieSuccess(true)
+      }
+    }, 1000);
+  },[])
   
   const router = createBrowserRouter(createRoutesFromElements(
 

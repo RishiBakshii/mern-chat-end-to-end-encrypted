@@ -12,7 +12,7 @@ export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string
     
 
     const handleGenerateKeyPair = async()=>{
-
+        console.log('generate key pair initiated');
         if(password){
             
             const keys = await generateKeyPair()

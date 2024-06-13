@@ -23,7 +23,7 @@ const usePrivateKeyCheck = (isSuccess:boolean,loggedInUser:IUser | undefined | n
 
       setTimeout(()=>{
         checkPrivateKey()
-      },1500)
+      },5000)
 
     }
 

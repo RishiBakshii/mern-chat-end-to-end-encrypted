@@ -39,7 +39,6 @@ const userSchema = new Schema<IUser>({
     },
     publicKey:{
         type:String,
-        unique:true
     },
     privateKey:{
         type:String,

@@ -431,13 +431,8 @@ app.get("/",(req:Request,res:Response)=>{
 
 // error middleware
 app.use(errorMiddleware)
-
-if (import.meta.url.endsWith('dist/index.js')) {
     
-    server.listen(env.PORT,()=>{
-        console.log(`server [STARTED] ~ http://localhost:${env.PORT}`);
-    })
-}
+server.listen(env.PORT,()=>{
+    console.log(`server [STARTED] ~ http://localhost:${env.PORT}`);
+})
 
-
-export default server;

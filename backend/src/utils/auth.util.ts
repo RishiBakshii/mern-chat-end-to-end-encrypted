@@ -22,19 +22,14 @@ export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,da
     const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
     
     if(OAuth){
-
-        if(OAuthNewUser){
-            console.log('User getting created for the first time');
-            console.log(`User's googleId`,googleId);
-            console.log('recovery secret',env.PRIVATE_KEY_RECOVERY_SECRET);
-            res.cookie("newUserViaOAuth",googleId+env.PRIVATE_KEY_RECOVERY_SECRET,{...cookieOptions,httpOnly:false})
-        }
-
-        return res.cookie('token',token,cookieOptions).redirect(config.clientUrl)
+        res.cookie('token',token,{...cookieOptions}).cookie("newUserViaOAuth20",OAuthNewUser?googleId+env.PRIVATE_KEY_RECOVERY_SECRET:"",{...cookieOptions,httpOnly:false})
+        return res.redirect(config.clientUrl)
     }
 
-    return res.cookie("token",token,cookieOptions).status(statusCode).json(data)
-    
+    else{
+        return res.cookie("token",token,cookieOptions).status(statusCode).json(data)
+    }
+ 
 }
 
 export const generateOtp=():string=>{

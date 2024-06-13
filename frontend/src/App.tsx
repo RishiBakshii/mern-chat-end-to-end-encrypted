@@ -1,4 +1,5 @@
-import { useCookies } from 'react-cookie';
+import Cookies from 'js-cookie';
+import { useEffect } from 'react';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Protected } from './components/auth/Protected';
 import { RecoverPrivateKeyForm } from './components/auth/RecoverPrivateKeyForm';
@@ -18,19 +19,25 @@ import { useAppSelector } from './services/redux/store/hooks';
 
 export const App = () => {
 
-  const [cookie, _, removeCookie] = useCookies(['newUserViaOAuth']);
+  const newUserViaOAuth = Cookies.get("newUserViaOAuth20")
   const recoverPrivateKeyForm = useAppSelector(selectRecoverPrivateKeyForm)
   const loggedInUser = useAppSelector(selectLoggedInUser)
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
 
-  useGenerateKeyPair(cookie.newUserViaOAuth?true:false,loggedInUser?._id,cookie.newUserViaOAuth,true,()=>removeCookie('newUserViaOAuth'))
+  useGenerateKeyPair(newUserViaOAuth?.length?true:false,loggedInUser?._id,newUserViaOAuth,true,()=>Cookies.remove("newUserViaOAuth2"))
 
   useSetTheme()
   useUpdateLogin(isSuccess,data)
   useInitializeIndexDb()
 
   usePrivateKeyCheck(isSuccess,data)
+  
+  useEffect(()=>{
+    if(newUserViaOAuth){
+      console.log(`cookie came -> ${newUserViaOAuth}`);
+    }
+  },[newUserViaOAuth])
   
   const router = createBrowserRouter(createRoutesFromElements(
 

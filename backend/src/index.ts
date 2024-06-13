@@ -39,7 +39,7 @@ import { notificationTitles } from './constants/notification-title.contant.js'
 
 const app=express()
 const server=createServer(app)
-const io=new Server(server,{cors:{credentials:true,origin:['http://localhost:5173']}})
+const io=new Server(server,{cors:{credentials:true,origin:config.clientUrl}})
 
 // database connection
 connectDB()

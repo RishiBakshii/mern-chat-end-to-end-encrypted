@@ -25,7 +25,7 @@ export const App = () => {
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
 
-  useGenerateKeyPair(newUserViaOAuth?.length?true:false,loggedInUser?._id,newUserViaOAuth,true,()=>Cookies.remove("newUserViaOAuth2"))
+  useGenerateKeyPair(newUserViaOAuth?.length?true:false,loggedInUser?._id,newUserViaOAuth,true,()=>Cookies.remove("newUserViaOAuth20"))
 
   useSetTheme()
   useUpdateLogin(isSuccess,data)
@@ -85,7 +85,7 @@ export const App = () => {
 
 
     {/* Catch-all route for 404 page */}
-    {/* <Route path='*' element={<NotFoundPage />} /> */}
+    <Route path='*' element={<NotFoundPage />} />
 
     </>
 

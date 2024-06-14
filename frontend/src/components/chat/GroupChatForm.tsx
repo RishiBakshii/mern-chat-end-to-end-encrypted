@@ -101,7 +101,7 @@ export const GroupChatForm = () => {
             
             {/* name input */}
             <div className="w-full flex flex-col gap-y-1">
-              <input {...register("name")} className="p-3 rounded w-full outline outline-1 outline-secondary-darker text-text bg-background" placeholder="Group name"/>
+              <input {...register("name")} accept={ACCEPTED_IMAGE_TYPES.join(", ")}   className="p-3 rounded w-full outline outline-1 outline-secondary-darker text-text bg-background" placeholder="Group name"/>
               {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
             </div>
             
@@ -110,13 +110,15 @@ export const GroupChatForm = () => {
               <h4 className="">Select Members</h4>
 
               {
-                friends?.length && 
+                (friends && friends.length)? 
 
                 <FriendList
                   friends={friends}
                   handleAddOrRemoveMember={handleAddOrRemoveMember}
                   selectedMembers={selectedMembers}
                 />
+                :
+                'You currently have no friends 🐱'
                 
               }
             </div>

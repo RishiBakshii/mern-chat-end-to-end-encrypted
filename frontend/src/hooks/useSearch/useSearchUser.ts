@@ -8,6 +8,7 @@ export const useSearchUser = () => {
 
     return {
         searchUser,
-        searchResults:data
+        searchResults:data,
+        isFetching,
     }
 }

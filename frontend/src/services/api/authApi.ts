@@ -82,14 +82,22 @@ export const authApi = createApi({
         sendOtp:builder.query<void,void>({
             query:()=>"/send-otp"
         }),
+        sendAuthCookie:builder.mutation<IUser,{tempToken:string}>({
+            query:({tempToken})=>({
+                url:"/send-auth-cookie",
+                method:"POST",
+                body:{tempToken}
+            })
+        }),
+        deleteOAuthCookie:builder.query<void,void>({
+            query:()=>"/delete-oauth-cookie"
+        }),
         logout:builder.query<void,void>({
             query:()=>"/logout"
         }),
         checkAuth:builder.query<IUser | null,void>({
             query:()=>"/check-auth"
         }),
-
-
     })
 })
 
@@ -107,4 +115,6 @@ export const {
     useVerifyPrivateKeyTokenMutation,
     useUpdateFcmTokenMutation,
     useLazySendPrivateKeyRecoveryEmailQuery,
+    useSendAuthCookieMutation,
+    useLazyDeleteOAuthCookieQuery
 } = authApi

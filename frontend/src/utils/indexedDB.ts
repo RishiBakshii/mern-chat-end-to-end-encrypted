@@ -76,7 +76,6 @@ const getPrivateKey = async (userId: string): Promise<JsonWebKey | null> => {
 
                 const privatekey = getRequest.result?.privateKey
                 if(privatekey){
-                    console.log(getRequest.result);
                     resolve(privatekey)
                 }
                 else{

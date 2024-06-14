@@ -38,22 +38,22 @@ messaging.onBackgroundMessage((payload) => {
   self.registration.show(notificationTitle, notificationOptions);
 });
 
-// self.addEventListener('notificationclick', function(event) {
-//   console.log('Notification click Received.', event.notification.data);
-//   event.notification.close();
+self.addEventListener('notificationclick', function(event) {
+  console.log('Notification click Received.', event.notification.data);
+  event.notification.close();
   
-//   // This will focus on the existing window if it's open or open a new window
-//   event.waitUntil(
-//     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
-//       for (let i = 0; i < clientList.length; i++) {
-//         const client = clientList[i];
-//         if (client.url === '/' && 'focus' in client) {
-//           return client.focus();
-//         }
-//       }
-//       if (clients.openWindow) {
-//         return clients.openWindow('/');
-//       }
-//     })
-//   );
-// });
+  // This will focus on the existing window if it's open or open a new window
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i];
+        if (client.url === '/' && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('/');
+      }
+    })
+  );
+});

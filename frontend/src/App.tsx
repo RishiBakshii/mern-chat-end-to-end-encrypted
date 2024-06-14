@@ -1,49 +1,44 @@
-import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Protected } from './components/auth/Protected';
 import { RecoverPrivateKeyForm } from './components/auth/RecoverPrivateKeyForm';
 import { AuthLayout } from './components/layout/AuthLayout';
 import { RootLayout } from './components/layout/RootLayout';
 import { Modal } from './components/shared/Modal';
-import { useGenerateKeyPair } from './hooks/useAuth/useGenerateKeyPair';
 import usePrivateKeyCheck from './hooks/useAuth/usePrivateKeyCheck';
 import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
 import { useInitializeIndexDb } from './hooks/useUtils/useInitializeIndexDb';
 import { useSetTheme } from './hooks/useUtils/useSetTheme';
-import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, PrivateKeyRecoveryVerificationPage, ResetPasswordPage, SignupPage, VerificationPage } from './pages';
-import { useCheckAuthQuery } from './services/api/authApi';
+import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, OAuthRedirectHandlerPage, PrivateKeyRecoveryVerificationPage, ResetPasswordPage, SignupPage, VerificationPage } from './pages';
+import { useCheckAuthQuery, useLazyDeleteOAuthCookieQuery } from './services/api/authApi';
 import { selectLoggedInUser } from './services/redux/slices/authSlice';
 import { selectRecoverPrivateKeyForm } from './services/redux/slices/uiSlice';
 import { useAppSelector } from './services/redux/store/hooks';
+import { useEffect } from 'react';
+import Cookie from 'js-cookie'
+import { useGenerateKeyPair } from './hooks/useAuth/useGenerateKeyPair';
 
 export const App = () => {
 
-  const newUserViaOAuth = Cookies.get("newUserViaOAuth20")
   const recoverPrivateKeyForm = useAppSelector(selectRecoverPrivateKeyForm)
   const loggedInUser = useAppSelector(selectLoggedInUser)
-  const [getCookieSucess,setGetCookieSuccess] = useState<boolean>(false)
+  const [deleteOAuthCookie,{}] =  useLazyDeleteOAuthCookieQuery()
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
-
-  useGenerateKeyPair(getCookieSucess,loggedInUser?._id,newUserViaOAuth,true,()=>Cookies.remove("newUserViaOAuth20"))
+  const cookie = Cookie.get("newUserViaOAuth20")
 
   useSetTheme()
   useUpdateLogin(isSuccess,data)
   useInitializeIndexDb()
 
   usePrivateKeyCheck(isSuccess,data)
-  
+  const {done} = useGenerateKeyPair(cookie?true:false,loggedInUser?._id,cookie,true)
+
   useEffect(()=>{
-    setTimeout(() => {
-      console.log('out ran logic');
-      if(Cookies.get("newUserViaOAuth20")){
-        console.log('logic ran');
-        console.log('cookie found',Cookies.get("newUserViaOAuth20"));
-        setGetCookieSuccess(true)
-      }
-    }, 1000);
-  },[])
+    if(done) {
+      deleteOAuthCookie()
+    }
+  },[done])
+  
   
   const router = createBrowserRouter(createRoutesFromElements(
 
@@ -86,7 +81,14 @@ export const App = () => {
         </Protected>
       } />
 
+      <Route path='temp-token/:tempToken' element={
+        <Protected loggedInUser={loggedInUser} authorized={false}>
+          <OAuthRedirectHandlerPage/>
+        </Protected>
+      }/>
+
       <Route path='/auth' element={<Navigate to={'/auth/login'} replace/>}/>
+
     </Route>
 
 

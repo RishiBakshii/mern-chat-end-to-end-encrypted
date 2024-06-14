@@ -46,6 +46,10 @@ export const fcmTokenSchema = z.object({
     fcmToken:z.string({required_error:"fcm token is required"})
 })
 
+export const setAuthCookieSchema = z.object({
+    tempToken:z.string({required_error:"tempToken is required"})
+})
+
 export type signupSchemaType = z.infer<typeof signupSchema>
 export type loginSchemaType = z.infer<typeof loginSchema>
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>
@@ -55,3 +59,4 @@ export type keySchemaType = z.infer<typeof keySchema>
 export type verifyPasswordSchemaType = z.infer<typeof verifyPasswordSchema>
 export type verifyPrivateKeyTokenSchemaType = z.infer<typeof verifyPrivateKeyTokenSchema>
 export type fcmTokenSchemaType = z.infer<typeof fcmTokenSchema>
+export type setAuthCookieSchemaType = z.infer<typeof setAuthCookieSchema>

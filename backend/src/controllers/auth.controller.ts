@@ -7,7 +7,7 @@ import type { AuthenticatedRequest, IUser, OAuthAuthenticatedRequest } from "../
 import { Otp } from "../models/otp.model.js";
 import { ResetPassword } from "../models/reset-password.model.js";
 import { User } from "../models/user.model.js";
-import type { fcmTokenSchemaType, forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
+import type { fcmTokenSchemaType, forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, setAuthCookieSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
 import { type signupSchemaType } from "../schemas/auth.schema.js";
 import { env } from "../schemas/env.schema.js";
 import { cookieOptions, generateOtp, generatePrivateKeyRecoveryToken, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
@@ -244,6 +244,29 @@ const sendPrivateKeyRecoveryEmail = asyncErrorHandler(async(req:AuthenticatedReq
     }
 })
 
+const sendOAuthCookie = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
+
+    const {tempToken}:setAuthCookieSchemaType = req.body
+    const decoded = jwt.verify(tempToken,env.JWT_SECRET) as {user:string,oAuthNewUser:boolean}
+
+    console.log('decoded',decoded);
+    
+    const user = await User.findById(decoded.user)
+
+    if(!user){
+        return next(new CustomError("User not found",400))
+    }
+    
+    const secureInfo = getSecureUserInfo(user)
+
+    return sendToken(res,user._id,200,secureInfo,true,decoded.oAuthNewUser,user.googleId)
+
+})
+
+const deleteOAuthCookie = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
+    return res.clearCookie('newUserViaOAuth20',{...cookieOptions,maxAge:0}).status(200).json({})
+})
+
 const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     if(req.user){
         return res.status(200).json(getSecureUserInfo(req.user))
@@ -254,7 +277,8 @@ const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,
 const redirectHandler = asyncErrorHandler(async(req:OAuthAuthenticatedRequest,res:Response,next:NextFunction)=>{
 
     if(req.user){
-        sendToken(res,req.user?._id,200,getSecureUserInfo(req.user),true,req.user.newUser,req.user.newUser?req.user.googleId:undefined)
+        const tempToken =  jwt.sign({user:req.user._id.toString(),oAuthNewUser:req.user.newUser},env.JWT_SECRET,{expiresIn:"5m"})
+        return res.redirect(307,`${config.clientUrl}/auth/temp-token/${tempToken}`)
     }
     else{
         return res.redirect(`${config.clientUrl}/auth/login`)
@@ -262,7 +286,7 @@ const redirectHandler = asyncErrorHandler(async(req:OAuthAuthenticatedRequest,re
 })
 
 const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
-    res.clearCookie("token",cookieOptions).status(200).json({message:"Logout successful"})
+    res.clearCookie("token",{...cookieOptions,maxAge:0}).status(200).json({message:"Logout successful"})
 })
 
 
@@ -280,5 +304,7 @@ export {
     verifyPassword,
     verifyPrivateKeyToken,
     updateFcmToken,
-    sendPrivateKeyRecoveryEmail
+    sendPrivateKeyRecoveryEmail,
+    sendOAuthCookie,
+    deleteOAuthCookie
 };

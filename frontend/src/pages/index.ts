@@ -2,6 +2,7 @@ import { ChatPage } from "./ChatPage";
 import { ForgotPasswordPage } from "./ForgotPasswordPage";
 import { LoginPage } from "./LoginPage";
 import { NotFoundPage } from "./NotFoundPage";
+import { OAuthRedirectHandlerPage } from "./OAuthRedirectHandlerPage";
 import { PrivateKeyRecoveryVerificationPage } from "./PrivateKeyRecoveryVerificationPage";
 import { ResetPasswordPage } from "./ResetPasswordPage";
 import { SignupPage } from "./SignupPage";
@@ -16,4 +17,5 @@ export {
     NotFoundPage,
     VerificationPage,
     PrivateKeyRecoveryVerificationPage,
+    OAuthRedirectHandlerPage
 }

@@ -18,16 +18,17 @@ export const cookieOptions:CookieOptions = {
     partitioned:true,
 }
 
-export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:ISecureInfo,OAuth:boolean=false,OAuthNewUser:boolean=false,googleId?:string)=>{
+export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:ISecureInfo,oAuth:boolean=false,oAuthNewUser:boolean=false,googleId?:string)=>{
 
-
-    const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
-    
-    if(OAuth){
-        res.cookie('token',token,cookieOptions).cookie("newUserViaOAuth20",OAuthNewUser?googleId+env.PRIVATE_KEY_RECOVERY_SECRET:"",{...cookieOptions,httpOnly:false}).redirect(config.clientUrl)
+    if(oAuth){
+        const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
+        res.cookie('token',token,cookieOptions)
+        res.cookie("newUserViaOAuth20",oAuthNewUser?googleId+env.PRIVATE_KEY_RECOVERY_SECRET:"",{...cookieOptions,httpOnly:false})
+        return res.status(statusCode).json(data)
     }
-
+        
     else{
+        const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
         return res.cookie("token",token,cookieOptions).status(statusCode).json(data)
     }
  

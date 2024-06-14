@@ -10,7 +10,6 @@ const usePrivateKeyCheck = (isSuccess:boolean,loggedInUser:IUser | undefined | n
    const checkPrivateKey = async()=>{
       if(loggedInUser){
           const key = await getPrivateKey(loggedInUser._id)
-          console.log('key',key);
           if(!key){
             toggleRecoverPrivateKeyForm()
           }

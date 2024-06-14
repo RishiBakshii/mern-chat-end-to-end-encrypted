@@ -32,7 +32,9 @@ export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string
     useEffect(()=>{
         if(updateUserKeysSuccess && addedPublicKey){
             dispatch(updateLoggedInUserPublicKey({publicKey:addedPublicKey}))
-            setDone(true)
+
+            if(OAuthSignup) setDone(true)
+            
         }
     },[updateUserKeysSuccess,addedPublicKey])
 

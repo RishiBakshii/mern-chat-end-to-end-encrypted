@@ -23,7 +23,11 @@ export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,da
     if(oAuth){
         const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
         res.cookie('token',token,cookieOptions)
-        res.cookie("newUserViaOAuth20",oAuthNewUser?googleId+env.PRIVATE_KEY_RECOVERY_SECRET:"",{...cookieOptions,httpOnly:false})
+
+        if(oAuthNewUser){
+            const combinedSecret = googleId+env.PRIVATE_KEY_RECOVERY_SECRET
+            res.cookie("newUserViaOAuth20",combinedSecret,{...cookieOptions,httpOnly:false})
+        }
         return res.status(statusCode).json(data)
     }
         

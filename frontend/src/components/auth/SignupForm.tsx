@@ -22,7 +22,7 @@ export const SignupForm = () => {
 
     const password = watch("password")
     
-    useGenerateKeyPair(isSuccess,data?._id,password,false,()=>{})
+    useGenerateKeyPair(isSuccess,data?._id,password,false)
     
     const onSubmit: SubmitHandler<signupSchemaType> = (data) => {
         const {confirmPassword,...credentials}=data

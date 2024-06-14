@@ -110,7 +110,7 @@ export const ChatPage = () => {
     
     
 
-    const {totalMessagePages,messages,isMessagesFetching} = useFetchMessages(selectedChatDetails?._id,1)
+    const {totalMessagePages,messages,isMessagesLoading} = useFetchMessages(selectedChatDetails?._id,1)
     
     const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()
     
@@ -233,7 +233,7 @@ export const ChatPage = () => {
                             }
 
                             {
-                                (!isMessagesFetching && selectedChatDetails && messages && loggedInUser && totalMessagePages)?
+                                (!isMessagesLoading && selectedChatDetails && messages && loggedInUser && totalMessagePages)?
 
                                 <MessageList
                                     messages={messages}

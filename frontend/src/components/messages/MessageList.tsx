@@ -110,7 +110,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
         prevScrollTopRef.current = 0
         setTimeout(() => {
           container.scrollTop = container.scrollHeight;
-        }, 10);
+        }, 50);
       } 
 
     }

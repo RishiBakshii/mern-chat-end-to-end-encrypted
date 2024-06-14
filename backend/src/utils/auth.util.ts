@@ -71,13 +71,9 @@ export const generatePrivateKeyRecoveryToken = async(userId:string)=>{
     const token = jwt.sign({user:userId},env.JWT_SECRET)
     const hashedToken = await bcrypt.hash(token,10)
 
-    const privateKeyPromise = [
-        PrivateKeyRecoveryToken.deleteMany({user:userId}),
-        PrivateKeyRecoveryToken.create({user:userId,hashedToken})
-    ]
-
-    await Promise.all(privateKeyPromise)
-
+    await PrivateKeyRecoveryToken.deleteMany({user:userId}),
+    await PrivateKeyRecoveryToken.create({user:userId,hashedToken})
+    
     const verificationUrl = `${config.clientUrl}/auth/privatekey-verification/${token}`
 
     return {verificationUrl}

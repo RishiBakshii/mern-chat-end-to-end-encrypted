@@ -3,13 +3,16 @@ import { env } from '../../config/envConfig';
 import { useSendMessage } from '../../hooks/useMessages/useSendMessage';
 import { useAppSelector } from '../../services/redux/store/hooks';
 import { selectisDarkMode } from '../../services/redux/slices/uiSlice';
+import { useToggleGif } from '../../hooks/useUI/useToggleGif';
 
 export const TenorGifForm = () => {
     
     const sendMessage = useSendMessage()
     const isDarkMode =  useAppSelector(selectisDarkMode)
+    const {toggleGif} = useToggleGif()
 
     const handleGifClick = (image:TenorImage)=>{
+      toggleGif()
       sendMessage(undefined,image.url)
     }
 

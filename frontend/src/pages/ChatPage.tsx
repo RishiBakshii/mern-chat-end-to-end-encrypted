@@ -144,7 +144,7 @@ export const ChatPage = () => {
    
    useUpdateUnreadChatAsSeen()
    
-   const toggleGif = useToggleGif()
+   const {toggleGif} = useToggleGif()
    const togglePoolForm = useTogglePoolForm()
  
    const getChatName=useGetChatName()

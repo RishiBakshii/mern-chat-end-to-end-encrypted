@@ -1,13 +1,10 @@
 import { useEffect } from "react"
-import { updateLoggedInUserPublicKey } from "../../services/redux/slices/authSlice"
-import { useAppDispatch } from "../../services/redux/store/hooks"
 import { convertCryptoKeyToJwk, encryptPrivateKey, generateKeyPair } from "../../utils/encryption"
 import { storePrivateKey } from "../../utils/indexedDB"
 import { useUpdateUserKeys } from "./useUpdateUserKeys"
 
-export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string | undefined,password:string | undefined,callBack?:CallableFunction) => {
+export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string | undefined,password:string | undefined,updateLoggedInUserCallBack?: (publicKey?: string) => void) => {
 
-    const dispatch = useAppDispatch()
     const {updateUserKeys,addedPublicKey,updateUserKeysSuccess} = useUpdateUserKeys()
 
 
@@ -29,15 +26,13 @@ export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string
 
     useEffect(()=>{
         if(updateUserKeysSuccess && addedPublicKey){
-            if(callBack) callBack()
-            dispatch(updateLoggedInUserPublicKey({publicKey:addedPublicKey}))
+            if(updateLoggedInUserCallBack) updateLoggedInUserCallBack(addedPublicKey)
         }
     },[updateUserKeysSuccess,addedPublicKey])
 
     useEffect(()=>{
         if(isSignupSuccess && loggedInUserId && password){
             handleGenerateKeyPair()
-
         }
     },[isSignupSuccess,loggedInUserId,password])
 }

@@ -54,6 +54,7 @@ import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar, setNotificationPermissionForm } from "../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
+import { MessageListSkeleton } from '../components/ui/skeleton/MessageListSkeleton'
 
 export const ChatPage = () => {
 
@@ -109,16 +110,13 @@ export const ChatPage = () => {
     
     
 
-    const {totalMessagePages,messages} = useFetchMessages(selectedChatDetails?._id,1)
+    const {totalMessagePages,messages,isMessagesFetching} = useFetchMessages(selectedChatDetails?._id,1)
     
     const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()
     
     
     const clearExtraPreviousMessages = useClearAdditionalMessagesOnChatChange()
     
-    
-    // useNotificationPermission()
-
    // listeners
    useFriendRequestListener()
    useMessageListener()
@@ -235,7 +233,7 @@ export const ChatPage = () => {
                             }
 
                             {
-                                selectedChatDetails && messages && loggedInUser && totalMessagePages &&
+                                (!isMessagesFetching && selectedChatDetails && messages && loggedInUser && totalMessagePages)?
 
                                 <MessageList
                                     messages={messages}
@@ -245,6 +243,9 @@ export const ChatPage = () => {
                                     isGroupChat={selectedChatDetails.isGroupChat} 
                                     loggedInUserId={loggedInUser._id}
                                 />
+                                :
+                                selectedChatDetails &&
+                                <MessageListSkeleton/>
                             }
                             
                             {

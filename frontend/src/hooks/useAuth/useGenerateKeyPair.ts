@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { updateLoggedInUserPublicKey } from "../../services/redux/slices/authSlice"
 import { useAppDispatch } from "../../services/redux/store/hooks"
 import { convertCryptoKeyToJwk, encryptPrivateKey, generateKeyPair } from "../../utils/encryption"
 import { storePrivateKey } from "../../utils/indexedDB"
 import { useUpdateUserKeys } from "./useUpdateUserKeys"
 
-export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string | undefined,password:string | undefined,OAuthSignup:boolean=false) => {
+export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string | undefined,password:string | undefined,callBack?:CallableFunction) => {
 
     const dispatch = useAppDispatch()
-    
     const {updateUserKeys,addedPublicKey,updateUserKeysSuccess} = useUpdateUserKeys()
-    const [done,setDone] = useState<boolean>(false)
+
 
     const handleGenerateKeyPair = async()=>{
+
         console.log('generate key pair initiated');
-        if(password){
+
+        if(loggedInUserId && password){
             
             const keys = await generateKeyPair()
      
@@ -22,19 +23,14 @@ export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string
             const privateJwkKey = await convertCryptoKeyToJwk(keys.privateKey)
             
             updateUserKeys({publicKey:JSON.stringify(publicJwkKey),privateKey:await encryptPrivateKey(password,privateJwkKey)})
-     
-             if(loggedInUserId){
-                 storePrivateKey(loggedInUserId,privateJwkKey)
-             }
+            storePrivateKey(loggedInUserId,privateJwkKey)
         }
     }
 
     useEffect(()=>{
         if(updateUserKeysSuccess && addedPublicKey){
+            if(callBack) callBack()
             dispatch(updateLoggedInUserPublicKey({publicKey:addedPublicKey}))
-
-            if(OAuthSignup) setDone(true)
-            
         }
     },[updateUserKeysSuccess,addedPublicKey])
 
@@ -44,8 +40,4 @@ export const useGenerateKeyPair = (isSignupSuccess:boolean,loggedInUserId:string
 
         }
     },[isSignupSuccess,loggedInUserId,password])
-
-    return {
-        done
-    }
 }

@@ -9,36 +9,23 @@ import { useUpdateLogin } from './hooks/useAuth/useUpdateLogin';
 import { useInitializeIndexDb } from './hooks/useUtils/useInitializeIndexDb';
 import { useSetTheme } from './hooks/useUtils/useSetTheme';
 import { ChatPage, ForgotPasswordPage, LoginPage, NotFoundPage, OAuthRedirectHandlerPage, PrivateKeyRecoveryVerificationPage, ResetPasswordPage, SignupPage, VerificationPage } from './pages';
-import { useCheckAuthQuery, useLazyDeleteOAuthCookieQuery } from './services/api/authApi';
+import { useCheckAuthQuery } from './services/api/authApi';
 import { selectLoggedInUser } from './services/redux/slices/authSlice';
 import { selectRecoverPrivateKeyForm } from './services/redux/slices/uiSlice';
 import { useAppSelector } from './services/redux/store/hooks';
-import { useEffect } from 'react';
-import Cookie from 'js-cookie'
-import { useGenerateKeyPair } from './hooks/useAuth/useGenerateKeyPair';
 
 export const App = () => {
 
   const recoverPrivateKeyForm = useAppSelector(selectRecoverPrivateKeyForm)
   const loggedInUser = useAppSelector(selectLoggedInUser)
-  const [deleteOAuthCookie,{}] =  useLazyDeleteOAuthCookieQuery()
 
   const {isSuccess,data,isFetching}=useCheckAuthQuery()
-  const cookie = Cookie.get("newUserViaOAuth20")
 
   useSetTheme()
   useUpdateLogin(isSuccess,data)
   useInitializeIndexDb()
 
   usePrivateKeyCheck(isSuccess,data)
-  const {done} = useGenerateKeyPair(cookie?true:false,loggedInUser?._id,cookie,true)
-
-  useEffect(()=>{
-    if(done) {
-      deleteOAuthCookie()
-    }
-  },[done])
-  
   
   const router = createBrowserRouter(createRoutesFromElements(
 

@@ -21,14 +21,18 @@ export const cookieOptions:CookieOptions = {
 export const sendToken = (res:Response,payload:IUser['_id'],statusCode:number,data:ISecureInfo,oAuth:boolean=false,oAuthNewUser:boolean=false,googleId?:string)=>{
 
     if(oAuth){
+        
+        let responsePayload:{combinedSecret?:string,user:ISecureInfo} = {user:data}
+
         const token=jwt.sign({_id:payload.toString()},env.JWT_SECRET,{expiresIn:`${env.JWT_TOKEN_EXPIRATION_DAYS}d`})
         res.cookie('token',token,cookieOptions)
 
         if(oAuthNewUser){
             const combinedSecret = googleId+env.PRIVATE_KEY_RECOVERY_SECRET
-            res.cookie("newUserViaOAuth20",combinedSecret,{...cookieOptions,httpOnly:false})
+            responsePayload['combinedSecret'] = combinedSecret
         }
-        return res.status(statusCode).json(data)
+        console.log("responsePayload",responsePayload);
+        return res.status(statusCode).json(responsePayload)
     }
         
     else{

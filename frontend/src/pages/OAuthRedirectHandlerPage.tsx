@@ -1,28 +1,15 @@
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { useSendAuthCookie } from '../hooks/useAuth/useSendAuthCookie'
-import { updateLoggedInUser } from "../services/redux/slices/authSlice"
-import { useAppDispatch } from "../services/redux/store/hooks"
+import { useVerifyOAuthTempToken } from '../hooks/useAuth/useVerifyOAuthTempToken'
 
 export const OAuthRedirectHandlerPage = () => {
-    
-    const dispatch = useAppDispatch()
 
     const {tempToken} = useParams<{tempToken:string}>()
     
-    const {sendAuthCookie,data,isSuccess} = useSendAuthCookie()
-
-
-    useEffect(()=>{
-        if(isSuccess && data) {
-            dispatch(updateLoggedInUser(data))
-        }
-    },[isSuccess,data])
+    const {verifyTempToken} = useVerifyOAuthTempToken()
 
     useEffect(()=>{
-        if(tempToken) {
-            sendAuthCookie({tempToken})
-        } 
+        if(tempToken) verifyTempToken({tempToken}) 
     },[tempToken])
 
   return (

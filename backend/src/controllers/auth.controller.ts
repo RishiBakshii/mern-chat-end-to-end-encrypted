@@ -5,6 +5,7 @@ import { config } from "../config/env.config.js";
 import { DEFAULT_AVATAR } from "../constants/file.constant.js";
 import type { AuthenticatedRequest, IUser, OAuthAuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
 import { Otp } from "../models/otp.model.js";
+import { PrivateKeyRecoveryToken } from '../models/private-key-recovery-token.model.js';
 import { ResetPassword } from "../models/reset-password.model.js";
 import { User } from "../models/user.model.js";
 import type { fcmTokenSchemaType, forgotPasswordSchemaType, keySchemaType, loginSchemaType, resetPasswordSchemaType, setAuthCookieSchemaType, verifyOtpSchemaType, verifyPasswordSchemaType, verifyPrivateKeyTokenSchemaType } from "../schemas/auth.schema.js";
@@ -13,7 +14,6 @@ import { env } from "../schemas/env.schema.js";
 import { cookieOptions, generateOtp, generatePrivateKeyRecoveryToken, getSecureUserInfo, sendToken } from "../utils/auth.util.js";
 import { sendMail } from "../utils/email.util.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import { PrivateKeyRecoveryToken } from '../models/private-key-recovery-token.model.js';
 
 const signup = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
 
@@ -248,8 +248,6 @@ const sendOAuthCookie = asyncErrorHandler(async(req:Request,res:Response,next:Ne
 
     const {tempToken}:setAuthCookieSchemaType = req.body
     const decoded = jwt.verify(tempToken,env.JWT_SECRET) as {user:string,oAuthNewUser:boolean}
-
-    console.log('decoded',decoded);
     
     const user = await User.findById(decoded.user)
 
@@ -259,12 +257,8 @@ const sendOAuthCookie = asyncErrorHandler(async(req:Request,res:Response,next:Ne
     
     const secureInfo = getSecureUserInfo(user)
 
-    return sendToken(res,user._id,200,secureInfo,true,decoded.oAuthNewUser,user.googleId)
+    sendToken(res,user._id,200,secureInfo,true,decoded.oAuthNewUser,user.googleId)
 
-})
-
-const deleteOAuthCookie = asyncErrorHandler(async(req:Request,res:Response,next:NextFunction)=>{
-    return res.clearCookie('newUserViaOAuth20',{...cookieOptions,maxAge:0}).status(200).json({})
 })
 
 const checkAuth = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
@@ -290,21 +284,15 @@ const logout = asyncErrorHandler(async(req:Request,res:Response,next:NextFunctio
 })
 
 
-export { 
-    checkAuth, 
-    forgotPassword, 
-    login, 
+export {
+    checkAuth,
+    forgotPassword,
+    login,
     logout,
-    redirectHandler, 
-    resetPassword, 
-    sendOtp, 
-    signup, 
-    updateUserKeys, 
+    redirectHandler,
+    resetPassword, sendOAuthCookie, sendOtp, sendPrivateKeyRecoveryEmail, signup, updateFcmToken, updateUserKeys,
     verifyOtp,
     verifyPassword,
-    verifyPrivateKeyToken,
-    updateFcmToken,
-    sendPrivateKeyRecoveryEmail,
-    sendOAuthCookie,
-    deleteOAuthCookie
+    verifyPrivateKeyToken
 };
+

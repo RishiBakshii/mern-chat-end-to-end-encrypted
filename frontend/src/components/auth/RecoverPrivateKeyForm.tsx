@@ -7,11 +7,12 @@ import { keyRecoverySchema, keyRecoverySchemaType } from '../../schemas/auth';
 import { selectLoggedInUser } from '../../services/redux/slices/authSlice';
 import { useAppSelector } from '../../services/redux/store/hooks';
 import { FormInput } from '../ui/FormInput';
+import { CircleLoading } from '../shared/CircleLoading';
 
 export const RecoverPrivateKeyForm = () => {
 
   const loggedInUser = useAppSelector(selectLoggedInUser)
-  const {sendPrivateKeyRecoveryEmail} = useSendPrivateKeyRecoveryEmail()
+  const {sendPrivateKeyRecoveryEmail,isLoading:recoveryEmailLoading,isSuccess:recoveryEmailSuccess} = useSendPrivateKeyRecoveryEmail()
 
   const { register, handleSubmit,watch ,formState: { errors }} = useForm<keyRecoverySchemaType>({resolver:zodResolver(keyRecoverySchema)})
 
@@ -27,10 +28,6 @@ export const RecoverPrivateKeyForm = () => {
   const onSubmit: SubmitHandler<keyRecoverySchemaType> = ({password}) => {
     verifyPassword({password})
   }
-
-
-
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-6">
@@ -51,18 +48,35 @@ export const RecoverPrivateKeyForm = () => {
         </div>
         
         {
-          !loggedInUser?.oAuthSignup && 
-          <div className='flex flex-col gap-y-2'>
-              <FormInput
-              register={{...register("password")}}
-              autoComplete='current-password'
-              placeholder='Password'
-              error={errors.password?.message}
-              />
-          </div>
+          (isSuccess || recoveryEmailSuccess) ? 
+          <h2 className="text font-bold bg-background p-4 rounded-md">We have sent an verification email, please check spam if not received</h2>
+          :
+          <>
+          {
+            !loggedInUser?.oAuthSignup && 
+            <div className='flex flex-col gap-y-2'>
+                <FormInput
+                register={{...register("password")}}
+                autoComplete='current-password webauthn'
+                placeholder='Password'
+                type='password'
+                error={errors.password?.message}
+                />
+            </div>
+          }
+          <button onClick={()=>loggedInUser?.oAuthSignup?sendPrivateKeyRecoveryEmail():null} type='submit' className={`bg-primary px-14 py-2 self-center rounded-sm ${(isLoading || recoveryEmailLoading)?'bg-transparent':""}`}>
+            {
+            (!isLoading && !recoveryEmailLoading) ?
+            loggedInUser?.oAuthSignup?"Initiate private key recovery":"Submit"
+            :
+            <CircleLoading size='6'/>
+            }
+          </button>
+          </>
+          
         }
+
         
-        <button onClick={()=>loggedInUser?.oAuthSignup?sendPrivateKeyRecoveryEmail():null} disabled={isLoading} type='submit' className='bg-primary px-12 py-2 self-center rounded-sm'>{loggedInUser?.oAuthSignup?"Initiate private key recovery":"Submit"}</button>
 
 
     </form>

@@ -5,13 +5,14 @@ import { uploadFilesToCloudinary } from "../utils/auth.util.js";
 import { ACCEPTED_FILE_MIME_TYPES } from "../constants/file.constant.js";
 import { Message } from "../models/message.model.js";
 import { uploadAttachmentSchemaType } from "../schemas/message.schema.js";
-import { emitEvent, getOtherMembers } from "../utils/socket.util.js";
+import { emitEvent, emitEventToRoom, getOtherMembers } from "../utils/socket.util.js";
 import { Events } from "../enums/event/event.enum.js";
 import { IMessageEventPayload } from "../interfaces/message/message.interface.js";
 import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
 import { UnreadMessage } from "../models/unread-message.model.js";
 import { IUnreadMessageEventPayload } from "../interfaces/unread-message/unread-message.interface.js";
 import { Types } from "mongoose";
+import { Chat } from "../models/chat.model.js";
 
 interface IAttachment {
     _id:string
@@ -24,15 +25,15 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
         return next(new CustomError("Please provide the files",400))
     }
 
-    const {chatId,memberIds}:uploadAttachmentSchemaType = req.body
+    const {chatId}:uploadAttachmentSchemaType = req.body
 
-    if(!chatId){
-        return next(new CustomError("chatId is required",400))
+    console.log(chatId);
+    const isExistingChat = await Chat.findById(chatId)
+
+    if(!isExistingChat){
+        return next(new CustomError("Chat not found",404))
     }
 
-    if(!memberIds.length){
-        return next(new CustomError("memberIds are required",400))
-    }
 
     const attachments = req.files as Express.Multer.File[]
 
@@ -73,9 +74,9 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
         updatedAt:message.updatedAt
     }
 
-    emitEvent(req,Events.MESSAGE,memberIds,realtimeMessageResponse)
+    emitEventToRoom(req,Events.MESSAGE,chatId,realtimeMessageResponse)
 
-    const otherMembers = getOtherMembers({members:memberIds,user:req.user?._id.toString()!})
+    const otherMembers = getOtherMembers({members:isExistingChat.members.map(member=>member._id.toString()),user:req.user?._id.toString()!})
 
     const updateOrCreateUnreadMessagePromise = otherMembers.map(async(memberId)=>{
 
@@ -107,9 +108,9 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
         }
     }
 
-    emitEvent(req,Events.UNREAD_MESSAGE,memberIds,unreadMessageData)
+    emitEventToRoom(req,Events.UNREAD_MESSAGE,chatId,unreadMessageData)
 
-    return res.sendStatus(201).json()
+    return res.status(201).json({})
 
 })
 

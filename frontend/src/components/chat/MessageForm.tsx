@@ -92,7 +92,6 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
         uploadAttachment({
           attachments:selectedAttachments,
           chatId:selectedChatDetails?._id,
-          members:selectedChatDetails?.members.map(member=>member._id)
         })
 
         setSelectedAttachments([])

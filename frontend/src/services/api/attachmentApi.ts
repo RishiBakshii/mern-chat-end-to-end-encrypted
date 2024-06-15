@@ -11,18 +11,14 @@ export const attachmentApi = createApi({
 
     endpoints:(builder)=>({
 
-        sendAttachments:builder.mutation<void,{chatId:string,members:Array<string>,attachments:Array<Blob>}>({
+        sendAttachments:builder.mutation<void,{chatId:string,attachments:Array<Blob>}>({
 
             
-            query:({chatId,members,attachments})=>{
+            query:({chatId,attachments})=>{
 
                 const formData = new FormData()
 
                 formData.append("chatId",chatId)
-
-                for (const member of members) {
-                    formData.append("memberIds", member);
-                }
 
                 for (const attachment of attachments) {
                     formData.append("attachments[]", attachment);

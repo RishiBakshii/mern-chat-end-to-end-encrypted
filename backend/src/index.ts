@@ -216,7 +216,8 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
 
             await Promise.all(updateOrCreateUnreadMessagePromise)
     
-            const messageData:IUnreadMessageEventPayload['message'] = {}
+            const messageData:IUnreadMessageEventPayload['message'] = {createdAt:newMessage.createdAt}
+
     
             if(newMessage.isPoll){
                 messageData.poll=true

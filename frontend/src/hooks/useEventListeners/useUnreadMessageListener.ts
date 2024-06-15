@@ -38,6 +38,7 @@ export const useUnreadMessageListener = () => {
                 chat.unreadMessages.message.poll = false
 
                 chat.unreadMessages.count++
+                chat.unreadMessages.message.createdAt = message.createdAt
                 
                 if(message.poll){
                   chat.unreadMessages.message.poll=true

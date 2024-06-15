@@ -135,10 +135,17 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
                     {renderOnlineStatus()}
                 </div>
                 
-                {
-                  latestMessage?.createdAt && 
-                  <p className="text-sm text-secondary-darker">{formatRelativeTime(new Date(latestMessage?.createdAt))}</p>
-                }
+        
+                  <p className="text-sm text-secondary-darker">
+                    {formatRelativeTime(new Date(
+                      unreadMessage.message.createdAt ? unreadMessage.message.createdAt
+                      :
+                      latestMessage?.createdAt ? latestMessage.createdAt
+                      :
+                      ''
+                    ))}
+                  </p>
+                
 
             </div>
             

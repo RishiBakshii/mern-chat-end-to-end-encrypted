@@ -31,7 +31,8 @@ export interface IUnreadMessage {
         content?:string
         url?:boolean
         attachments?:boolean
-        poll?:boolean
+        poll?:boolean,
+        createdAt:Date
     },
     sender:IChatMember
 }

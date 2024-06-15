@@ -11,14 +11,10 @@ import { useGenerateKeyPair } from "../../hooks/useAuth/useGenerateKeyPair"
 export const SignupForm = () => {
 
 
-    const {signup,isSuccess,data} = useSignup()
-    
+    const {signup,isSuccess,data,isLoading} = useSignup()
     useUpdateLogin(isSuccess,data)
     
-    
-    const { register, handleSubmit, watch ,formState: { errors } } = useForm<signupSchemaType>({
-        resolver:zodResolver(signupSchema)
-    })
+    const { register, handleSubmit, watch ,formState: { errors } } = useForm<signupSchemaType>({resolver:zodResolver(signupSchema)})
 
     const password = watch("password")
     
@@ -59,7 +55,7 @@ export const SignupForm = () => {
         <div className="flex flex-col gap-y-6">
 
             <div className="flex flex-col gap-y-2">
-                <SubmitButton btnText="Signup"/>
+                <SubmitButton btnText="Signup" disabled={isLoading}/>
                 <p className="text-gray-400 font-light">By creating this account, you agree that you have read and accepted our Terms of Use and Privacy Policy.</p>
             </div>
             

@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import type { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
+import type { AuthenticatedRequest, IUser } from "../interfaces/auth/auth.interface.js";
 import { Request } from "../models/request.model.js";
 import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
 import type { createRequestSchemaType, handleRequestSchemaType } from "../schemas/request.schema.js";
@@ -10,6 +10,7 @@ import { Events } from "../enums/event/event.enum.js";
 import { addUnreadMessagesAndSpectatorStage, populateMembersStage } from "./chat.controller.js";
 import { Friend } from "../models/friend.model.js";
 import { userSocketIds } from "../index.js";
+import { sendPushNotification } from "../utils/generic.js";
 
 
 const requestPipeline = [
@@ -97,6 +98,10 @@ const createRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
 
     const newRequest = await Request.create({receiver,sender:req.user?._id})
 
+    if(!isValidReceiverId.isActive && isValidReceiverId?.fcmToken && isValidReceiverId.notificationsEnabled){
+      sendPushNotification({fcmToken:isValidReceiverId.fcmToken,body:`${req.user?.username} sent you a friend request`})
+    }
+
     const transformedRequest = await Request.aggregate([
 
       {
@@ -118,7 +123,7 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
     const {id}=req.params
     const {action}:handleRequestSchemaType = req.body
 
-    const isExistingRequest = await Request.findById(id)
+    const isExistingRequest = await Request.findById(id).populate<{sender:Pick<IUser,'_id' | 'fcmToken' | 'isActive' | 'notificationsEnabled'>}>("sender",{fcmToken:1,isActive:1,notificationsEnabled:1})
 
     if(!isExistingRequest){
         return next(new CustomError("Request not found",404))
@@ -137,6 +142,11 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
           {user:isExistingRequest.receiver,friend:isExistingRequest.sender},
           {user:isExistingRequest.sender,friend:isExistingRequest.receiver}
         ])
+
+        if(!isExistingRequest.sender.isActive && isExistingRequest.sender?.fcmToken && isExistingRequest.sender.notificationsEnabled){
+          console.log('request accpeted push notificaiton triggered');
+          sendPushNotification({fcmToken:isExistingRequest.sender.fcmToken,body:`${req.user.username} has accepted your friend request 😃`})
+        }
 
         const transformedChat =  await Chat.aggregate([
           {
@@ -160,6 +170,11 @@ const handleRequest = asyncErrorHandler(async(req:AuthenticatedRequest,res:Respo
     }
     else if(action==='reject'){
         await isExistingRequest.deleteOne()
+
+        if(!isExistingRequest.sender.isActive && isExistingRequest.sender?.fcmToken && isExistingRequest.sender.notificationsEnabled){
+          sendPushNotification({fcmToken:isExistingRequest.sender.fcmToken,body:`${req.user.username} has rejected your friend request ☹️`})
+        }
+
         return res.status(200).json(isExistingRequest._id)
     }
     

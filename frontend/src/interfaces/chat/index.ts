@@ -33,6 +33,7 @@ export interface IChatWithUnreadMessages {
     userTyping:Array<IChatMember>
     spectators:Array<ISpectator>
     latestMessage:IMessage
+    createdAt:Date
 }
 
 export interface IUserTypingEventReceiveData {

@@ -19,13 +19,14 @@ type PropTypes = {
   loggedInUserId:string
   isTyping:boolean
   isMd:boolean
+  createdAt:Date
   selectedChatDetails:IChatWithUnreadMessages | undefined | null
   updateSelectedChatId:(chatId:string)=>void
   toggleChatBar:()=>void
   clearExtraPreviousMessages: (chatId: string) => void
 }
 
-export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clearExtraPreviousMessages,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatCard = ({chatName,isGroupChat,createdAt,loggedInUserId,latestMessage,clearExtraPreviousMessages,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
 
   const getSharedKey =  useGetSharedKey()
 
@@ -142,7 +143,7 @@ export const ChatCard = ({chatName,isGroupChat,loggedInUserId,latestMessage,clea
                       :
                       latestMessage?.createdAt ? latestMessage.createdAt
                       :
-                      ''
+                      createdAt
                     ))}
                   </p>
                 

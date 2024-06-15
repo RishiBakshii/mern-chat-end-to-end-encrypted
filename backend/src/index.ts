@@ -33,7 +33,7 @@ import { Chat } from './models/chat.model.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
 import { User } from './models/user.model.js'
-import { getRandomIndex } from './utils/generic.js'
+import { getRandomIndex, sendPushNotification } from './utils/generic.js'
 import { notificationTitles } from './constants/notification-title.contant.js'
 
 
@@ -183,7 +183,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
         io.to(chat).emit(Events.MESSAGE,transformedMessage[0])
 
         // Handle unread messages for receivers
-        const currentChat = await Chat.findById(chat,{members:1,_id:0}).populate<{members:Array<IUser>}>('members')
+        const currentChat = await Chat.findById(chat,{members:1,_id:1}).populate<{members:Array<IUser>}>('members')
         
         if(currentChat){
             const currentChatMembers = currentChat.members.filter(member=>member._id.toString()!==socket.user?._id.toString())
@@ -191,18 +191,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
             const updateOrCreateUnreadMessagePromise = currentChatMembers.map(async(member)=>{
 
                 if(!member.isActive && member.notificationsEnabled && member.fcmToken){
-                    messaging.send({
-                        data:{
-                            click_action:"OPEN_MESSAGE",
-                            chatId:currentChat._id.toString()
-                        },
-                        token:member.fcmToken,
-                        notification:{
-                            // imageUrl:socket.user?.avatar?.secureUrl,
-                            title:`${notificationTitles[getRandomIndex(notificationTitles.length)]}`,
-                            body:`new message from ${socket.user?.username.toLocaleUpperCase()}`,
-                        },
-                    })
+                    sendPushNotification({fcmToken:member.fcmToken,body:`New message from ${socket.user?.username}`})
                 }
     
                 const isExistingUnreadMessage = await UnreadMessage.findOne({chat,user:member._id})

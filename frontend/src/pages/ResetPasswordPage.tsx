@@ -25,14 +25,14 @@ export const ResetPasswordPage = () => {
         <link rel="canonical" href={`${window.location.origin}/auth/reset-password?token=${token}&user=${user}`} />
     </Helmet>
 
-    <div className="flex flex-col  gap-y-6">
+    <div className="flex flex-col gap-y-6">
 
         <div className="flex flex-col gap-y-3">
-            <h4 className="text-4xl font-bold">Reset your password</h4>
-            <p className="text-lg">Once your password is reset you can login with your new password</p>
+            <h3 className="text-4xl text-fluid-h3 font-bold">Reset your password</h3>
+            <p className="text-lg text-fluid-p">Once your password is reset you can login with your new password</p>
         </div>
 
-        <div className="w-[30rem]">
+        <div>
             {
                 token && user && 
                 <ResetPasswordForm

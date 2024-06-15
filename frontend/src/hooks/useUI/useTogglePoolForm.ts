@@ -6,7 +6,11 @@ export const useTogglePoolForm = () => {
     const dispatch = useAppDispatch()
     const pollForm = useAppSelector(selectPollForm)
 
-    return ()=>{
+    const togglePollForm = ()=>{
         dispatch(setPollForm(!pollForm))
+    }
+
+    return {
+        togglePollForm
     }
 }

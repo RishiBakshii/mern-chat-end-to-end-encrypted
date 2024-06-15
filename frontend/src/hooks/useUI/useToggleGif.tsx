@@ -6,11 +6,11 @@ export const useToggleGif = () => {
     const isGifOpen = useAppSelector(selectGifForm)
     const dispatch = useAppDispatch()
 
-    const toggleGif = ()=> {
+    const toggleGifForm = ()=> {
         dispatch(setGifForm(!isGifOpen))
     }
 
     return {
-        toggleGif
+        toggleGifForm
     }
 }

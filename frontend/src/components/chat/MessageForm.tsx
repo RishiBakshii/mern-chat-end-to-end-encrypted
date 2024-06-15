@@ -2,21 +2,22 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { ACCEPTED_FILE_MIME_TYPES } from "../../constants"
+import { useSendAttachments } from '../../hooks/useAttachment/useSendAttachments'
 import { useEmitTypingEvent } from "../../hooks/useChat/useEmitTypingEvent"
 import { useSendMessage } from "../../hooks/useMessages/useSendMessage"
-import { useToast } from "../../hooks/useUI/useToast"
+import { useToggleGif } from '../../hooks/useUI/useToggleGif'
+import { useTogglePoolForm } from '../../hooks/useUI/useTogglePoolForm'
 import { useDebounce } from "../../hooks/useUtils/useDebounce"
-import { useSendAttachmentsMutation } from "../../services/api/attachmentApi"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
 import { MessageInput } from "../ui/MessageInput"
+import { GalleryIcon } from '../ui/icons/GalleryIcon'
+import { PollingIcon } from '../ui/icons/PollingIcon'
 
-type PropTypes = {
-  toggleGif:()=>void
-  togglePoolForm:()=>void
-}
+export const MessageForm = () => {
 
-export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
+    const {toggleGifForm} = useToggleGif()
+    const {togglePollForm} = useTogglePoolForm()
 
     const [messageVal,setMessageVal] = useState<string>('')
 
@@ -27,8 +28,7 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
 
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
 
-    const [uploadAttachment , {error,isError,isLoading,isSuccess,isUninitialized} ] = useSendAttachmentsMutation()
-    useToast({error,isError,isLoading,isSuccess,isUninitialized,loaderToast:true,successMessage:"Attachments sent",successToast:true})
+    const {uploadAttachment} = useSendAttachments()
 
     useEffect(()=>{
       if(selectedAttachments?.length){
@@ -38,7 +38,6 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
     },[selectedAttachments])
 
     const isTyping = useDebounce(messageVal,350)
-
     useEmitTypingEvent(isTyping)
 
     const sendMessage = useSendMessage()
@@ -88,7 +87,6 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
 
       if(selectedChatDetails && selectedAttachments){
 
-        
         uploadAttachment({
           attachments:selectedAttachments,
           chatId:selectedChatDetails?._id,
@@ -107,6 +105,11 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
       }
       setSelectedAttachments(selectedAttachments?.filter((_,index)=>index!==indexToBeRemoved))
 
+    }
+
+    const handlePollClick = ()=>{
+      setAttachmentsMenu(false)
+      togglePollForm()
     }
     
   return (
@@ -149,17 +152,13 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
           <motion.div variants={{hide:{y:40,opacity:0},show:{y:0,opacity:1}}} initial="hide" exit={"hide"} animate="show" className="bg-secondary-dark p-4 w-36 rounded-md absolute -top-28 flex justify-between">
 
             <div className="flex flex-col items-center relative">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-text">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                </svg>
+                <GalleryIcon/>
                 <p className="text-text">Gallery</p>
                 <input onChange={handleFileChange} accept={ACCEPTED_FILE_MIME_TYPES.join(",")} multiple type="file" className="absolute w-full h-full opacity-0 cursor-pointer"/>
             </div>
 
-            <div onClick={togglePoolForm} className="flex flex-col items-center cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-text">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-              </svg>
+            <div onClick={handlePollClick} className="flex flex-col items-center cursor-pointer">
+              <PollingIcon/>
               <p className="text-text">Poll</p>
             </div>
 
@@ -168,11 +167,11 @@ export const MessageForm = ({toggleGif,togglePoolForm}:PropTypes) => {
         </AnimatePresence>
 
         <MessageInput
-         handleFileChange={handleFileChange} 
-         toggleGif={toggleGif} 
-         messageVal={messageVal} 
-         setMessageVal={setMessageVal}
-         toggleAttachmentsMenu={setAttachmentsMenu}
+          handleFileChange={handleFileChange} 
+          toggleGif={toggleGifForm} 
+          messageVal={messageVal} 
+          setMessageVal={setMessageVal}
+          toggleAttachmentsMenu={setAttachmentsMenu}
         />
     </form>
   )

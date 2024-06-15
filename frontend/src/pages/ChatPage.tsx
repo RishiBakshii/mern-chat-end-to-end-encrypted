@@ -9,6 +9,7 @@ import { ChatListWithSearch } from "../components/chat/ChatListWithSearch"
 import { MessageForm } from "../components/chat/MessageForm"
 import { MessageList } from "../components/messages/MessageList"
 import { ChatListWithSearchSkeleton } from "../components/ui/skeleton/ChatListWithSearchSkeleton"
+import { MessageListSkeleton } from '../components/ui/skeleton/MessageListSkeleton'
 import { useFetchAttachments } from "../hooks/useAttachment/useFetchAttachments"
 import { useCallOut } from "../hooks/useCallIn/useCallOut"
 import { useFetchChats } from "../hooks/useChat/useFetchChats"
@@ -42,8 +43,6 @@ import { useClearAdditionalMessagesOnChatChange } from "../hooks/useMessages/use
 import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
 import { useToggleChatBar } from "../hooks/useUI/useToggleChatBar"
 import { useToggleChatDetailsBar } from "../hooks/useUI/useToggleChatDetailsBar"
-import { useToggleGif } from "../hooks/useUI/useToggleGif"
-import { useTogglePoolForm } from "../hooks/useUI/useTogglePoolForm"
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
 import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
@@ -54,7 +53,6 @@ import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar, setNotificationPermissionForm } from "../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
-import { MessageListSkeleton } from '../components/ui/skeleton/MessageListSkeleton'
 
 export const ChatPage = () => {
 
@@ -144,8 +142,6 @@ export const ChatPage = () => {
    
    useUpdateUnreadChatAsSeen()
    
-   const {toggleGif} = useToggleGif()
-   const togglePoolForm = useTogglePoolForm()
  
    const getChatName=useGetChatName()
    const getChatAvatar = useGetChatAvatar()
@@ -248,12 +244,7 @@ export const ChatPage = () => {
                             }
                             
                             {
-                                selectedChatDetails &&
-
-                                <MessageForm 
-                                    toggleGif={toggleGif}
-                                    togglePoolForm={togglePoolForm}
-                                />  
+                                selectedChatDetails && <MessageForm />  
                             }
 
                             {

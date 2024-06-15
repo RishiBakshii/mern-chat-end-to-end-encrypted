@@ -9,10 +9,10 @@ export const TenorGifForm = () => {
     
     const sendMessage = useSendMessage()
     const isDarkMode =  useAppSelector(selectisDarkMode)
-    const {toggleGif} = useToggleGif()
+    const {toggleGifForm} = useToggleGif()
 
     const handleGifClick = (image:TenorImage)=>{
-      toggleGif()
+      toggleGifForm()
       sendMessage(undefined,image.url)
     }
 

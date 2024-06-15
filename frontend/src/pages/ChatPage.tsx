@@ -233,10 +233,9 @@ export const ChatPage = () => {
                             }
 
                             {
-                                (!isMessagesLoading && selectedChatDetails && messages && loggedInUser && totalMessagePages)?
-
+                                (!isMessagesLoading && selectedChatDetails && loggedInUser && totalMessagePages)?
                                 <MessageList
-                                    messages={messages}
+                                    messages={messages || []}
                                     totalPages={totalMessagePages}
                                     messageContainerRef={messageContainerRef}
                                     selectedChatDetails={selectedChatDetails}
@@ -244,7 +243,7 @@ export const ChatPage = () => {
                                     loggedInUserId={loggedInUser._id}
                                 />
                                 :
-                                selectedChatDetails &&
+                                selectedChatDetails && isMessagesLoading &&
                                 <MessageListSkeleton/>
                             }
                             

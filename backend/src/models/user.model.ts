@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import type { IUser } from "../interfaces/auth/auth.interface.js";
+import { sendMail } from "../utils/email.util.js";
 
 
 const userSchema = new Schema<IUser>({
@@ -67,5 +68,11 @@ const userSchema = new Schema<IUser>({
         type:Boolean
     }
 },{versionKey:false,timestamps:true})
+
+userSchema.post("save",({email,username})=>{
+
+    sendMail(email,username,'welcome',undefined,undefined,undefined).catch(error=>console.log(error))
+   
+})
 
 export const User = model<IUser>("User",userSchema)

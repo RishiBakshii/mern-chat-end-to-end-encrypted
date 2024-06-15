@@ -1,18 +1,18 @@
 import { NextFunction, Response } from "express";
-import { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
-import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
-import { uploadFilesToCloudinary } from "../utils/auth.util.js";
-import { ACCEPTED_FILE_MIME_TYPES } from "../constants/file.constant.js";
-import { Message } from "../models/message.model.js";
-import { uploadAttachmentSchemaType } from "../schemas/message.schema.js";
-import { emitEvent, emitEventToRoom, getOtherMembers } from "../utils/socket.util.js";
-import { Events } from "../enums/event/event.enum.js";
-import { IMessageEventPayload } from "../interfaces/message/message.interface.js";
-import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
-import { UnreadMessage } from "../models/unread-message.model.js";
-import { IUnreadMessageEventPayload } from "../interfaces/unread-message/unread-message.interface.js";
 import { Types } from "mongoose";
+import { ACCEPTED_FILE_MIME_TYPES } from "../constants/file.constant.js";
+import { Events } from "../enums/event/event.enum.js";
+import { AuthenticatedRequest } from "../interfaces/auth/auth.interface.js";
+import { IMemberDetails } from "../interfaces/chat/chat.interface.js";
+import { IMessageEventPayload } from "../interfaces/message/message.interface.js";
+import { IUnreadMessageEventPayload } from "../interfaces/unread-message/unread-message.interface.js";
 import { Chat } from "../models/chat.model.js";
+import { Message } from "../models/message.model.js";
+import { UnreadMessage } from "../models/unread-message.model.js";
+import { uploadAttachmentSchemaType } from "../schemas/message.schema.js";
+import { uploadFilesToCloudinary } from "../utils/auth.util.js";
+import { CustomError, asyncErrorHandler } from "../utils/error.utils.js";
+import { emitEventToRoom, getOtherMembers } from "../utils/socket.util.js";
 
 interface IAttachment {
     _id:string
@@ -102,7 +102,8 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
     {
         chatId:chatId,
         message:{
-            attachments:message.attachments?true:false
+            attachments:message.attachments?true:false,
+            createdAt:message.createdAt
         },
         sender:{
             _id:message.sender._id,
@@ -158,4 +159,4 @@ const fetchAttachments = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
     
 })
 
-export {uploadAttachment,fetchAttachments}
+export { fetchAttachments, uploadAttachment };

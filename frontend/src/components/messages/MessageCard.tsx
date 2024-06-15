@@ -46,7 +46,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedCh
     }
 
   return (
-    <motion.div initial={{x:-2}} animate={{x:0}} className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative select-none`} onContextMenu={e=>handleContextMenuClick(e)}>
+    <motion.div initial={{x:-2}} animate={{x:0}} className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative `} onContextMenu={e=>handleContextMenuClick(e)}>
 
         <AnimatePresence>
             {

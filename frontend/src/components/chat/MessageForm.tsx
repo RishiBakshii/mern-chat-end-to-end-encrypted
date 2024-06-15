@@ -113,12 +113,12 @@ export const MessageForm = () => {
     }
     
   return (
-    <form onSubmit={handleMessageSubmit} className="relative">
+    <form onSubmit={handleMessageSubmit} className="relative" autoComplete='off' aria-autocomplete='none' >
 
         {
           attachmentsPreview && attachmentsPreview?.length>0 && 
 
-          <div className="flex items-center flex-wrap gap-4">
+          <div className="flex items-center flex-wrap gap-4 ml-auto w-fit">
 
             <div className="flex flex-wrap gap-2 mb-5">
               {
@@ -149,7 +149,7 @@ export const MessageForm = () => {
         {
           attachmentsMenu && 
 
-          <motion.div variants={{hide:{y:40,opacity:0},show:{y:0,opacity:1}}} initial="hide" exit={"hide"} animate="show" className="bg-secondary-dark p-4 w-36 rounded-md absolute -top-28 flex justify-between">
+          <motion.div variants={{hide:{y:40,opacity:0},show:{y:0,opacity:1}}} initial="hide" exit={"hide"} animate="show" className="bg-secondary-dark p-4 w-36 rounded-md absolute -top-28 right-0 flex justify-between">
 
             <div className="flex flex-col items-center relative">
                 <GalleryIcon/>

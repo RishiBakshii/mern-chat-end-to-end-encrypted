@@ -27,7 +27,10 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
 
     const {chatId}:uploadAttachmentSchemaType = req.body
 
-    console.log(chatId);
+    if(!chatId){
+        return next(new CustomError("ChatId is required",400))
+    }
+
     const isExistingChat = await Chat.findById(chatId)
 
     if(!isExistingChat){

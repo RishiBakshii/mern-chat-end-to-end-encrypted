@@ -192,11 +192,15 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
 
                 if(!member.isActive && member.notificationsEnabled && member.fcmToken){
                     messaging.send({
+                        data:{
+                            click_action:"OPEN_MESSAGE",
+                            chatId:currentChat._id.toString()
+                        },
                         token:member.fcmToken,
                         notification:{
-                            imageUrl:socket.user?.avatar?.secureUrl,
-                            title:`Hey ${member.username} ${notificationTitles[getRandomIndex(notificationTitles.length)]}`,
-                            body:`new message from ${socket.user?.username.toLocaleUpperCase()}`
+                            // imageUrl:socket.user?.avatar?.secureUrl,
+                            title:`${notificationTitles[getRandomIndex(notificationTitles.length)]}`,
+                            body:`new message from ${socket.user?.username.toLocaleUpperCase()}`,
                         },
                     })
                 }

@@ -23,6 +23,11 @@ const authSlice = createSlice({
                 state.loggedInUser.notificationsEnabled = action.payload
             }
         },
+        updateLoggedInUserFcmTokenStatus:(state,action:PayloadAction<boolean>)=>{
+            if(state.loggedInUser){
+                state.loggedInUser.fcmTokenExists = action.payload
+            }
+        },
         logout:(state)=>{
             state.loggedInUser=null
         }
@@ -37,6 +42,7 @@ export const {
     updateLoggedInUser,
     updateLoggedInUserPublicKey,
     updateLoggedInUserNotificationStatus,
+    updateLoggedInUserFcmTokenStatus,
     logout
 
 } = authSlice.actions

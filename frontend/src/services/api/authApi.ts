@@ -72,7 +72,7 @@ export const authApi = createApi({
                 body:{publicKey,privateKey}
             })
         }),
-        updateFcmToken:builder.mutation<void,{fcmToken:string}>({
+        updateFcmToken:builder.mutation<{fcmTokenExists:boolean},{fcmToken:string}>({
             query:({fcmToken})=>({
                 url:"/user/update-fcm-token",
                 method:"PATCH",

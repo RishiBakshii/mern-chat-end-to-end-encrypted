@@ -175,8 +175,8 @@ const updateUserKeys = asyncErrorHandler(async(req:AuthenticatedRequest,res:Resp
 const updateFcmToken = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
 
     const {fcmToken}:fcmTokenSchemaType = req.body
-    await User.findByIdAndUpdate(req.user?._id,{fcmToken})
-    return res.status(200).json()
+    const user = await User.findByIdAndUpdate(req.user?._id,{fcmToken},{new:true})
+    return res.status(200).json({fcmTokenExists:user?.fcmToken?.length?true:false})
 })
 
 const verifyPassword = asyncErrorHandler(async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{

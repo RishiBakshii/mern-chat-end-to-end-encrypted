@@ -18,8 +18,6 @@ export const useVerifyOAuthTempToken = () => {
 
             let loggedInUserData:IUser
 
-            console.log('publicKey',publicKey);
-
             loggedInUserData = data.user
 
             if(publicKey) loggedInUserData = {...loggedInUserData,publicKey}

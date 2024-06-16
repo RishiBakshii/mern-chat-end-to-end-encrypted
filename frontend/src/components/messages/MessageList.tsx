@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useDeleteMessage } from '../../hooks/useMessages/useDeleteMessage'
 import type { IUser } from "../../interfaces/auth"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
@@ -39,10 +39,11 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
     setOpenContextMenuMessageId(messageId)
   },[])
 
+  useLayoutEffect(()=>{
 
-  useEffect(()=>{
+    setPage(1)
+
     const container = messageContainerRef.current
-
     if(container){
 
       const timeoutId = setTimeout(() => {
@@ -50,12 +51,11 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
       }, 100);
 
       return ()=> {
-        setPage(1)
         clearTimeout(timeoutId)
       }
 
     }
-  },[])
+  },[selectedChatDetails._id])
 
   useEffect(()=>{
     if(totalPages===1){
@@ -65,6 +65,15 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
       setHasMore(true)
     }
   },[totalPages])
+
+  useEffect(()=>{
+
+    if(page>1){
+      fetchMoreMessages({_id:selectedChatDetails._id,page})
+      if(page === totalPages) setHasMore(false)
+    }
+
+  },[page,totalPages,selectedChatDetails])
 
 
   const handleScroll = useCallback(() => {
@@ -85,35 +94,15 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
   }, [hasMore, isFetching]);
   
 
-  useEffect(()=>{
-
-    if(page>1){
-
-      fetchMoreMessages({_id:selectedChatDetails._id,page})
-
-      if(page === totalPages){
-        setHasMore(false)
-        return
-      }
-
-    }
-
-  },[page,totalPages,selectedChatDetails])
-
   useEffect(() => {
     const container = messageContainerRef.current;
 
-    if (container) {
-
-      if (isNearBottom) {
-        prevHeightRef.current = 0;
-        prevScrollTopRef.current = 0
-        setTimeout(() => {
-          container.scrollTop = container.scrollHeight;
-        }, 50);
-      } 
-
-    }
+    if (container && isNearBottom) {
+      prevHeightRef.current = 0;
+      prevScrollTopRef.current = 0
+      setTimeout(() => container.scrollTop = container.scrollHeight, 50);
+    } 
+    
   }, [messages]);
 
   useEffect(()=>{
@@ -143,10 +132,10 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
 
   return (
     <>
-    {/* <p className='text-text'> total page {totalPages}</p>
+    <p className='text-text'> total page {totalPages}</p>
     <p className='text-text'>page {page}</p>
     <p className='text-text'>isFetcing {isFetching?"true":"false"}</p>
-    <p className='text-text'>bottom {isNearBottom?"true":"false"}</p> */}
+    <p className='text-text'>bottom {isNearBottom?"true":"false"}</p>
     
     <div ref={messageContainerRef} onScroll={handleScroll} className="relative flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto overflow-x-hidden">
       

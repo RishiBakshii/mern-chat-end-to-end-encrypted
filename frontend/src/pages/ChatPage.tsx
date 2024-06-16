@@ -174,15 +174,15 @@ export const ChatPage = () => {
 
                 <motion.div
 
-            onTouchEnd={onTouchEndChatBar}
-            onTouchStart={onTouchStartChatBar}
-            onTouchMove={onTouchMoveChatBar}
+                    onTouchEnd={onTouchEndChatBar}
+                    onTouchStart={onTouchStartChatBar}
+                    onTouchMove={onTouchMoveChatBar}
 
                     variants={{hide:{right:"50rem"},show:{left:0,right:0}}} 
                     initial="hide" 
                     animate={chatBar?"show":"hide"} 
                     transition={{duration:.4,type:"spring"}}
-                    className={`flex-[.5] min-w-[15rem] p-2 bg-background max-md:fixed overflow-y-auto h-full z-10`}>
+                    className={`flex-[.5] min-w-[15rem] p-2 bg-background max-md:fixed h-full max-md:pb-20 overflow-y-auto z-10`}>
                     
                     {
                         !isChatsFetching && chats && loggedInUser?

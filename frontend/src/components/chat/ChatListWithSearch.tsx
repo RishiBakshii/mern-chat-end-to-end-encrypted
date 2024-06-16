@@ -18,18 +18,13 @@ export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatDetails,cle
 
 
     const [searchVal,setSearchVal] = useState<string>("")
-    const [filteredChats,setFilteredChats] = useState<Array<IChatWithUnreadMessages>>(chats)
+    const [filteredChats,setFilteredChats] = useState<Array<IChatWithUnreadMessages>>([])
 
     useEffect(()=>{
-        if(!searchVal.trim().length){
-            setFilteredChats(chats)
-        }
-        else{
-            setFilteredChats(
-                filteredChats.filter(chat=>getChatName(chat,loggedInUserId)?.toLowerCase()?.includes(searchVal.toLowerCase()))
-            )
-        }
-    },[searchVal,chats])
+        setFilteredChats(
+            chats.filter(chat=>getChatName(chat,loggedInUserId)?.toLowerCase()?.includes(searchVal.toLowerCase()))
+        )
+    },[searchVal])
 
   return (
     <div className="flex flex-col gap-y-5">
@@ -42,7 +37,7 @@ export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatDetails,cle
         <ChatList
             clearExtraPreviousMessages={clearExtraPreviousMessages}
             selectedChatDetails={selectedChatDetails}
-            chats={filteredChats} 
+            chats={searchVal.trim().length ? filteredChats : chats} 
             updateSelectedChatId={updateSelectedChatId}
             toggleChatBar={toggleChatBar}
             loggedInUserId={loggedInUserId}

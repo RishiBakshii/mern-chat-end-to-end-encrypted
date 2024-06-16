@@ -1,3 +1,6 @@
+import { motion } from "framer-motion"
+import { CrossIcon } from "./icons/CrossIcon"
+import { SearchIcon } from "./icons/SearchIcon"
 
 type PropTypes = {
   value:string
@@ -7,10 +10,17 @@ type PropTypes = {
 export const SearchInput = ({value,setValue}:PropTypes) => {
   return (
     <div className="flex items-center bg-secondary-dark text-text px-2 rounded-md">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-        </svg>
+
+        <SearchIcon/>
         <input value={value} onChange={e=>setValue(e.target.value)} className="outline-none bg-inherit w-full  px-3 py-3" type="text" placeholder="Search"/>
+        
+        {
+          value.trim().length>0 && 
+            <motion.button initial={{opacity:0,y:2}} animate={{opacity:1,y:0}} onClick={()=>setValue('')}>
+              <CrossIcon/>
+            </motion.button>
+        }
+
     </div>
   )
 }

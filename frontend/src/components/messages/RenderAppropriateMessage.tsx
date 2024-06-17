@@ -61,7 +61,7 @@ export const RenderAppropriateMessage = ({isGroupChat,myMessage,selectedChatDeta
     }
 
     {
-        message.content &&
+        message.content && sharedKey && 
         <Message
          messageId={message._id}
          editMessageId={editMessageId}

@@ -11,9 +11,8 @@ type PropTypes = {
   toggleChatBar:()=>void
   getChatName: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
   getChatAvatar: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
-  clearExtraPreviousMessages: (chatId: string) => void
 }
-export const ChatList = memo(({chats,loggedInUserId,selectedChatDetails,clearExtraPreviousMessages,updateSelectedChatId,toggleChatBar,getChatAvatar,getChatName}:PropTypes) => {
+export const ChatList = memo(({chats,loggedInUserId,selectedChatDetails,updateSelectedChatId,toggleChatBar,getChatAvatar,getChatName}:PropTypes) => {
 
   const isMd = useMediaQuery(768)
 
@@ -30,7 +29,6 @@ export const ChatList = memo(({chats,loggedInUserId,selectedChatDetails,clearExt
               members={chat.members}
               latestMessage={chat.latestMessage}
               createdAt={chat.createdAt}
-              clearExtraPreviousMessages={clearExtraPreviousMessages}
               isMd={isMd}
               selectedChatDetails={selectedChatDetails}
               isTyping={chat.userTyping?.length>0}

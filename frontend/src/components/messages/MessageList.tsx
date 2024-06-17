@@ -8,6 +8,7 @@ import { useLazyGetMessagesByChatIdQuery } from '../../services/api/messageApi'
 import { TypingIndicatorWithUserList } from "../chat/TypingIndicatorWithUserList"
 import { MessageCard } from "./MessageCard"
 import { CircleLoading } from '../shared/CircleLoading'
+import { useClearAdditionalMessagesOnChatChange } from '../../hooks/useMessages/useClearAdditionalMessagesOnChatChange'
 
 type PropTypes = {
   messages:Array<IMessage>
@@ -20,11 +21,13 @@ type PropTypes = {
 export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,selectedChatDetails,messageContainerRef}:PropTypes) => {
 
   const [fetchMoreMessages,{isFetching}] = useLazyGetMessagesByChatIdQuery()
+  const {clearExtraPreviousMessages} = useClearAdditionalMessagesOnChatChange()
 
   const [page,setPage] = useState<number>(1)
   const [hasMore,setHasMore] = useState<boolean>(true)
   const prevHeightRef = useRef<number>(0);
   const prevScrollTopRef = useRef<number>(0)
+
 
   const [isNearBottom, setIsNearBottom] = useState(true);
 
@@ -39,6 +42,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
     setOpenContextMenuMessageId(messageId)
   },[])
 
+
   useLayoutEffect(()=>{
 
     setPage(1)
@@ -51,6 +55,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
       }, 100);
 
       return ()=> {
+        clearExtraPreviousMessages(selectedChatDetails._id)
         clearTimeout(timeoutId)
       }
 
@@ -132,10 +137,10 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
 
   return (
     <>
-    {/* <p className='text-text'> total page {totalPages}</p>
+    <p className='text-text'> total page {totalPages}</p>
     <p className='text-text'>page {page}</p>
     <p className='text-text'>isFetcing {isFetching?"true":"false"}</p>
-    <p className='text-text'>bottom {isNearBottom?"true":"false"}</p> */}
+    <p className='text-text'>bottom {isNearBottom?"true":"false"}</p>
     
     <div ref={messageContainerRef} onScroll={handleScroll} className="relative flex h-full flex-col gap-y-4 max-xl:gap-y-2 overflow-y-auto overflow-x-hidden">
       

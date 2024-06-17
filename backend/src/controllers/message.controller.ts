@@ -90,17 +90,17 @@ const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFu
               }
             },
             {
+              $sort: {
+                createdAt: -1
+              }
+            },
+            {
                 $skip:calculateSkip(pageNumber,limitNumber)
             },
             {
                 $limit:limitNumber
             },
-            {
-                $sort: {
-                  createdAt: -1
-                }
-            },
-        ]
+          ]
     )
 
     const totalMessagesCount = await Message.countDocuments({ chat: new Types.ObjectId(id) });

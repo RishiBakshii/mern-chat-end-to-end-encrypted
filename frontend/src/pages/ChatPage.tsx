@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import Lottie from 'lottie-react'
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { Helmet } from "react-helmet-async"
 import { fishAnimation } from '../assets'
 import { ChatDetails } from "../components/chat/ChatDetails"
@@ -11,7 +11,6 @@ import { MessageList } from "../components/messages/MessageList"
 import { ChatListWithSearchSkeleton } from "../components/ui/skeleton/ChatListWithSearchSkeleton"
 import { MessageListSkeleton } from '../components/ui/skeleton/MessageListSkeleton'
 import { useFetchAttachments } from "../hooks/useAttachment/useFetchAttachments"
-import { useCallOut } from "../hooks/useCallIn/useCallOut"
 import { useFetchChats } from "../hooks/useChat/useFetchChats"
 import { useUpdateChatSelection } from "../hooks/useChat/useUpdateChatSelection"
 import { useUpdateUnreadChatAsSeen } from "../hooks/useChat/useUpdateUnreadChatAsSeen"
@@ -39,19 +38,18 @@ import { useUnreadMessageListener } from "../hooks/useEventListeners/useUnreadMe
 import { useVoteInListener } from "../hooks/useEventListeners/useVoteInListener"
 import { useVoteOutListener } from "../hooks/useEventListeners/useVoteOutListener"
 import { useFetchFriends } from "../hooks/useFriend/useFetchFriends"
-import { useClearAdditionalMessagesOnChatChange } from "../hooks/useMessages/useClearAdditionalMessagesOnChatChange"
 import { useFetchMessages } from "../hooks/useMessages/useFetchMessages"
 import { useToggleChatBar } from "../hooks/useUI/useToggleChatBar"
 import { useToggleChatDetailsBar } from "../hooks/useUI/useToggleChatDetailsBar"
+import { useCheckFcmTokenExists } from '../hooks/useUtils/useCheckFcmTokenExists'
 import { useGetChatAvatar } from "../hooks/useUtils/useGetChatAvatar"
 import { useGetChatName } from "../hooks/useUtils/useGetChatName"
 import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
 import { useSwipe } from '../hooks/useUtils/useSwipe'
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
-import { ICallOutEventPayloadData } from "../interfaces/callIn"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
-import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar, setNotificationPermissionForm } from "../services/redux/slices/uiSlice"
+import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 
 export const ChatPage = () => {
@@ -60,12 +58,13 @@ export const ChatPage = () => {
     const is640 =  useMediaQuery(640)
 
     const dispatch = useAppDispatch()
-    
-    const {isChatsFetching,chats} = useFetchChats()
+    useCheckFcmTokenExists()
     useFetchFriends()
     useFetchFriendRequest()
+    const {updateChatSelection} = useUpdateChatSelection()
+    
+    const {isChatsFetching,chats} = useFetchChats()
 
-    const updateSelectedChatId = useUpdateChatSelection()
     const toggleChatBar = useToggleChatBar()
     const toggleChatDetailsBar = useToggleChatDetailsBar()
     
@@ -75,11 +74,6 @@ export const ChatPage = () => {
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
     const messageContainerRef = useRef<HTMLDivElement>(null)
 
-    useEffect(()=>{
-        if(loggedInUser && !loggedInUser.fcmTokenExists){
-            dispatch(setNotificationPermissionForm(true))
-        }
-    },[loggedInUser])
     
     const chatLeftSwipe = ()=>{
         dispatch(setChatDetailsBar(true))
@@ -108,12 +102,10 @@ export const ChatPage = () => {
     
     
 
-    const {totalMessagePages,messages,isMessagesLoading} = useFetchMessages(selectedChatDetails?._id,1)
+    const {totalMessagePages,messages,isMessagesLoading} = useFetchMessages()
     
     const {fetchMoreAttachments,sharedMedia,isAttachmentsFetching} = useFetchAttachments()
     
-    
-    const clearExtraPreviousMessages = useClearAdditionalMessagesOnChatChange()
     
    // listeners
    useFriendRequestListener()
@@ -149,14 +141,6 @@ export const ChatPage = () => {
    const chatName = getChatName(selectedChatDetails,loggedInUser?._id)
    const chatAvatar= getChatAvatar(selectedChatDetails,loggedInUser?._id)
 
-   const callOut = useCallOut()
-
-   const handleCallOut = (payload: ICallOutEventPayloadData)=>{
-    callOut(payload)
-    // removeSpectatorById({spectatorChatId:payload.chat.chatId,spectatorId:payload.callee._id})
-
-   }
-
    const handleFetchMoreAttachments = (chatId:string,page:number)=>{
         fetchMoreAttachments({chatId,page})
    }
@@ -188,12 +172,11 @@ export const ChatPage = () => {
                         !isChatsFetching && chats && loggedInUser?
 
                         <ChatListWithSearch
-                            clearExtraPreviousMessages={clearExtraPreviousMessages}
                             chats={chats}
                             selectedChatDetails={selectedChatDetails}
                             loggedInUserId={loggedInUser._id}
                             toggleChatBar={toggleChatBar}
-                            updateSelectedChatId={updateSelectedChatId}
+                            updateSelectedChatId={updateChatSelection}
                             getChatAvatar={getChatAvatar}
                             getChatName={getChatName}
                         />
@@ -224,14 +207,13 @@ export const ChatPage = () => {
                                     selectedChatDetails={selectedChatDetails}
                                     totalMembers={selectedChatDetails.members.length}
                                     toggleChatDetailsBar={toggleChatDetailsBar}
-                                    handleCallOut={handleCallOut}
                                 />
                             }
 
                             {
-                                (!isMessagesLoading && selectedChatDetails && loggedInUser && totalMessagePages)?
+                                (!isMessagesLoading && messages!==undefined && selectedChatDetails && loggedInUser && totalMessagePages)?
                                 <MessageList
-                                    messages={messages || []}
+                                    messages={messages}
                                     totalPages={totalMessagePages}
                                     messageContainerRef={messageContainerRef}
                                     selectedChatDetails={selectedChatDetails}
@@ -283,16 +265,16 @@ export const ChatPage = () => {
                         !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar && sharedMedia &&
 
                         <ChatDetails
-                        isAdmin={selectedChatDetails.admin===loggedInUser._id}
-                        isGroupChat={selectedChatDetails.isGroupChat}
-                        chatName={chatName}
-                        chatAvatar={chatAvatar}
-                        members={selectedChatDetails.members}
-                        attachments={sharedMedia}
-                        isAttachmentsFetching={isAttachmentsFetching}
-                        selectedChatId={selectedChatDetails._id}
-                        toggleChatDetailsBar={toggleChatDetailsBar}
-                        fetchMoreAttachments={handleFetchMoreAttachments}
+                            isAdmin={selectedChatDetails.admin===loggedInUser._id}
+                            isGroupChat={selectedChatDetails.isGroupChat}
+                            chatName={chatName}
+                            chatAvatar={chatAvatar}
+                            members={selectedChatDetails.members}
+                            attachments={sharedMedia}
+                            isAttachmentsFetching={isAttachmentsFetching}
+                            selectedChatId={selectedChatDetails._id}
+                            toggleChatDetailsBar={toggleChatDetailsBar}
+                            fetchMoreAttachments={handleFetchMoreAttachments}
                         />
                     }
                 </motion.div>

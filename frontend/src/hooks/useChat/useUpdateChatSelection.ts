@@ -8,7 +8,7 @@ export const useUpdateChatSelection = () => {
 
     const {data:chats} = useGetChatsQuery()
     
-    return (chatId:string) =>{  
+    const updateChatSelection = (chatId:string) =>{  
 
         dispatch(updateSelectedChatId(chatId))
 
@@ -17,6 +17,10 @@ export const useUpdateChatSelection = () => {
         if(chatDetails) {
             dispatch(updateSelectedChatDetails(chatDetails))
         }
+    }
+
+    return {
+        updateChatSelection
     }
 
 }

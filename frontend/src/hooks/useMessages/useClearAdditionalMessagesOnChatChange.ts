@@ -5,13 +5,17 @@ export const useClearAdditionalMessagesOnChatChange = () => {
 
     const dispatch = useAppDispatch()
 
-    return (chatId:string) => {
+    const clearExtraPreviousMessages = (chatId:string) => {
 
         dispatch(
-            messageApi.util.updateQueryData("getMessagesByChatId",{_id:chatId,page:5},(draft)=>{
+            messageApi.util.updateQueryData("getMessagesByChatId",{_id:chatId,page:1},(draft)=>{
                 draft.messages = draft.messages.slice(0,20)
             })
         )
+    }
+
+    return {
+        clearExtraPreviousMessages
     }
 
 }

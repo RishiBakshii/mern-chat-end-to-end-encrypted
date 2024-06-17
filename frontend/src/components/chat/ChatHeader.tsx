@@ -1,11 +1,9 @@
 import { useMediaQuery } from "../../hooks/useUtils/useMediaQuery"
-import { ICallOutEventPayloadData } from "../../interfaces/callIn"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { formatRelativeTime } from "../../utils/helpers"
 import { ActiveDot } from "../ui/ActiveDot"
 
 type PropTypes = {
-  handleCallOut: (payload: ICallOutEventPayloadData) => void
   selectedChatName:string
   loggedInUserId:string
   totalMembers:number

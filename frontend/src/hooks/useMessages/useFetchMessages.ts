@@ -1,15 +1,20 @@
 import { useEffect } from "react"
 import { useGetMessages } from "./useGetMessages"
+import { useAppSelector } from "../../services/redux/store/hooks"
+import { selectSelectedChatId } from "../../services/redux/slices/chatSlice"
 
-export const useFetchMessages = (chatId:string | undefined,page:number) => {
+export const useFetchMessages = () => {
 
+    const selectedChatId = useAppSelector(selectSelectedChatId)
     const {getMessages,data,isFetching,isLoading} = useGetMessages()
 
     useEffect(()=>{
 
-        if(chatId) getMessages({_id:chatId,page},true)
+        if(selectedChatId) {
+            getMessages({_id:selectedChatId,page:1},true)
+        }
         
-    },[chatId])
+    },[selectedChatId])
 
     return {
         isMessagesFetching:isFetching,

@@ -11,10 +11,9 @@ type PropTypes = {
     toggleChatBar:()=>void
     getChatName: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
     getChatAvatar: (selectedChatDetails: IChatWithUnreadMessages | null, loggedInUserId: string | null | undefined) => string | undefined
-    clearExtraPreviousMessages: (chatId: string) => void
 }
 
-export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatDetails,clearExtraPreviousMessages,getChatAvatar,getChatName,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatDetails,getChatAvatar,getChatName,updateSelectedChatId,toggleChatBar}:PropTypes) => {
 
 
     const [searchVal,setSearchVal] = useState<string>("")
@@ -35,7 +34,6 @@ export const ChatListWithSearch = ({chats,loggedInUserId,selectedChatDetails,cle
         />
 
         <ChatList
-            clearExtraPreviousMessages={clearExtraPreviousMessages}
             selectedChatDetails={selectedChatDetails}
             chats={searchVal.trim().length ? filteredChats : chats} 
             updateSelectedChatId={updateSelectedChatId}

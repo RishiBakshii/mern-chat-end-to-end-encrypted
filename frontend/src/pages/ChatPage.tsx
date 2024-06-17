@@ -48,7 +48,7 @@ import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
 import { useSwipe } from '../hooks/useUtils/useSwipe'
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
-import { selectSelectedChatDetails } from "../services/redux/slices/chatSlice"
+import { selectSelectedChatDetails, selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
 
@@ -72,6 +72,7 @@ export const ChatPage = () => {
     const chatBar = useAppSelector(selectChatBar)
     const chatDetailsBar = useAppSelector(selectChatDetailsBar)
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
+    const selectedChatId = useAppSelector(selectSelectedChatId)
     const messageContainerRef = useRef<HTMLDivElement>(null)
 
     
@@ -213,6 +214,7 @@ export const ChatPage = () => {
                             {
                                 (!isMessagesLoading && messages!==undefined && selectedChatDetails && loggedInUser && totalMessagePages)?
                                 <MessageList
+                                    key={selectedChatId}
                                     messages={messages}
                                     totalPages={totalMessagePages}
                                     messageContainerRef={messageContainerRef}

@@ -40,7 +40,7 @@ export const MessageForm = () => {
     const isTyping = useDebounce(messageVal,350)
     useEmitTypingEvent(isTyping)
 
-    const sendMessage = useSendMessage()
+    const {sendMessage} = useSendMessage()
 
     const handleMessageSubmit = (e:React.FormEvent) => {
         e.stopPropagation()

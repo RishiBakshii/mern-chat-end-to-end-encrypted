@@ -23,6 +23,7 @@ export interface IMessage {
     isMultipleAnswers?:boolean
     createdAt:Date
     updatedAt:Date
+    isNew?:boolean
 }
 
 export interface IUnreadMessage {

@@ -9,7 +9,19 @@ export const useClearAdditionalMessagesOnChatChange = () => {
 
         dispatch(
             messageApi.util.updateQueryData("getMessagesByChatId",{_id:chatId,page:1},(draft)=>{
-                draft.messages = draft.messages.slice(0,20)
+
+                let messagesToKeep = []
+
+                const newMessages = draft.messages.filter(message=>message?.isNew)
+
+                if(newMessages.length > 20){
+                    messagesToKeep = draft.messages.slice(-20)
+                }
+                else{
+                    const difference = 20 - newMessages.length
+                    messagesToKeep = [...draft.messages.slice(0,difference),...newMessages]
+                }
+                draft.messages = messagesToKeep
             })
         )
     }

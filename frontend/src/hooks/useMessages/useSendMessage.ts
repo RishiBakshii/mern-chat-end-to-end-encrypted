@@ -15,7 +15,7 @@ export const useSendMessage = () => {
     const loggedInUserId = useAppSelector(selectLoggedInUser)?._id
     const getSharedKey = useGetSharedKey()
     
-    return async(messageVal?:string,url?:string,pollQuestion?:string,pollOptions?:Array<string>,isMultipleAnswers?:boolean)=>{
+    const sendMessage =  async(messageVal?:string,url?:string,pollQuestion?:string,pollOptions?:Array<string>,isMultipleAnswers?:boolean)=>{
 
 
         let encryptedMessage;
@@ -46,5 +46,9 @@ export const useSendMessage = () => {
             }
             socket?.emit(Events.MESSAGE,newMessage)
         }
+    }
+
+    return {
+        sendMessage
     }
 }

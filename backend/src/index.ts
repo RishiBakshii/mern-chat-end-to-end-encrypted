@@ -180,7 +180,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
             }
         ])
 
-        io.to(chat).emit(Events.MESSAGE,transformedMessage[0])
+        io.to(chat).emit(Events.MESSAGE,{...transformedMessage[0],isNew:true})
 
         // Handle unread messages for receivers
         const currentChat = await Chat.findById(chat,{members:1,_id:1}).populate<{members:Array<IUser>}>('members')

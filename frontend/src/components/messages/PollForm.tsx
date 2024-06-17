@@ -13,7 +13,7 @@ export const PollForm = () => {
 
 
 
-  const sendMessage = useSendMessage()
+  const {sendMessage} = useSendMessage()
   const {togglePollForm} = useTogglePoolForm()
 
   const [isMultipleAnswers,setIsMultipleAnswers] = useState<boolean>(false)

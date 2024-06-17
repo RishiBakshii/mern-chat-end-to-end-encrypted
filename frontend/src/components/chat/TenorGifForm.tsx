@@ -7,7 +7,7 @@ import { useToggleGif } from '../../hooks/useUI/useToggleGif';
 
 export const TenorGifForm = () => {
     
-    const sendMessage = useSendMessage()
+    const {sendMessage} = useSendMessage()
     const isDarkMode =  useAppSelector(selectisDarkMode)
     const {toggleGifForm} = useToggleGif()
 

@@ -1,7 +1,7 @@
 
 type PropTypes = {
     name?:string
-    register:any
+    register?:any
     error?:any
     placeholder?:string
     type?:"text" | "email" | "password"

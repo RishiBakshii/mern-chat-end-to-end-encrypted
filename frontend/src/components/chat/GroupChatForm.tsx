@@ -3,11 +3,14 @@ import { useEffect, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { ACCEPTED_IMAGE_TYPES, DEFAULT_AVATAR } from "../../constants"
+import { useCreateGroupChat } from "../../hooks/useChat/useCreateGroupChat"
+import { useToggleGroupChatForm } from "../../hooks/useUI/useToggleGroupChatForm"
+import { IFriend } from "../../interfaces/friends"
 import { GroupChatSchemaType, groupChatSchema } from "../../schemas/chat"
 import { useGetFriendsQuery } from "../../services/api/friendApi"
 import { FriendList } from "./FriendList"
-import { useCreateGroupChat } from "../../hooks/useChat/useCreateGroupChat"
-import { useToggleGroupChatForm } from "../../hooks/useUI/useToggleGroupChatForm"
+import { motion } from "framer-motion"
+import { CrossIcon } from "../ui/icons/CrossIcon"
 
 
 export const GroupChatForm = () => {
@@ -18,6 +21,14 @@ export const GroupChatForm = () => {
 
 
   const {data:friends} = useGetFriendsQuery()
+
+  const [filteredFriends,setFilteredFriends] = useState<Array<IFriend>>([])
+  const [searchVal,setSearchVal] = useState<string>('')
+
+  useEffect(()=>{
+    if(friends) setFilteredFriends(friends?.filter(friend=>friend.username.toLowerCase().includes(searchVal.toLowerCase())))
+    
+  },[searchVal,friends])
 
   const {createChat,isSuccess} = useCreateGroupChat()
   const toggleGroupChatForm = useToggleGroupChatForm()
@@ -68,7 +79,12 @@ export const GroupChatForm = () => {
       setSelectedMembers(prev=>prev.filter((member)=>member!==newMember))
     }
     else{
-      setSelectedMembers(prev=>[...prev,newMember])
+      if(selectedMembers.length===30){
+        toast.error("Group with more than 30 members cannot be created")
+      }
+      else{
+        setSelectedMembers(prev=>[...prev,newMember])
+      }
     }
   }
   
@@ -108,23 +124,39 @@ export const GroupChatForm = () => {
             {/* member selection */}
             <div className="flex flex-col gap-y-3">
               <h4 className="">Select Members</h4>
+              
+              <div className="flex flex-col gap-y-4 min-w-[32rem] max-w-[32rem] max-sm:min-w-[auto]">
 
-              {
-                (friends && friends.length)? 
+              <div className="flex items-center bg-background text-text rounded-md">
+                  <input value={searchVal} onChange={e=>setSearchVal(e.target.value)} className="p-3 w-full rounded outline-none  text-text bg-background" placeholder="Search friends" />
+                  {
+                  searchVal.trim().length>0 && 
+                    <motion.button className="mr-2" initial={{opacity:0,y:2}} animate={{opacity:1,y:0}} onClick={()=>setSearchVal('')}>
+                      <CrossIcon/>
+                    </motion.button>
+                  }
+                </div>
+                  
+                  <div className="max-h-56 overflow-y-auto">
+                    {
+                      (friends && friends.length)? 
 
-                <FriendList
-                  friends={friends}
-                  handleAddOrRemoveMember={handleAddOrRemoveMember}
-                  selectedMembers={selectedMembers}
-                />
-                :
-                'You currently have no friends 🐱'
-                
-              }
+                      <FriendList
+                        friends={filteredFriends || friends}
+                        handleAddOrRemoveMember={handleAddOrRemoveMember}
+                        selectedMembers={selectedMembers}
+                      />
+                      :
+                      'You currently have no friends 🐱'
+                      
+                    }
+                  </div>
+              </div>
+
             </div>
         </div>
 
-        <button type="submit" className="px-6 py-2 bg-primary text-white rounded shadow-lg">Create group</button>
+        <button type="submit" className="px-6 py-2 bg-primary text-white rounded shadow-lg">Create group {selectedMembers.length?`with ${selectedMembers.length===1?"1 member":`${selectedMembers.length} members`}`:null}</button>
       </form>
 
     </div>

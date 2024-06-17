@@ -78,7 +78,7 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
       if(page === totalPages) setHasMore(false)
     }
 
-  },[page,totalPages,selectedChatDetails])
+  },[page,totalPages])
 
 
   const handleScroll = useCallback(() => {

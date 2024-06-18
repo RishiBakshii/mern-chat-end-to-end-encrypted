@@ -74,25 +74,56 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 - **🚮 Rimraf**: A deep deletion module for Node.js.
 
 
-## Getting Started 🚀
+### Getting Started 🚀
 
 To get started with Baatchit, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/RishiBakshii/Baatchit`
 2. Navigate to the project directory: `cd Baatchit`
-3. Install dependencies: `npm install`
-4. Start the development server: `npm run dev`
-5. Visit `http://localhost:5173` in your browser to access the application.
 
+### Setting Up Environment Variables 🌐
 
-## Setting Up Environment Variables 🌐
+Before starting the application, ensure you set up the necessary environment variables. Both the frontend and backend have a `.env.example` file provided. Follow these steps:
 
-Both the frontend and backend have a `.env.example` file provided. Follow these steps to set up the environment variables:
+1. **Copy the provided `.env.example` file**: Use this file to create your own `.env` file in both the frontend and backend directories.
+   
+2. **Update `.env` with your credentials**: Open the `.env` file in each directory (`frontend` and `backend`) and replace the placeholder values with your actual credentials and secrets. This includes API keys, database URLs, and any other sensitive information required by the application.
 
-1. Copy the provided `.env.example` file to create your own `.env` file:
-2. Open the `.env` file and replace the placeholder values with your actual credentials and secrets.
+3. **Set up Firebase Admin credentials**:
+   - In the `backend/src` directory, create a file named `firebase-admin-cred.json`.
+   - Place your Firebase service account credentials in this file. Ensure the path to this file matches the `GOOGLE_APPLICATION_CREDENTIALS` environment variable in your `.env` file. For example:
+     ```
+     GOOGLE_APPLICATION_CREDENTIALS=src/firebase-admin-cred.json
+     ```
+   - If you choose a different name or path for the credentials file, make sure the `GOOGLE_APPLICATION_CREDENTIALS` variable reflects this.
 
-This ensures that both the frontend and backend applications have the necessary configurations for seamless operation.
+4. **Save and verify**: Save the `.env` files once you have updated them with your details. Verify that all necessary variables are correctly set to ensure the application functions as intended.
+
+5. **Important**: Do not commit your `.env` files to version control systems like Git (ensure they are listed in your `.gitignore` files).
+
+### Installing Dependencies and Starting the Application 🛠️
+
+Now that you have set up your environment variables, proceed with the following steps to install dependencies and start the frontend and backend servers:
+
+1. **Frontend**:
+   - Open a terminal and navigate to the `frontend` directory: `cd frontend`
+   - Install dependencies: `npm install`
+   - Start the frontend development server: `npm run dev`
+   - Visit `http://localhost:5173` in your browser to access the frontend application.
+
+2. **Backend**:
+   - Open another terminal (or split your terminal window if supported) and navigate to the `backend` directory: `cd ../backend`
+   - Install dependencies: `npm install`
+   - Start the backend server: `npm run dev`
+   - Ensure the backend server is running correctly to support the frontend functionalities.
+
+### Tip: Using Split Terminals
+
+To efficiently manage both frontend and backend servers simultaneously, consider using split terminals:
+
+- **VS Code**: Right-click on the terminal and choose "Split Terminal." Navigate to each directory (`frontend` and `backend`) in separate terminals for easy monitoring and debugging.
+
+By following these steps and tips, you ensure that both frontend and backend dependencies are installed correctly, environment variables are properly configured, and you optimize your development setup with split terminals for efficient development and debugging.
 
 ## Contributing 🤝
 

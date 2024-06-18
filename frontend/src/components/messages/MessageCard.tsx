@@ -4,6 +4,7 @@ import type { IMessage } from "../../interfaces/messages";
 import { ContextMenu } from "../shared/ContextMenu";
 import { RenderAppropriateMessage } from "./RenderAppropriateMessage";
 import { IChatWithUnreadMessages } from '../../interfaces/chat';
+import { format } from 'date-fns';
 
 type PropTypes = {
     editMessageId:string | undefined,
@@ -79,6 +80,8 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedCh
                    setEditMessageId={setEditMessageId}
                    setOpenContextMenuMessageId={setOpenContextMenuMessageId}
                 />
+
+                <p className={`ml-auto text-xs ${myMessage?'text-gray-200':"text-secondary-darker"}`}>{format(message.createdAt,'h:mm a').toLowerCase()}</p>
         </div>
     </motion.div>
   )

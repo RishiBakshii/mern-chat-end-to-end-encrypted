@@ -27,15 +27,23 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 
 ### Frontend Technologies Used:
 - **⚛️ React**: A JavaScript library for building user interfaces.
-- **🔗 React Router**: Declarative routing for React applications.
+- **🔗 React Router Dom**: Declarative routing for React applications.
 - **🛠️ Redux Toolkit**: An opinionated, batteries-included toolset for efficient Redux development.
 - **🔄 Socket.IO Client**: Real-time bidirectional event-based communication library for web applications.
-- **📑 React Hook Form**: Performant, flexible and extensible forms with easy-to-use validation.
+- **📑 React Hook Form**: Performant, flexible, and extensible forms with easy-to-use validation.
 - **📝 Zod**: A TypeScript-first schema declaration and validation library.
 - **🎥 Framer Motion**: A production-ready motion library for React.
 - **🎬 Lottie React**: Render After Effects animations on React-based web apps.
 - **🖼️ Gif Picker React**: Provides a simple and easy-to-use UI for selecting GIFs.
 - **🔔 React Hot Toast**: Toast notifications for React applications.
+- **💅 Tailwind CSS**: A utility-first CSS framework for rapid UI development.
+- **🔥 Firebase**: A platform developed by Google for creating mobile and web applications, used in this project for push notifications only.
+- **🧠 Lodash**: A JavaScript library which provides utility functions for common programming tasks.
+- **📅 Date-fns**: Modern JavaScript date utility library.
+- **🛡️ React Helmet Async**: Handle changes to the document head in a React application.
+- **🦺 TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
+- **⚡ Vite**: A build tool that aims to provide a faster and leaner development experience for modern web projects.
+- **🔌 Vite Plugin PWA**: Plugin for adding PWA capabilities to Vite applications.
 
 ### Backend Technologies Used:
 - **🟢 Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
@@ -52,9 +60,19 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 - **📤 Multer**: Middleware for handling `multipart/form-data`, primarily used for file uploads.
 - **📧 Nodemailer**: Module for sending emails from Node.js applications.
 - **🔑 Passport**: Authentication middleware for Node.js.
-- **🐙 Passport-Github2**: Passport strategy for authenticating with GitHub using OAuth 2.0.
 - **🔍 Passport-Google-Oauth20**: Passport strategy for authenticating with Google using OAuth 2.0.
 - **🔢 UUID**: Library for generating universally unique identifiers (UUIDs).
+- **🍪 Cookie**: Simple cookie parsing and serialization.
+- **🍪 Cookie-Parser**: Parse Cookie header and populate `req.cookies` with an object keyed by cookie names.
+- **🔥 Firebase Admin**: Firebase Admin SDK for access to Firebase services.
+- **🧩 Zod**: TypeScript-first schema declaration and validation library.
+- **🛠️ Typescript**: A typed superset of JavaScript that compiles to plain JavaScript.
+- **🔧 Concurrently**: Run multiple commands concurrently.
+- **🔧 Cross-Env**: Run scripts that set and use environment variables across platforms.
+- **♻️ Nodemon**: Automatically restart Node.js applications on code changes.
+- **🛠️ Pre-Commit**: Pre-commit hook runner.
+- **🚮 Rimraf**: A deep deletion module for Node.js.
+
 
 ## Getting Started 🚀
 

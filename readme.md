@@ -22,6 +22,7 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 - **🎉 GIF Sending**: Express yourself with animated GIFs using the integrated Tenor GIF library.
 - **📊 Polling**: Send polls with either multiple votes set to true or false, allowing users to gather opinions and feedback.
 - **🔒 OAuth Integration**: Sign in easily using social login options like GitHub and Google.
+- **📱 Progressive Web App (PWA)**: Install the app on your phone or desktop and enjoy a native app-like experience.
 
 ## Technologies Used 🛠️
 

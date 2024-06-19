@@ -27,7 +27,6 @@ export const MessageForm = () => {
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         event.stopPropagation()
-        event.preventDefault()
         if (pickerRef.current && !(pickerRef.current as any).contains(event.target)) {
           setEmojiForm(false)
         }

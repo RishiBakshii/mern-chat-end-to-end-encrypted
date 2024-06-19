@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
 import { ACCEPTED_FILE_MIME_TYPES } from "../../constants"
 import { useSendAttachments } from '../../hooks/useAttachment/useSendAttachments'
@@ -13,11 +13,33 @@ import { useAppSelector } from "../../services/redux/store/hooks"
 import { MessageInput } from "../ui/MessageInput"
 import { GalleryIcon } from '../ui/icons/GalleryIcon'
 import { PollingIcon } from '../ui/icons/PollingIcon'
+import { EmojiPickerForm } from '../emoji/EmojiPickerForm'
+import { useMediaQuery } from '../../hooks/useUtils/useMediaQuery'
 
 export const MessageForm = () => {
 
     const {toggleGifForm} = useToggleGif()
     const {togglePollForm} = useTogglePoolForm()
+
+    const pickerRef = useRef<HTMLDivElement>(null);
+
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        event.stopPropagation()
+        event.preventDefault()
+        if (pickerRef.current && !(pickerRef.current as any).contains(event.target)) {
+          setEmojiForm(false)
+        }
+      };
+  
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+   }, []);
+
+    const is640 = useMediaQuery(640)
 
     const [messageVal,setMessageVal] = useState<string>('')
 
@@ -25,6 +47,7 @@ export const MessageForm = () => {
     const [attachmentsPreview,setAttachmentsPreview] = useState<Array<string>>()
 
     const [attachmentsMenu,setAttachmentsMenu] = useState<boolean>(false)
+    const [emojiForm,setEmojiForm] = useState<boolean>(false)
 
     const selectedChatDetails = useAppSelector(selectSelectedChatDetails)
 
@@ -36,6 +59,10 @@ export const MessageForm = () => {
         setAttachmentsPreview(selectedAttachments.map(attachment=>URL.createObjectURL(attachment)))
       }
     },[selectedAttachments])
+
+    useEffect(()=>{
+      console.log('emojiForm',emojiForm);
+    },[emojiForm])
 
     const isTyping = useDebounce(messageVal,350)
     useEmitTypingEvent(isTyping)
@@ -49,6 +76,7 @@ export const MessageForm = () => {
 
         if(messageVal.trim().length){
           sendMessage(messageVal,undefined)
+          setEmojiForm(false)
         }
     }
 
@@ -105,6 +133,10 @@ export const MessageForm = () => {
       }
       setSelectedAttachments(selectedAttachments?.filter((_,index)=>index!==indexToBeRemoved))
 
+    }
+
+    const handleEmojiSelect = (e:any)=>{
+      setMessageVal(val=>val+e.native)
     }
 
     const handlePollClick = ()=>{
@@ -166,12 +198,32 @@ export const MessageForm = () => {
         }
         </AnimatePresence>
 
+        <AnimatePresence>
+        
+        {
+          emojiForm && 
+          <motion.div ref={pickerRef} variants={{hide:{y:40,opacity:0},show:{y:0,opacity:1}}} initial="hide" exit={"hide"} animate="show" className="absolute bottom-20 left-0">
+              <EmojiPickerForm
+                emojiButtonSize={is640?30:36}
+                emojiSize={is640?24:24}
+                onEmojiSelect={handleEmojiSelect}
+              />
+          </motion.div>
+        }
+        </AnimatePresence>
+
+
         <MessageInput
           handleFileChange={handleFileChange} 
           toggleGif={toggleGifForm} 
           messageVal={messageVal} 
           setMessageVal={setMessageVal}
           toggleAttachmentsMenu={setAttachmentsMenu}
+          toggleEmojiForm={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
+            e.stopPropagation();
+            e.preventDefault();
+            setEmojiForm(prev=>!prev)
+          }}
         />
     </form>
   )

@@ -3,6 +3,7 @@ import { useDynamicRowValue } from '../../hooks/useUtils/useDynamicRowValue';
 import { AttachmentIcon } from './icons/AttachmentIcon';
 import { GifIcon } from './icons/GifIcon';
 import { SendIcon } from './icons/SendIcon';
+import { SmileIcon } from './icons/SmileIcon';
 
 type PropTypes = {
   messageVal: string;
@@ -10,9 +11,10 @@ type PropTypes = {
   setMessageVal: React.Dispatch<React.SetStateAction<string>>;
   toggleGif:()=>void
   toggleAttachmentsMenu: React.Dispatch<React.SetStateAction<boolean>>
+  toggleEmojiForm:(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 };
 
-export const MessageInput = ({ messageVal, setMessageVal,toggleGif,toggleAttachmentsMenu }: PropTypes) => {
+export const MessageInput = ({ messageVal, setMessageVal,toggleGif,toggleAttachmentsMenu,toggleEmojiForm}: PropTypes) => {
 
   const {getRowValue} = useDynamicRowValue()
 
@@ -27,6 +29,9 @@ export const MessageInput = ({ messageVal, setMessageVal,toggleGif,toggleAttachm
   return (
     <div className="flex rounded-xl text-text items-center bg-secondary">
 
+      <button type='button' onClick={toggleEmojiForm}>
+        <SmileIcon/>
+      </button>
 
       <textarea
         value={messageVal}

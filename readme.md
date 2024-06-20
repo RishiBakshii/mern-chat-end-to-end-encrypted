@@ -120,11 +120,29 @@ Now that you have set up your environment variables, proceed with the following 
 
 ### Tip: Using Split Terminals
 
-To efficiently manage both frontend and backend servers simultaneously, consider using split terminals:
+To manage frontend and backend servers simultaneously:
 
-- **VS Code**: Right-click on the terminal and choose "Split Terminal." Navigate to each directory (`frontend` and `backend`) in separate terminals for easy monitoring and debugging.
+- **VS Code**: Right-click on the terminal and choose "Split Terminal." Navigate to the frontend and backend directories in separate terminals for easy monitoring.
 
-By following these steps and tips, you ensure that both frontend and backend dependencies are installed correctly, environment variables are properly configured, and you optimize your development setup with split terminals for efficient development and debugging.
+
+### Running the Application with Docker 🐳
+
+You can also use Docker to containerize and run Baatchit. Follow these steps to set up and run the application using Docker:
+
+1. **Build and Start Containers**:
+   - Ensure you have Docker and Docker Compose installed on your machine.
+   - Open a terminal and navigate to the project directory: `cd Baatchit`
+   - Build and start the containers: `docker-compose up --build`
+
+2. **Access the Application**:
+   - The frontend will be available at `http://localhost:5173`
+   - The backend will be available at `http://localhost:8000`
+   - MongoDB will be available at `mongodb://localhost:27017`
+
+3. **Stopping the Containers**:
+   - To stop the containers, press `Ctrl+C` in the terminal where `docker-compose` is running.
+   - Alternatively, you can run: `docker-compose down` to stop and remove the containers.
+
 
 ## Contributing 🤝
 

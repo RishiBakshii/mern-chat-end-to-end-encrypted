@@ -70,7 +70,6 @@ export const RenderAppropriateMessage = ({isGroupChat,myMessage,selectedChatDeta
          content={message.content}
          isGroupChat={isGroupChat}
          sharedKey={sharedKey}
-         isEdited={message.isEdited}
         />
 
     }

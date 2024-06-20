@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=PRODUCTION node dist/index.js",
-    "dev": "concurrently \"tsc -w\" \"cross-env NODE_ENV=DEVELOPMENT nodemon dist/index.js\"",
+    "dev": "concurrently \"tsc -w\" \"cross-env NODE_ENV=DEVELOPMENT cross-env MONGO_URI=mongodb://localhost:27017/baatchit nodemon dist/index.js\"",
     "ts.check": "tsc --project tsconfig.json",
     "build": "rimraf dist && tsc",
     "add-build": "git add dist"

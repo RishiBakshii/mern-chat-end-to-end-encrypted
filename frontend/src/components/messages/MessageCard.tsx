@@ -80,8 +80,13 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,selectedCh
                    setEditMessageId={setEditMessageId}
                    setOpenContextMenuMessageId={setOpenContextMenuMessageId}
                 />
-
-                <p className={`ml-auto text-xs ${myMessage?'text-gray-200':"text-secondary-darker"}`}>{format(message.createdAt,'h:mm a').toLowerCase()}</p>
+                
+                <div className='flex items-center ml-auto gap-x-1 flex-nowrap shrink-0'>
+                    {
+                        message?.isEdited && <p className="text-secondary font-medim text-sm max-sm:text-xs">Edited</p>
+                    }       
+                    <p className={`text-xs ${myMessage?'text-gray-200':"text-secondary-darker"}`}>{format(message.createdAt,'h:mm a').toLowerCase()}</p>
+                </div>
         </div>
     </motion.div>
   )

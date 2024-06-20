@@ -3,7 +3,6 @@ import { decryptMessage } from "../../utils/encryption"
 import { EditMessageForm } from "./EditMessageForm"
 
 type PropTypes = {
-    isEdited:boolean | undefined
     sharedKey: CryptoKey | undefined
     content:string
     messageId:string
@@ -13,7 +12,7 @@ type PropTypes = {
     setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export const Message = ({content,isEdited,sharedKey,isGroupChat,messageId,editMessageId,setEditMessageId,setOpenContextMenuMessageId}:PropTypes) => {
+export const Message = ({content,sharedKey,isGroupChat,messageId,editMessageId,setEditMessageId,setOpenContextMenuMessageId}:PropTypes) => {
 
     const [decryptedMessage,setDecryptedMessage] = useState<string>('')
     const isMessageLong = content.length>500
@@ -63,9 +62,6 @@ export const Message = ({content,isEdited,sharedKey,isGroupChat,messageId,editMe
                 </span>
             }
         </span>
-        {
-            isEdited && <p className="text-secondary self-end font-medim text-sm max-sm:text-xs">Edited</p>
-        }
         </>
     
   )

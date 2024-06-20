@@ -1,0 +1,48 @@
+version: '3.8'  # Specify the version of Compose file format
+
+services:
+
+  frontend:
+    build:
+      context: ./frontend  # Path to your frontend Dockerfile
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "80:5173"  # Map container port to host port
+    networks:
+      - chat-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend  # Path to your backend Dockerfile
+    ports:
+      - "8000:8000"  # Map container port to host port
+    env_file:
+      - ./backend/.env
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=dist/firebase-admin-cred.json
+      - MONGO_URL=mongodb://mongo:27017/baatchit
+    depends_on:
+      - mongo
+    networks:
+      - chat-network
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - chat-network
+
+networks:
+  chat-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

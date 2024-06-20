@@ -1,9 +1,9 @@
 {
+  "type": "module",
   "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=PRODUCTION node dist/index.js",
     "dev": "concurrently \"tsc -w\" \"cross-env NODE_ENV=DEVELOPMENT nodemon dist/index.js\"",

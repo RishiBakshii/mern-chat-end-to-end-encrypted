@@ -20,7 +20,19 @@ export const ChatList = memo(({chats,loggedInUserId,selectedChatDetails,updateSe
     <>
     <div className="flex flex-col gap-y-4">
         {
-          [...chats].sort((a,b)=>b.unreadMessages.count - a.unreadMessages.count).map(chat=>(
+          
+          [...chats].sort((a, b) => {
+            // Primary sort by unread message count in descending order
+            if (b.unreadMessages.count !== a.unreadMessages.count) {
+              return b.unreadMessages.count - a.unreadMessages.count;
+            } else {
+              // Secondary sort by latest message timestamp in descending order
+              const aTime = new Date(a.latestMessage?.createdAt || a.createdAt).getTime();
+              const bTime = new Date(b.latestMessage?.createdAt || b.createdAt).getTime();
+              return bTime - aTime;
+            }
+          })
+          .map(chat=>(
 
             <ChatCard
               key={chat._id}

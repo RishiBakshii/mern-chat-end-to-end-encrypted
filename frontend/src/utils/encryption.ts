@@ -217,7 +217,6 @@ const convertJwkToCryptoKey = async (jwk: JsonWebKey, isPrivate: boolean): Promi
 
     return key;
   } catch (error) {
-    // console.log(error);
     throw error; // Ensure that errors are still thrown to the calling context
   }
 };

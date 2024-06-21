@@ -57,10 +57,6 @@ export const MessageForm = () => {
       }
     },[selectedAttachments])
 
-    useEffect(()=>{
-      console.log('emojiForm',emojiForm);
-    },[emojiForm])
-
     const isTyping = useDebounce(messageVal,350)
     useEmitTypingEvent(isTyping)
 

@@ -23,6 +23,7 @@ export const EmojiPickerForm = ({onEmojiClick,reactionsDefaultOpen=false}:PropTy
       onReactionClick={onEmojiClick}
       theme={isDarkMode?Theme.DARK:Theme.LIGHT}
       width={is375?305:350}
+      autoFocusSearch={false}
       height={450}
     />
   );

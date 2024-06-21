@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { useRef } from 'react'
 import { useLogout } from "../../hooks/useAuth/useLogout"
 import { useOpenAddFriendForm } from "../../hooks/useUI/useOpenAddFriendForm"
 import { useOpenFriendRequestForm } from "../../hooks/useUI/useOpenFriendRequestForm"
@@ -6,6 +7,8 @@ import { useOpenProfileForm } from "../../hooks/useUI/useOpenProfileForm"
 import { useToggleChatBar } from "../../hooks/useUI/useToggleChatBar"
 import { useToggleGroupChatForm } from '../../hooks/useUI/useToggleGroupChatForm'
 import { useToggleNavMenu } from "../../hooks/useUI/useToggleNavMenu"
+import { useToggleSettingsForm } from '../../hooks/useUI/useToggleSettingsForm'
+import { useClickOutside } from '../../hooks/useUtils/useClickOutside'
 import { useUpdateTheme } from "../../hooks/useUtils/useUpdateTheme"
 import { useGetUserFriendRequestsQuery } from "../../services/api/requestApi"
 import { selectLoggedInUser } from "../../services/redux/slices/authSlice"
@@ -15,20 +18,18 @@ import { ChatBarHamburger } from "../chat/ChatBarHamburger"
 import { Avatar } from "../ui/Avatar"
 import { FriendRequestButton } from "./FriendRequestButton"
 import { NavMenu } from "./NavMenu"
-import { useToggleSettingsForm } from '../../hooks/useUI/useToggleSettingsForm'
 
 export const Navbar = () => {
 
 
   const isNavMenuOpen = useAppSelector(selectNavMenu)
+  const navMenuRef = useRef<HTMLUListElement>(null)
 
   const {data:friendRequests} = useGetUserFriendRequestsQuery()
 
 
   const isDarkMode = useAppSelector(selectisDarkMode)
   const toggleNavMenu = useToggleNavMenu()
-
-
 
 
   const openNewGroupChatForm = useToggleGroupChatForm()
@@ -40,6 +41,8 @@ export const Navbar = () => {
   const toggleSettingsForm = useToggleSettingsForm()
 
   const loggedInUser = useAppSelector(selectLoggedInUser)
+
+  useClickOutside(navMenuRef,()=>toggleNavMenu())
 
 
   const updateTheme = useUpdateTheme() 
@@ -98,11 +101,12 @@ export const Navbar = () => {
                       <motion.div variants={{hide:{y:-5,opacity:0},show:{y:0,opacity:1}}} initial="hide" animate="show" exit="hide"  className="bg-secondary-dark w-[15rem] max-lg:md:right-28 max-md:right-1 self-end fixed rounded-lg shadow-2xl p-4 z-50">
 
                         <NavMenu 
-                        openSettingsForm={toggleSettingsForm}
-                        openProfileForm={openProfileForm}
-                        openAddFriendForm={openAddFriendForm}
-                        openNewGroupChatForm={openNewGroupChatForm}
-                        logoutUser={logoutUser}
+                          openSettingsForm={toggleSettingsForm}
+                          openProfileForm={openProfileForm}
+                          openAddFriendForm={openAddFriendForm}
+                          openNewGroupChatForm={openNewGroupChatForm}
+                          logoutUser={logoutUser}
+                          ref={navMenuRef}
                         />
 
                       </motion.div>

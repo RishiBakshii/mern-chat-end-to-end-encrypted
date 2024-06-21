@@ -1,3 +1,4 @@
+import { forwardRef } from "react"
 
 type PropTypes = {
     openProfileForm:()=>void,
@@ -5,11 +6,12 @@ type PropTypes = {
     openNewGroupChatForm:()=>void,
     openSettingsForm:()=>void,
     logoutUser:()=>void
+    ref:React.RefObject<HTMLUListElement>
 }
 
-export const NavMenu = ({openProfileForm,openAddFriendForm,openNewGroupChatForm,logoutUser,openSettingsForm}:PropTypes) => {
+export const NavMenu = forwardRef<HTMLUListElement,PropTypes>(({openProfileForm,openAddFriendForm,openNewGroupChatForm,logoutUser,openSettingsForm}:PropTypes,ref) => {
   return (
-    <ul>
+    <ul ref={ref}>
 
         <li onClick={openProfileForm} className="cursor-pointer flex item-center gap-x-2 hover:bg-secondary-dark p-2 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-primary">
@@ -50,4 +52,4 @@ export const NavMenu = ({openProfileForm,openAddFriendForm,openNewGroupChatForm,
 
     </ul>
   )
-}
+})

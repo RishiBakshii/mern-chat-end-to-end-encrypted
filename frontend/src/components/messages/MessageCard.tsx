@@ -155,10 +155,10 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,reactionMe
                                     <div onClick={()=>reaction.user?._id === loggedInUserId ?deleteReaction({chatId:selectedChatDetails._id,messageId:message._id}):''} key={reaction.user?._id} className={`flex items-center justify-between ${reaction?.user?._id === loggedInUserId?"cursor-pointer":""}`}>
 
                                         <div className='flex items-center gap-x-3'>
-                                            <img className='rounded-full size-10' src={reaction.user.avatar} alt={reaction.user.username} />
+                                            <img className='rounded-full size-10' src={reaction?.user?.avatar} alt={reaction?.user?.username} />
                                             
                                             <div className='flex flex-col'>
-                                                <p>{reaction.user.username}</p>
+                                                <p>{reaction.user?.username}</p>
                                                 {
                                                     reaction.user._id === loggedInUserId && 
                                                     <p className='text-sm'>Tap to remove</p>

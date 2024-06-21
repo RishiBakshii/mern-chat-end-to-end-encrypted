@@ -17,6 +17,7 @@ Baatchit is a modern real-time chat application designed to facilitate seamless 
 - **⌨️ Typing Indicators**: See when other users are typing to enhance communication flow.
 - **✔️ Message Seen Status**: Know when your messages have been seen by other users.
 - **✏️ Edit Messages**: Edit your messages in real-time, with updates reflected instantly for all users and an indication that the message has been edited.
+- **😀 Message Reactions**: React to messages with emojis to express your feelings and engage more interactively, including double-tap to like or unlike a message.
 - **🗑️ Delete Message**: Delete messages after sending them ensuring full control over your conversation
 - **📁 File Sharing**: Share files and documents securely within chats.
 - **🎉 GIF Sending**: Express yourself with animated GIFs using the integrated Tenor GIF library.

@@ -120,6 +120,17 @@ const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFu
               }
             },
             {
+              $addFields: {
+                reactions: {
+                  $cond: {
+                    if: { $eq: ["$reactions", [{}]] },
+                    then: [],
+                    else: "$reactions"
+                  }
+                }
+              }
+            },
+            {
               $sort: {
                 createdAt: -1
               }

@@ -59,7 +59,7 @@ export const ChatHeader = ({loggedInUserId,totalMembers,selectedChatDetails,last
                   <div className="flex flex-col gap-y-1 max-sm:gap-y-[.5px]">
 
                       <div className="flex items-center gap-x-1">
-                          <h4 className="font-medium text-4xl max-sm:text-2xl">{chatName}</h4>
+                          <h4 className="font-medium text-4xl max-sm:text-2xl">{chatName.substring(0,16)}</h4>
                           {
                             !isGroupChat && otherMember.verificationBadge &&
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 max-sm:size-5">

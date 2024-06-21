@@ -24,7 +24,6 @@ import requestRoutes from './routes/request.router.js'
 import userRoutes from './routes/user.router.js'
 
 import { Types } from 'mongoose'
-import { messaging } from './config/firebase.config.js'
 import { Events } from './enums/event/event.enum.js'
 import { ICallAcceptEventReceiveData, ICallInRequestEventPayloadData, ICallOutEventReceiveData } from './interfaces/callIn/callIn.interface.js'
 import { IUnreadMessageEventPayload } from './interfaces/unread-message/unread-message.interface.js'
@@ -33,9 +32,8 @@ import { Chat } from './models/chat.model.js'
 import { Message } from './models/message.model.js'
 import { UnreadMessage } from './models/unread-message.model.js'
 import { User } from './models/user.model.js'
-import { getRandomIndex, sendPushNotification } from './utils/generic.js'
-import { notificationTitles } from './constants/notification-title.contant.js'
 import { deleteFilesFromCloudinary } from './utils/auth.util.js'
+import { sendPushNotification } from './utils/generic.js'
 
 
 const app=express()

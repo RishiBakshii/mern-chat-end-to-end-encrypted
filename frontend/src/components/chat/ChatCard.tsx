@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react"
 import { decryptMessage } from "../../utils/encryption"
 import { RenderAppropriateUnreadMessage } from "../messages/RenderAppropriateUnreadMessage"
 import { formatRelativeTime } from "../../utils/helpers"
+import { VerificationBadgeIcon } from "../ui/icons/VerificationBadgeIcon"
 
 type PropTypes = {
   chatId:string
@@ -18,14 +19,14 @@ type PropTypes = {
   latestMessage:IMessage
   loggedInUserId:string
   isTyping:boolean
-  isMd:boolean
+  isLg:boolean
   createdAt:Date
   selectedChatDetails:IChatWithUnreadMessages | undefined | null
   updateSelectedChatId:(chatId:string)=>void
   toggleChatBar:()=>void
 }
 
-export const ChatCard = ({chatName,isGroupChat,createdAt,loggedInUserId,latestMessage,members,selectedChatDetails,avatar,isMd,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
+export const ChatCard = ({chatName,isGroupChat,createdAt,loggedInUserId,latestMessage,members,selectedChatDetails,avatar,isLg,chatId,unreadMessage,isTyping,updateSelectedChatId,toggleChatBar}:PropTypes) => {
 
   const getSharedKey =  useGetSharedKey()
 
@@ -79,7 +80,7 @@ export const ChatCard = ({chatName,isGroupChat,createdAt,loggedInUserId,latestMe
       updateSelectedChatId(chatId)
     }
 
-    if(isMd){
+    if(isLg){
       toggleChatBar()
     }
 
@@ -120,16 +121,11 @@ export const ChatCard = ({chatName,isGroupChat,createdAt,loggedInUserId,latestMe
             <div className="flex items-center gap-x-2 justify-between w-full">
 
                 <div className="flex items-center gap-x-1">
-                    <p className="font-medium">{chatName}</p>
 
-                    {
-                      !isGroupChat && otherMember?.verificationBadge && 
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-                      </svg>
-                    }
-
+                    <p className="font-medium break-words">{chatName.substring(0,16)}</p>
+                    {!isGroupChat && otherMember?.verificationBadge && <VerificationBadgeIcon/>}
                     {renderOnlineStatus()}
+                
                 </div>
                 
         

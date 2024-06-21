@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion'
-import Lottie from 'lottie-react'
 import { useRef } from "react"
 import { Helmet } from "react-helmet-async"
-import { fishAnimation } from '../assets'
 import { ChatDetails } from "../components/chat/ChatDetails"
 import { ChatHeader } from "../components/chat/ChatHeader"
 import { ChatListWithSearch } from "../components/chat/ChatListWithSearch"
+import { DefaultChatView } from '../components/chat/DefaultChatView'
 import { MessageForm } from "../components/chat/MessageForm"
 import { MessageList } from "../components/messages/MessageList"
 import { ChatListWithSearchSkeleton } from "../components/ui/skeleton/ChatListWithSearchSkeleton"
@@ -19,6 +18,7 @@ import { useCallInRequestListener } from "../hooks/useEventListeners/useCallInRe
 import { useCallOutListener } from "../hooks/useEventListeners/useCallOutListener"
 import { useCallInAcceptListener } from "../hooks/useEventListeners/useCallinAcceptListener"
 import { useDeleteChatListener } from "../hooks/useEventListeners/useDeleteChatListener"
+import { useDeleteReactionListener } from '../hooks/useEventListeners/useDeleteReactionListener'
 import { useFriendRequestListener } from "../hooks/useEventListeners/useFriendRequestListener"
 import { useGroupUpdateEventListener } from '../hooks/useEventListeners/useGroupUpdateEventListener'
 import { useJoinNewChatListener } from '../hooks/useEventListeners/useJoinNewChatListener'
@@ -29,6 +29,7 @@ import { useMessageListener } from "../hooks/useEventListeners/useMessageListene
 import { useMessageSeenListener } from "../hooks/useEventListeners/useMessageSeenListener"
 import { useNewGroupListener } from "../hooks/useEventListeners/useNewGroupListener"
 import { useNewMemberAddedListener } from "../hooks/useEventListeners/useNewMemberAddedListener"
+import { useNewReactionListener } from '../hooks/useEventListeners/useNewReactionListener'
 import { useOfflineListener } from "../hooks/useEventListeners/useOfflineListener"
 import { useOnlineListener } from "../hooks/useEventListeners/useOnlineListener"
 import { useOnlineUsersListener } from "../hooks/useEventListeners/useOnlineUsersListener"
@@ -48,16 +49,15 @@ import { useMediaQuery } from "../hooks/useUtils/useMediaQuery"
 import { useSwipe } from '../hooks/useUtils/useSwipe'
 import { useFetchFriendRequest } from "../hooks/userRequest/useFetchFriendRequest"
 import { selectLoggedInUser } from "../services/redux/slices/authSlice"
-import { selectSelectedChatDetails, selectSelectedChatId } from "../services/redux/slices/chatSlice"
+import { selectSelectedChatDetails, selectSelectedChatId, updateSelectedChatDetails, updateSelectedChatId } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
-import { useNewReactionListener } from '../hooks/useEventListeners/useNewReactionListener'
-import { useDeleteReactionListener } from '../hooks/useEventListeners/useDeleteReactionListener'
 
 export const ChatPage = () => {
 
     
     const is640 =  useMediaQuery(640)
+    const is1024 = useMediaQuery(1024)
 
     const dispatch = useAppDispatch()
     useCheckFcmTokenExists()
@@ -79,26 +79,45 @@ export const ChatPage = () => {
 
     
     const chatLeftSwipe = ()=>{
-        dispatch(setChatDetailsBar(true))
+        if(chatBar){
+            dispatch(setChatBar(false))
+        }
+        else{
+            dispatch(setChatDetailsBar(true))
+        }
     }
     
     const chatRightSwipe = ()=>{
         if(chatDetailsBar){
             dispatch(setChatDetailsBar(false))
         }
-        else{
+        else if(is1024){
+            dispatch(updateSelectedChatId(null))
+            dispatch(updateSelectedChatDetails(null))
             dispatch(setChatBar(true))
+        }
+    }
+
+    const handleRightSwipeOnDefaultScreen = ()=>{
+        if(!chatBar){
+            dispatch(setChatBar(true))
+        }
+    }
+    const handleLeftSwipeOnDefaultScreen = ()=>{
+        if(chatBar){
+            dispatch(setChatBar(false))
         }
     }
 
 
     
     const { onTouchStart:onTouchStartChat, onTouchMove:onTouchMoveChat, onTouchEnd:onTouchEndChat } = useSwipe(75,1536,chatLeftSwipe,chatRightSwipe);
-    const { onTouchStart:onTouchStartDefault, onTouchMove:onTouchMoveDefault, onTouchEnd:onTouchEndDefault } = useSwipe(75,768,()=>{},()=>dispatch(setChatBar(true)));
+    const { onTouchStart:onTouchStartDefault, onTouchMove:onTouchMoveDefault, onTouchEnd:onTouchEndDefault } = useSwipe(75,1024,handleLeftSwipeOnDefaultScreen,handleRightSwipeOnDefaultScreen);
 
 
-    const { onTouchStart:onTouchStartChatBar, onTouchMove:onTouchMoveChatBar, onTouchEnd:onTouchEndChatBar } = useSwipe(75,768,()=>dispatch(setChatBar(false)),()=>{});
-    const { onTouchStart:onTouchStartChatDetails, onTouchMove:onTouchMoveChatDetails, onTouchEnd:onTouchEndChatDetails } = useSwipe(75,640,()=>{},()=>dispatch(setChatDetailsBar(false)));
+    const { onTouchStart:onTouchStartChatBar, onTouchMove:onTouchMoveChatBar, onTouchEnd:onTouchEndChatBar } = useSwipe(75,1024,()=>dispatch(setChatBar(false)),()=>{});
+
+    const { onTouchStart:onTouchStartChatDetails, onTouchMove:onTouchMoveChatDetails, onTouchEnd:onTouchEndChatDetails } = useSwipe(75,1536,()=>{},()=>dispatch(setChatDetailsBar(false)));
 
 
     
@@ -159,19 +178,18 @@ export const ChatPage = () => {
             <link rel="canonical" href={`${window.location.origin}`} />
         </Helmet>
         
-        <div className="h-full w-full flex p-4 max-md:p-2 gap-x-6 bg-background">
+        <div className="h-full w-full flex p-4 max-md:p-2 gap-x-6 bg-background select-none">
 
                 <motion.div
-
                     onTouchEnd={onTouchEndChatBar}
                     onTouchStart={onTouchStartChatBar}
                     onTouchMove={onTouchMoveChatBar}
 
-                    variants={{hide:{right:"50rem"},show:{left:0,right:0}}} 
+                    variants={{hide:{right:"65rem"},show:{left:0,right:0}}} 
                     initial="hide" 
                     animate={chatBar?"show":"hide"} 
                     transition={{duration:.4,type:"spring"}}
-                    className={`flex-[.5] min-w-[15rem] p-2 bg-background max-md:fixed h-full max-md:pb-20 overflow-y-auto z-10`}>
+                    className={`w-[22rem] max-sm:w-[auto] p-2 bg-background max-lg:fixed h-full max-lg:pb-20 overflow-y-auto z-10`}>
                     
                     {
                         !isChatsFetching && chats && loggedInUser?
@@ -237,19 +255,11 @@ export const ChatPage = () => {
 
                             {
                                 !selectedChatDetails && 
-                                <motion.div 
-                                    onTouchEnd={onTouchEndDefault} 
-                                    onTouchStart={onTouchStartDefault} 
-                                    onTouchMove={onTouchMoveDefault} initial={{opacity:0}} animate={{opacity:1}} transition={{duration:1}} className='w-96 max-md:w-full max-md:h-full self-center justify-self-center flex flex-col justify-center items-center relative'>
-                                    
-                                    <div className='relative'>
-                                        <Lottie animationData={fishAnimation} loop={false}/>
-                                        <div className='absolute bottom-0 flex flex-col items-center right-0 left-0'>
-                                            <motion.h4 initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.5}} className='text-text text-fluid-h6'>Select a chat</motion.h4>
-                                            <motion.h4 initial={{opacity:0}} animate={{opacity:1}} transition={{delay:2.5}} className='text-text text-fluid-h6'>and start the conversation</motion.h4>
-                                        </div>
-                                    </div>
-                                </motion.div>
+                                <DefaultChatView 
+                                   onTouchEndDefault={onTouchEndDefault}
+                                   onTouchMoveDefault={onTouchMoveDefault}
+                                   onTouchStartDefault={onTouchStartDefault}
+                                />
                             }
 
                         </div>
@@ -266,7 +276,7 @@ export const ChatPage = () => {
                     initial="hide"
                     animate={chatDetailsBar?"show":"hide"}
                     transition={{type:"spring",duration:.4}}
-                    className="flex-[.6] bg-background max-sm:w-full max-2xl:fixed max-2xl:px-4 max-2xl:w-[25rem]">
+                    className="flex-[.6] min-w-[20rem] bg-background max-sm:w-full max-2xl:fixed max-2xl:px-4 max-2xl:w-[25rem]">
                     {
                         !isChatsFetching && chats && loggedInUser && selectedChatDetails && chatName && chatAvatar && sharedMedia &&
 

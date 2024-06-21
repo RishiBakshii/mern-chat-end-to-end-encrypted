@@ -12,10 +12,12 @@ export const useSwipe = (threshold:number = 75, screenWidthThreshold:number =768
       });
 
     const onTouchStart = (e: React.TouchEvent<HTMLDivElement>)=>{
+      e.stopPropagation()
         setSwipe(prev=> ({...prev,touchStart:e.targetTouches[0].clientX}))
     }
 
     const onTouchMove = (e: React.TouchEvent<HTMLDivElement>)=>{
+      e.stopPropagation()
         setSwipe(prev=> ({...prev,touchEnd:e.targetTouches[0].clientX,moved:true}))
     }
 

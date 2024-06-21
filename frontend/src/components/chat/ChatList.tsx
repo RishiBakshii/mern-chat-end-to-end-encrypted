@@ -14,7 +14,7 @@ type PropTypes = {
 }
 export const ChatList = memo(({chats,loggedInUserId,selectedChatDetails,updateSelectedChatId,toggleChatBar,getChatAvatar,getChatName}:PropTypes) => {
 
-  const isMd = useMediaQuery(768)
+  const isLg = useMediaQuery(1024)
 
   return (
     <>
@@ -41,7 +41,7 @@ export const ChatList = memo(({chats,loggedInUserId,selectedChatDetails,updateSe
               members={chat.members}
               latestMessage={chat.latestMessage}
               createdAt={chat.createdAt}
-              isMd={isMd}
+              isLg={isLg}
               selectedChatDetails={selectedChatDetails}
               isTyping={chat.userTyping?.length>0}
               chatId={chat._id}

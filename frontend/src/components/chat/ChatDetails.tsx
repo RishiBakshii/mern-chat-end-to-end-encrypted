@@ -1,6 +1,7 @@
 import { IAttachment } from "../../interfaces/attachment"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import { AvatarList } from "../shared/AvatarList"
+import { ChevronRightIcon } from "../ui/icons/ChevronRightIcon"
 import { AddMemberSection } from "./AddMemberSection"
 import { ChatDetailsHeader } from "./ChatDetailsHeader"
 import { RemoveMemberSection } from "./RemoveMemberSection"
@@ -27,9 +28,7 @@ export const ChatDetails = ({isAdmin,chatName,chatAvatar,members,isGroupChat,att
     <div className="flex flex-col justify-center items-center gap-y-7 text-text relative">
         
         <button onClick={toggleChatDetailsBar} className="absolute left-0 top-1 hidden max-2xl:block">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-            </svg>
+          <ChevronRightIcon/>
         </button>
 
         <div className="flex flex-col gap-y-4 items-center">

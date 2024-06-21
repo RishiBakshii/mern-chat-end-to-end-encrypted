@@ -11,15 +11,21 @@ export const getRandomIndex=(length: number): number =>{
 }
 
 export const sendPushNotification = ({fcmToken,body}:{fcmToken:string,body:string})=>{
-    messaging.send({
-        data:{
-            click_action:"OPEN_APP",
-        },
-        token:fcmToken,
-        notification:{
-            // imageUrl:socket.user?.avatar?.secureUrl,
-            title:`${notificationTitles[getRandomIndex(notificationTitles.length)]}`,
-            body,
-        },
-    })
+
+    try {
+        
+        messaging.send({
+            data:{
+                click_action:"OPEN_APP",
+            },
+            token:fcmToken,
+            notification:{
+                // imageUrl:socket.user?.avatar?.secureUrl,
+                title:`${notificationTitles[getRandomIndex(notificationTitles.length)]}`,
+                body,
+            },
+        })
+    } catch (error) {
+        console.log("error")
+    }
 }

@@ -49,7 +49,7 @@ export const Message = ({content,sharedKey,isGroupChat,messageId,editMessageId,s
         />
         :
         <>
-        <span className="break-words max-sm:text-sm select-none">
+        <span className="break-words max-sm:text-sm">
             {
                 readMore?decryptedMessage:decryptedMessage.substring(0,400)
             }

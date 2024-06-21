@@ -77,6 +77,27 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,reactionMe
         setOpenContextMenuMessageId(undefined)
     }
 
+    const handleDoubleClick = ()=>{
+        const userReaction = message.reactions.find(reaction=>reaction?.user?._id === loggedInUserId)
+
+        if(userReaction?.emoji!=="❤️"){
+            deleteReaction({chatId:selectedChatDetails._id,messageId:message._id})
+            sendNewReaction({chatId:selectedChatDetails._id,messageId:message._id,reaction:"❤️"})
+        }
+        else{
+            
+            if(userReaction?.emoji==="❤️"){
+                deleteReaction({chatId:selectedChatDetails._id,messageId:message._id})
+            }
+            else{
+                sendNewReaction({chatId:selectedChatDetails._id,messageId:message._id,reaction:"❤️"})
+            }
+        }
+
+
+
+    }
+
 
   return (
     <motion.div initial={{x:-2}} animate={{x:0}} className={`flex gap-x-2 ${myMessage?"self-end":""} text-text relative `} onContextMenu={e=>handleContextMenuClick(e)}>
@@ -103,7 +124,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,reactionMe
         
         <div className='flex flex-col'>
 
-                <div className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} ${isContextMenuOpen?"border-2 border-double select-none border-spacing-4 border-":null} max-w-96 min-w-10 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center max-md:max-w-80 max-sm:max-w-64`}>
+                <motion.div whileTap={{scale:0.950}} onDoubleClick={handleDoubleClick} className={`${myMessage?"bg-primary text-white":"bg-secondary-dark"} ${isContextMenuOpen?"border-2 border-double select-none border-spacing-4 border-":null} max-w-96 min-w-10 rounded-2xl px-4 py-2 flex flex-col gap-y-1 justify-center max-md:max-w-80 max-sm:max-w-64`}>
                     
                         <RenderAppropriateMessage
                         editMessageId={editMessageId}
@@ -120,10 +141,10 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,reactionMe
                             {
                                 message?.isEdited && <p className="text-secondary font-medim text-sm max-sm:text-xs">Edited</p>
                             }       
-                            <p className={`text-xs ${myMessage?'text-gray-200':"text-secondary-darker"}`}>{format(message.createdAt,'h:mm a').toLowerCase()}</p>
+                            <p className={`select-none text-xs ${myMessage?'text-gray-200':"text-secondary-darker"}`}>{format(message.createdAt,'h:mm a').toLowerCase()}</p>
                         </div>
                         
-                </div>
+                </motion.div>
 
                 {
                     message?.reactions && message.reactions?.length>0 && 
@@ -131,7 +152,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,reactionMe
                         <div onClick={()=>setReactionMenuMessageId(message._id)} className='bg-secondary-dark self-end px-1 rounded-lg flex items-center -mt-1 cursor-pointer'>
                             {
                                 message.reactions.slice(0,4).map(reaction=>(
-                                    <p className=''>{reaction.emoji}</p>
+                                    <motion.p variants={{hide:{opacity:0,y:10,scale:1.5},show:{opacity:1,y:0,scale:1}}} initial="hide" animate="show" className='select-none' >{reaction.emoji}</motion.p>
                                 ))
                             }
 
@@ -145,7 +166,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,reactionMe
                 {
                     reactionMenuMessageId === message._id && message.reactions?.length>0 &&
 
-                    <motion.div ref={reactionsRef} variants={{hide:{opacity:0,y:5},show:{opacity:1,y:0}}} initial="hide" animate="show"  className='absolute bg-secondary-dark min-w-72 right-0 -bottom-20 p-2 rounded-md flex flex-col gap-y-4 z-10'>
+                    <motion.div ref={reactionsRef} variants={{hide:{opacity:0,y:5},show:{opacity:1,y:0}}} initial="hide" animate="show"  className='absolute bg-secondary-dark min-w-72 right-0 max-h-72 top-0 -bottom-20 overflow-y-auto scroll-smooth p-2 rounded-md flex flex-col gap-y-4 z-10'>
 
                         <h4 className='text-lg'>Reactions</h4>
 
@@ -160,7 +181,7 @@ export const MessageCard = memo(({message,myMessage=false,isGroupChat,reactionMe
                                             <div className='flex flex-col'>
                                                 <p>{reaction.user?.username}</p>
                                                 {
-                                                    reaction.user._id === loggedInUserId && 
+                                                    reaction.user?._id === loggedInUserId && 
                                                     <p className='text-sm'>Tap to remove</p>
                                                 }
                                             </div>

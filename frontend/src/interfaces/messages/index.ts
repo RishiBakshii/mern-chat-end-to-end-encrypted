@@ -20,6 +20,7 @@ export interface IMessage {
     isPoll?:boolean
     pollQuestion?:string
     pollOptions?:Array<IPollOption>
+    reactions:Array<{user:Pick<IChatMember, '_id' | 'username' | 'avatar'>,emoji:string}>,
     isMultipleAnswers?:boolean
     createdAt:Date
     updatedAt:Date
@@ -91,6 +92,25 @@ export interface IVoteInEventReceiveData {
 
 export interface IVoteOutEventReceiveData extends Omit<IVoteInEventReceiveData,'user'> {
     user:Pick<IChatMember , '_id'>
+}
+
+export interface INewReactionEventReceiveData {
+    chatId:string
+    messageId:string
+    user:Pick<IChatMember, '_id' | 'username' | 'avatar'>
+    emoji:string
+}
+
+export interface IDeleteReactionEventReceiveData {
+    chatId:string
+    messageId:string
+    userId:string
+}
+
+export interface INewReactionEventPayloadData {
+    chatId:string,
+    messageId:string,
+    reaction:string
 }
 
 export interface IUserTypingEventPayloadData extends IMessageSeenEventPayloadData {}

@@ -68,8 +68,37 @@ const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFu
                       username: 1,
                       avatar: "$avatar.secureUrl"
                     }
-                  }
+                  },
                 ]
+              }
+            },
+            {
+              $unwind:{
+                path:"$reactions",
+                preserveNullAndEmptyArrays:true
+              }
+            },
+            {
+              $lookup:{
+                from:"users",
+                localField:"reactions.user",
+                foreignField:"_id",
+                as:"reactions.user",
+                pipeline:[
+                  {
+                    $project:{
+                      username:1,
+                      avatar:'$avatar.secureUrl',
+                    }
+                  },
+                ]
+              }
+            },
+            {
+              $addFields: {
+                "reactions.user": {
+                  $arrayElemAt: ["$reactions.user", 0]
+                }
               }
             },
             {
@@ -85,8 +114,9 @@ const getMessages = asyncErrorHandler(async(req:Request,res:Response,next:NextFu
                 attachments: { $first: "$attachments" },
                 content: { $first: "$content" },
                 isEdited: { $first: "$isEdited" },
+                reactions:{$push: "$reactions"},
                 createdAt: { $first: "$createdAt" },
-                updatedAt: { $first: "$updatedAt" }
+                updatedAt: { $first: "$updatedAt" },
               }
             },
             {

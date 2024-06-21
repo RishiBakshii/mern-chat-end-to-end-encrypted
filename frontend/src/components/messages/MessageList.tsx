@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useClearAdditionalMessagesOnChatChange } from '../../hooks/useMessages/useClearAdditionalMessagesOnChatChange'
 import { useDeleteMessage } from '../../hooks/useMessages/useDeleteMessage'
 import type { IUser } from "../../interfaces/auth"
 import { IChatWithUnreadMessages } from "../../interfaces/chat"
 import type { IMessage } from "../../interfaces/messages"
 import { useLazyGetMessagesByChatIdQuery } from '../../services/api/messageApi'
 import { TypingIndicatorWithUserList } from "../chat/TypingIndicatorWithUserList"
-import { MessageCard } from "./MessageCard"
 import { CircleLoading } from '../shared/CircleLoading'
-import { useClearAdditionalMessagesOnChatChange } from '../../hooks/useMessages/useClearAdditionalMessagesOnChatChange'
+import { MessageCard } from "./MessageCard"
 
 type PropTypes = {
   messages:Array<IMessage>
@@ -33,15 +33,13 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
 
   const [openContextMenuMessageId, setOpenContextMenuMessageId] = useState<string>()
   const [editMessageId,setEditMessageId] = useState<string>()
+  const [reactionMenuMessageId,setReactionMenuMessageId] = useState<string | undefined>()
 
   const deleteMessage = useDeleteMessage()
 
-  const handleSetOpenContextMenuMessageId=useCallback((e:React.MouseEvent<HTMLDivElement, MouseEvent>,messageId: string)=>{
-    e.stopPropagation()
-    e.preventDefault()
+  const handleSetOpenContextMenuMessageId=useCallback((messageId: string)=>{
     setOpenContextMenuMessageId(messageId)
   },[])
-
 
   useLayoutEffect(()=>{
 
@@ -156,14 +154,16 @@ export const MessageList = ({messages,loggedInUserId,isGroupChat,totalPages,sele
           selectedChatDetails={selectedChatDetails}
           loggedInUserId={loggedInUserId}
           setOpenContextMenuMessageId={setOpenContextMenuMessageId}
-          setEditMessageId={setEditMessageId}
           editMessageId={editMessageId}
+          setEditMessageId={setEditMessageId}
           onContextMenuOpen={handleSetOpenContextMenuMessageId}
           deleteMessage={deleteMessage}
           isContextMenuOpen={openContextMenuMessageId===message._id}
           isGroupChat={isGroupChat} 
           message={message}
-          myMessage={loggedInUserId===message.sender._id} 
+          myMessage={loggedInUserId===message.sender._id}
+          reactionMenuMessageId={reactionMenuMessageId}
+          setReactionMenuMessageId={setReactionMenuMessageId} 
         />
 
       ))}

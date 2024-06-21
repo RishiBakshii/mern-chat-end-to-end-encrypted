@@ -1,3 +1,4 @@
+import { EmojiClickData } from 'emoji-picker-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
@@ -10,11 +11,10 @@ import { useTogglePoolForm } from '../../hooks/useUI/useTogglePoolForm'
 import { useDebounce } from "../../hooks/useUtils/useDebounce"
 import { selectSelectedChatDetails } from "../../services/redux/slices/chatSlice"
 import { useAppSelector } from "../../services/redux/store/hooks"
+import { EmojiPickerForm } from '../emoji/EmojiPickerForm'
 import { MessageInput } from "../ui/MessageInput"
 import { GalleryIcon } from '../ui/icons/GalleryIcon'
 import { PollingIcon } from '../ui/icons/PollingIcon'
-import { EmojiPickerForm } from '../emoji/EmojiPickerForm'
-import { useMediaQuery } from '../../hooks/useUtils/useMediaQuery'
 
 export const MessageForm = () => {
 
@@ -37,8 +37,6 @@ export const MessageForm = () => {
         document.removeEventListener('mousedown', handleClickOutside);
       };
    }, []);
-
-    const is640 = useMediaQuery(640)
 
     const [messageVal,setMessageVal] = useState<string>('')
 
@@ -134,8 +132,8 @@ export const MessageForm = () => {
 
     }
 
-    const handleEmojiSelect = (e:any)=>{
-      setMessageVal(val=>val+e.native)
+    const handleEmojiSelect = (e:EmojiClickData)=>{
+      setMessageVal(val=>val+e.emoji)
     }
 
     const handlePollClick = ()=>{
@@ -198,17 +196,16 @@ export const MessageForm = () => {
         </AnimatePresence>
 
         <AnimatePresence>
+
+          {
+            emojiForm &&
+            <motion.div ref={pickerRef} variants={{hide:{y:40,opacity:0},show:{y:0,opacity:1}}} initial="hide" exit={"hide"} animate="show" className="absolute bottom-20 left-0">
+                <EmojiPickerForm
+                  onEmojiClick={handleEmojiSelect}
+                />
+            </motion.div>
+          }
         
-        {
-          emojiForm && 
-          <motion.div ref={pickerRef} variants={{hide:{y:40,opacity:0},show:{y:0,opacity:1}}} initial="hide" exit={"hide"} animate="show" className="absolute bottom-20 left-0">
-              <EmojiPickerForm
-                emojiButtonSize={is640?30:36}
-                emojiSize={is640?24:24}
-                onEmojiSelect={handleEmojiSelect}
-              />
-          </motion.div>
-        }
         </AnimatePresence>
 
 

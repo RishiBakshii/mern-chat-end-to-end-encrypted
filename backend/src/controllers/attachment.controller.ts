@@ -74,7 +74,8 @@ const uploadAttachment = asyncErrorHandler(async(req:AuthenticatedRequest,res:Re
             avatar:message.sender.avatar.secureUrl
         },
         attachments:attachmentsArray.map(({secureUrl})=>secureUrl),
-        updatedAt:message.updatedAt
+        updatedAt:message.updatedAt,
+        reactions:[]
     }
 
     emitEventToRoom(req,Events.MESSAGE,chatId,realtimeMessageResponse)

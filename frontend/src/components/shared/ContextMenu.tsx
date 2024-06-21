@@ -1,35 +1,56 @@
 import { motion } from "framer-motion"
+import { EmojiPickerForm } from "../emoji/EmojiPickerForm"
+import { EmojiClickData } from "emoji-picker-react"
+import { forwardRef } from "react"
 
 type contextOptions = {
     name:string,
+    icon:unknown,
     handlerFunc:()=>void
     
 }
 
 type PropTypes = {
     options:Array<contextOptions>
-    setOpenContextMenuMessageId: React.Dispatch<React.SetStateAction<string | undefined>>
+    showReactions?:boolean
+    onEmojiClick?:(e: EmojiClickData) => void
+    ref:React.RefObject<HTMLDivElement>
+    myMessage:boolean
 }
 
-export const ContextMenu = ({options,setOpenContextMenuMessageId}:PropTypes) => {
-
+export const ContextMenu = forwardRef<HTMLDivElement, PropTypes>(({myMessage,options,onEmojiClick,showReactions=true}:PropTypes,ref) => {
+    
     return (
-        <motion.div variants={{hide:{opacity:0,y:-10},show:{opacity:1,y:0}}} initial="hide" exit="hide" animate="show" className={`flex flex-col bg-secondary-dark text-text p-2 right-4 top-4 rounded-2xl shadow-2xl absolute min-w-32 z-10`}>
-
-            <button className="self-end" type="button" onClick={()=>setOpenContextMenuMessageId(undefined)}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-            </button>
-
-            <div className="flex flex-col">
+        <motion.div ref={ref} variants={{hide:{opacity:0},show:{opacity:1}}} initial='hide' animate="show" className={`flex flex-col gap-y-2 absolute ${myMessage?'right-0':"left-0"} z-10`}>
                 {
-                    options.map(({name,handlerFunc})=>(
-                        <p key={name} className="hover:bg-secondary-darker rounded-sm cursor-pointer p-2" onClick={handlerFunc}>{name}</p>
-                    ))
+                    showReactions &&
+                    <div>
+                        <EmojiPickerForm
+                            onEmojiClick={onEmojiClick ?onEmojiClick:(_:EmojiClickData)=>''}
+                            reactionsDefaultOpen={true}
+                        />
+                    </div>
                 }
-            </div>
+                
+                {
+                    myMessage && 
+                    <div className={`flex flex-col bg-secondary-dark text-text p-2 rounded-2xl shadow-2xl min-w-32 self-end`}>
+                        
+                        
+                        <div className="flex flex-col">
+                            {
+                                options.map(({name,icon,handlerFunc})=>(
+                                    <div onClick={handlerFunc} className="cursor-pointer p-2 rounded-sm hover:bg-secondary-darker flex items-center justify-between">
+                                        <p key={name} >{name}</p>
+                                        {icon as any}
+                                    </div>
+                                ))
+                            }
+                        </div>
 
+                    </div>
+                }
+                
         </motion.div>
     )
-}
+})

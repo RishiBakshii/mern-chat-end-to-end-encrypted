@@ -51,6 +51,8 @@ import { selectLoggedInUser } from "../services/redux/slices/authSlice"
 import { selectSelectedChatDetails, selectSelectedChatId } from "../services/redux/slices/chatSlice"
 import { selectChatBar, selectChatDetailsBar, setChatBar, setChatDetailsBar } from "../services/redux/slices/uiSlice"
 import { useAppDispatch, useAppSelector } from "../services/redux/store/hooks"
+import { useNewReactionListener } from '../hooks/useEventListeners/useNewReactionListener'
+import { useDeleteReactionListener } from '../hooks/useEventListeners/useDeleteReactionListener'
 
 export const ChatPage = () => {
 
@@ -132,6 +134,8 @@ export const ChatPage = () => {
    useMessageDeleteListener()
    useGroupUpdateEventListener()
    useJoinNewChatListener()
+   useNewReactionListener()
+   useDeleteReactionListener()
    
    useUpdateUnreadChatAsSeen()
    

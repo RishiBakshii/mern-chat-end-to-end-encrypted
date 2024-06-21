@@ -44,6 +44,17 @@ const messageSchema = new Schema<IMessage>({
             }
         ]
     },
+    reactions:{
+        type:[
+            {
+                user:{
+                    type:Types.ObjectId,
+                    ref:"User"
+                },
+                emoji:String
+            }
+        ]
+    },
     isMultipleAnswers:{
         type:Boolean
     },

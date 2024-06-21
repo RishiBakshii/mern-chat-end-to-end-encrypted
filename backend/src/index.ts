@@ -9,7 +9,7 @@ import './config/cloudinary.config.js'
 import { connectDB } from './config/db.config.js'
 import { config } from './config/env.config.js'
 import type { AuthenticatedSocket, IUser } from './interfaces/auth/auth.interface.js'
-import type { IMessage } from './interfaces/message/message.interface.js'
+import type { IDeleteReactionEventPayloadData, IMessage, INewReactionEventPayloadData } from './interfaces/message/message.interface.js'
 import { errorMiddleware } from './middlewares/error.middleware.js'
 import './passport/github.strategy.js'
 import './passport/google.strategy.js'
@@ -35,6 +35,7 @@ import { UnreadMessage } from './models/unread-message.model.js'
 import { User } from './models/user.model.js'
 import { getRandomIndex, sendPushNotification } from './utils/generic.js'
 import { notificationTitles } from './constants/notification-title.contant.js'
+import { deleteFilesFromCloudinary } from './utils/auth.util.js'
 
 
 const app=express()
@@ -180,7 +181,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
             }
         ])
 
-        io.to(chat).emit(Events.MESSAGE,{...transformedMessage[0],isNew:true})
+        io.to(chat).emit(Events.MESSAGE,{...transformedMessage[0],isNew:true,reactions:[]})
 
         // Handle unread messages for receivers
         const currentChat = await Chat.findById(chat,{members:1,_id:1}).populate<{members:Array<IUser>}>('members')
@@ -273,9 +274,51 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
 
         const deletedMessage = await Message.findByIdAndDelete(messageId)
 
+        if(deletedMessage?.attachments?.length) {
+            await deleteFilesFromCloudinary(deletedMessage.attachments.map(attachment=>attachment.publicId))
+        }
+
         if(deletedMessage){
             io.to(deletedMessage.chat._id.toString()).emit(Events.MESSAGE_DELETE,{messageId,chatId:deletedMessage.chat._id.toString()})
         }
+    })
+    
+    socket.on(Events.NEW_REACTION,async({chatId,messageId,reaction}:{chatId:string,messageId:string,reaction:string})=>{
+        
+        await Message.findOneAndUpdate(
+            {_id:messageId,chat:chatId},
+            {$addToSet:{reactions:{user:socket.user?._id,emoji:reaction}}},
+        )
+        
+        const payload:INewReactionEventPayloadData = {
+            chatId,
+            messageId,
+            user:{
+                _id:socket.user?._id.toString()!,
+                username:socket.user?.username!,
+                avatar:socket.user?.avatar?.secureUrl!
+            },
+            emoji:reaction,
+        }
+
+        io.to(chatId).emit(Events.NEW_REACTION,payload)
+
+    })
+
+    socket.on(Events.DELETE_REACTION,async({chatId,messageId}:{chatId:string,messageId:string})=>{
+
+        await Message.findOneAndUpdate(
+            {_id:messageId,chat:chatId},
+            {$pull:{reactions:{user:socket.user?._id}}},
+        )
+
+        const paylaod:IDeleteReactionEventPayloadData = {
+            chatId,
+            messageId,
+            userId:socket.user?._id.toString()! 
+        }
+
+        io.to(chatId).emit(Events.DELETE_REACTION,paylaod)
     })
 
     socket.on(Events.USER_TYPING,({chatId}:{chatId:string})=>{
@@ -418,7 +461,7 @@ io.on("connection",async(socket:AuthenticatedSocket)=>{
     })
 })
 
-app.get("/",(req:Request,res:Response)=>{
+app.get("/",(_:Request,res:Response)=>{
     res.status(200).json({running:true})
 })
 

@@ -16,6 +16,7 @@ export interface IMessage {
     isPoll?:boolean
     pollQuestion?:string
     pollOptions?:Array<{option:string,votes:Array<Types.ObjectId>}>
+    reactions?:Array<{user:Types.ObjectId,emoji:string}>
     isMultipleAnswers?:boolean
     isEdited?:boolean
     createdAt:Date
@@ -39,4 +40,18 @@ export interface IMessageEventPayload {
     pollOptions?:Array<{option:string,votes:Array<IMemberDetails>}>
     createdAt: Date,
     updatedAt:  Date
+    reactions:[]
+}
+
+export interface INewReactionEventPayloadData {
+    chatId:string
+    messageId:string
+    user:{_id:string,username:string,avatar:string}
+    emoji:string
+}
+
+export interface IDeleteReactionEventPayloadData {
+    chatId:string
+    messageId:string
+    userId:string
 }

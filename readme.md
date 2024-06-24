@@ -1,5 +1,6 @@
 # Baatchit 🗨️
 
+
 Baatchit is a modern real-time chat application designed to facilitate seamless communication between users. With Baatchit, users can engage in conversations, share files, see when others are typing, and more, all in real-time.
 
 ![Baatchit](images/groupChatCreation.png)
@@ -154,6 +155,10 @@ Contributions are welcome! If you'd like to contribute to Baatchit, please follo
 3. Make your changes and commit them: `git commit -am 'Add new feature'`
 4. Push to the branch: `git push origin feature-name`
 5. Submit a pull request.
+
+## Announcement 🟢
+
+- **Baatchit's codebase will be shifted to ``Next-js`` very soon**
 
 ## Contact 📧
 

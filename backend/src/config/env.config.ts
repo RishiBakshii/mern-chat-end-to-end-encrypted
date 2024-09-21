@@ -8,7 +8,7 @@ const developmentConfig:IConfig = {
 
 const productionConfig:IConfig = {
     clientUrl:"https://baatchit.online",
-    callbackUrl:"https://stangchatbackend.online/api/v1/auth/google/callback"
+    callbackUrl:"https://aesehi.online/api/v1/auth/google/callback"
 }
 
 export const config = env.NODE_ENV==='DEVELOPMENT'?developmentConfig:productionConfig

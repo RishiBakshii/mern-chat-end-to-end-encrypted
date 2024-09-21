@@ -14,7 +14,7 @@ export const cookieOptions:CookieOptions = {
     priority:"high",
     secure:true,
     sameSite:env.NODE_ENV==='DEVELOPMENT'?"lax":"none",
-    domain: env.NODE_ENV === 'DEVELOPMENT' ? 'localhost' : 'stangchatbackend.online',
+    domain: env.NODE_ENV === 'DEVELOPMENT' ? 'localhost' : 'aesehi.online',
     partitioned:true,
 }
 

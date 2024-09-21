@@ -5,7 +5,7 @@ import { envSchema, envSchemaType } from "../schemas/envSchema";
 let env: envSchemaType | null = null;
 
 const productionConfig: IConfig = {
-  base_url: "https://stangchatbackend.online/api/v1",
+  base_url: "https://aesehi.online/api/v1",
   absolute_base_url: "https://stangchatbackend.online",
   clientUrl: "https://baatchit.online"
 };
